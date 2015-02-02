@@ -1,0 +1,9 @@
+{
+  "_comment": "Local coordinator configuration",
+  "name": null,
+  "uuid": null,
+  "key": null,
+  "use-package-cache": true,
+  "resources": {},
+  "attributes": []
+}
