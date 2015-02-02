@@ -1,5 +1,10 @@
 {
   "_comment": "Network coordinator keys file. Do not edit yourself!",
   "coordinators": [],
-  "clients": []
+  "clients": [
+    {
+      "uuid": "default-client",
+      "key": "default-key"
+    }
+  ]
 }

@@ -6,6 +6,7 @@
 
     <groupId>net.thechunk</groupId>
     <artifactId>PlayPen</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <build>
@@ -28,6 +29,18 @@
                 <executions>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>net.thechunk.playpen.Bootstrap</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -42,6 +55,12 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20141113</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-zip</artifactId>
+            <version>1.8</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>
