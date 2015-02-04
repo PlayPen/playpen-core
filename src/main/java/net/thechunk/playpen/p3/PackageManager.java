@@ -44,22 +44,22 @@ public class PackageManager {
         return null;
     }
 
-    public P3Package readPackage(File file) throws PackageException {
+    public P3Package readSchema(String schema) throws PackageException {
         try {
-            if (!ZipUtil.containsEntry(file, "package.json")) {
-                throw new PackageException("No package schema found");
-            }
+            return readSchema(new JSONObject(schema));
+        }
+        catch(JSONException e) {
+            throw new PackageException("Invalid package schema", e);
+        }
+    }
 
-            byte[] schemaBytes = ZipUtil.unpackEntry(file, "package.json");
-            String schemaString = new String(schemaBytes);
-
-            JSONObject schema = new JSONObject(schemaString);
+    public P3Package readSchema(JSONObject schema) throws PackageException {
+        try {
             JSONObject meta = JSONUtils.safeGetObject(schema, "package");
             if (meta == null)
                 throw new PackageException("Schema is invalid (no package metadata)");
 
             P3Package p3 = new P3Package();
-            p3.setLocalPath(file.getPath());
             p3.setResolved(true);
             p3.setId(JSONUtils.safeGetString(meta, "id"));
             p3.setVersion(JSONUtils.safeGetString(meta, "version"));
@@ -120,6 +120,26 @@ public class PackageManager {
             if (!p3.validate()) {
                 throw new PackageException("Package validation failed (check id, version, and parent metadata)!");
             }
+
+            return p3;
+        }
+        catch(JSONException e) {
+            throw new PackageException("Invalid package schema", e);
+        }
+    }
+
+    public P3Package readPackage(File file) throws PackageException {
+        try {
+            if (!ZipUtil.containsEntry(file, "package.json")) {
+                throw new PackageException("No package schema found");
+            }
+
+            byte[] schemaBytes = ZipUtil.unpackEntry(file, "package.json");
+            String schemaString = new String(schemaBytes);
+
+            JSONObject schema = new JSONObject(schemaString);
+            P3Package p3 = readSchema(schema);
+            p3.setLocalPath(file.getPath());
 
             return p3;
         }

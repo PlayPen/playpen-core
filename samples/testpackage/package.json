@@ -1,3 +1,21 @@
 {
-	
+  "package": {
+	"id": "test-package",
+	"version": "1.0",
+
+	"resources": {
+	  "memory": 1024,
+	  "cpu": 1
+	},
+
+	"requires": ["java-8"]
+  },
+
+  "strings": {
+	"hello": "world"
+  },
+
+  "execute": [
+	"echo hi"
+  ]
 }

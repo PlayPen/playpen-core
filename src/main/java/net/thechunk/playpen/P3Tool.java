@@ -1,8 +1,14 @@
 package net.thechunk.playpen;
 
 import net.thechunk.playpen.p3.*;
+import org.json.JSONObject;
+import org.zeroturnaround.zip.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -10,13 +16,17 @@ public class P3Tool {
 
     public static void execute(String[] args) {
         if(args.length < 2) {
-            System.err.println("playpen p3 <inspect> [arguments...]");
+            System.err.println("playpen p3 <inspect/pack> [arguments...]");
             return;
         }
 
         switch(args[1].toLowerCase()) {
             case "inspect":
                 inspect(args);
+                break;
+
+            case "pack":
+                pack(args);
                 break;
         }
     }
@@ -27,17 +37,16 @@ public class P3Tool {
             return;
         }
 
-        PackageManager pm = new PackageManager();
-        Initialization.packageManager(pm);
-
         File p3File = new File(args[2]);
         if(!p3File.exists() || !p3File.isFile()) {
             System.err.println("Package doesn't exist or isn't a file!");
             return;
         }
 
-        P3Package p3 = null;
+        PackageManager pm = new PackageManager();
+        Initialization.packageManager(pm);
 
+        P3Package p3 = null;
         try {
             p3 = pm.readPackage(p3File);
         }
@@ -101,6 +110,73 @@ public class P3Tool {
         }
 
         System.out.println("=== End Package ===");
+    }
+
+    private static void pack(String[] args) {
+        if(args.length != 3) {
+            System.err.println("playpen p3 pack <directory>");
+            return;
+        }
+
+        File p3Dir = new File(args[2]);
+        if(!p3Dir.exists() || !p3Dir.isDirectory()) {
+            System.err.println("Source doesn't exist or isn't a directory!");
+            return;
+        }
+
+        Path schemaPath = Paths.get(p3Dir.getPath(), "package.json");
+        File schemaFile = schemaPath.toFile();
+        if(!schemaFile.exists() || !schemaFile.isFile()) {
+            System.err.println("package.json is either missing or a directory");
+            return;
+        }
+
+        String schemaString = null;
+        try {
+            schemaString = new String(Files.readAllBytes(schemaPath));
+        }
+        catch(IOException e) {
+            System.err.println("Unable to read schema");
+            e.printStackTrace(System.err);
+            return;
+        }
+
+        PackageManager pm = new PackageManager();
+        Initialization.packageManager(pm);
+
+        System.out.println("Reading package schema...");
+
+        P3Package p3 = null;
+        try {
+            p3 = pm.readSchema(schemaString);
+        }
+        catch(PackageException e) {
+            System.err.println("Unable to read schema");
+            e.printStackTrace(System.err);
+            return;
+        }
+
+        String resultFileName = p3.getId() + "_" + p3.getVersion() + ".p3";
+        File resultFile = new File(resultFileName);
+        if(resultFile.exists())
+        {
+            if(!resultFile.delete()) {
+                System.err.println("Unable to remove old package (" + resultFileName + ")");
+                return;
+            }
+        }
+        System.out.println("Creating package " + resultFileName);
+
+        try {
+            ZipUtil.pack(p3Dir, resultFile);
+        }
+        catch(ZipException e) {
+            System.err.println("Unable to create package");
+            e.printStackTrace(System.err);
+            return;
+        }
+
+        System.out.println("Finished packing!");
     }
 
     private P3Tool() {}
