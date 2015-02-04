@@ -13,7 +13,7 @@ public class LocalCoordinator {
 
     String secretKey;
 
-    Map<String, Float> resources;
+    Map<String, Integer> resources;
 
     Set<String> attributes;
 }
