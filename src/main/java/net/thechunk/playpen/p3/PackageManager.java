@@ -5,19 +5,34 @@ import org.json.JSONObject;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class PackageManager {
 
-    List<IPackageResolver> resolvers = new LinkedList<>();
+    private List<IPackageResolver> resolvers = new LinkedList<>();
+
+    private Map<String, IProvisioningStep> provisioningSteps = new HashMap<>();
 
     public void addPackageResolver(IPackageResolver resolver) {
         resolvers.add(resolver);
     }
 
-    public Package resolve(String id, String version) {
-        Package p3 = null;
+    public void addProvisioningStep(IProvisioningStep step) {
+        provisioningSteps.put(step.getStepId(), step);
+    }
+
+    public IProvisioningStep getProvisioningStep(String id) {
+        if(provisioningSteps.containsKey(id))
+            return provisioningSteps.get(id);
+
+        return null;
+    }
+
+    public P3Package resolve(String id, String version) {
+        P3Package p3 = null;
         for(IPackageResolver resolver : resolvers) {
             p3 = resolver.resolvePackage(id, version);
             if(p3 != null)
@@ -27,9 +42,7 @@ public class PackageManager {
         return null;
     }
 
-
-
-    public Package readPackage(File file) throws PackageException {
+    public P3Package readPackage(File file) throws PackageException {
         if(!ZipUtil.containsEntry(file, "/package.json")) {
             throw new PackageException("No package schema found");
         }
@@ -42,7 +55,7 @@ public class PackageManager {
         if(meta == null)
             throw new PackageException("Schema is invalid (no package metadata)");
 
-        Package p3 = new Package();
+        P3Package p3 = new P3Package();
         p3.setLocalPath(file.getPath());
         p3.setResolved(true);
         p3.setId(meta.getString("id"));
@@ -50,7 +63,7 @@ public class PackageManager {
 
         JSONObject parent = meta.getJSONObject("parent");
         if(parent != null) {
-            Package p3parent = new Package();
+            P3Package p3parent = new P3Package();
             p3parent.setId(parent.getString("id"));
             p3parent.setVersion(parent.getString("version"));
             p3.setParent(p3parent);
@@ -77,6 +90,34 @@ public class PackageManager {
             }
         }
 
-        //TODO
+        JSONArray provision = schema.getJSONArray("provision");
+        if(provision != null) {
+            for(int i = 0; i < provision.length(); ++i) {
+                JSONObject obj = provision.getJSONObject(i);
+                if(obj != null) {
+                    IProvisioningStep step = getProvisioningStep(obj.getString("id"));
+                    if(step == null)
+                        throw new PackageException("Unknown provisioning step \"" + obj.getString("id") + "\"");
+
+                    P3Package.ProvisioningStepConfig config = new P3Package.ProvisioningStepConfig();
+                    config.setStep(step);
+                    config.setConfig(obj);
+                    p3.getProvisioningSteps().add(config);
+                }
+            }
+        }
+
+        JSONArray execute = schema.getJSONArray("execute");
+        if(execute != null) {
+            for(int i = 0; i < execute.length(); ++i) {
+                p3.getExecutionSteps().add(execute.getString(i));
+            }
+        }
+
+        if(!p3.validate()) {
+            throw new PackageException("Package validation failed (check id, version, and parent metadata)!");
+        }
+
+        return p3;
     }
 }

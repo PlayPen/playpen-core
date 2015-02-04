@@ -1,19 +1,16 @@
 package net.thechunk.playpen.p3;
 
 import lombok.Data;
-import lombok.Getter;
 import org.json.JSONObject;
-import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.File;
 import java.util.*;
 
 @Data
-public class Package {
+public class P3Package {
 
     @Data
-    public class ProvisioningStepConfig {
-        String id;
+    public static class ProvisioningStepConfig {
+        IProvisioningStep step;
         JSONObject config;
     }
 
@@ -25,7 +22,7 @@ public class Package {
 
     private String version;
 
-    private Package parent;
+    private P3Package parent;
 
     private Map<String, Double> resources = new HashMap<>();
 
@@ -36,4 +33,14 @@ public class Package {
     private List<ProvisioningStepConfig> provisioningSteps = new ArrayList<>();
 
     private List<String> executionSteps = new ArrayList<>();
+
+    boolean validate() {
+        if(id == null || id.isEmpty() || version == null || version.isEmpty())
+            return false;
+
+        if(parent != null && !parent.validate())
+            return false;
+
+        return true;
+    }
 }

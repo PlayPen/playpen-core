@@ -48,7 +48,7 @@ public class Bootstrap {
         }
 
         if(args.length != 1) {
-            logger.severe("Missing mode parameter (either local or network)");
+            logger.severe("Missing mode parameter (either local, network, or p3)");
             return;
         }
 
@@ -61,8 +61,12 @@ public class Bootstrap {
 
                 break;
 
+            case "p3":
+                P3Tool.execute(args);
+                break;
+
             default:
-                logger.severe("Unknown mode. Should be either local or network.");
+                logger.severe("Unknown mode. Should be either local, network, or p3.");
                 return;
         }
     }
