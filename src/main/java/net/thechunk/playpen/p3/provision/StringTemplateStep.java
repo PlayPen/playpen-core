@@ -4,6 +4,7 @@ import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.p3.IProvisioningStep;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
+import net.thechunk.playpen.utils.STUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -64,13 +65,7 @@ public class StringTemplateStep implements IProvisioningStep {
 
             ST template = new ST(fileContents);
 
-            for(Map.Entry<String, String> prop : ctx.getProperties().entrySet()) {
-                template.add(prop.getKey(), prop.getValue());
-            }
-
-            for(Map.Entry<String, String> prop : ctx.getP3().getStrings().entrySet()) {
-                template.add(prop.getKey(), prop.getValue());
-            }
+            STUtils.buildSTProperties(ctx.getP3(), template);
 
             String rendered = template.render();
 

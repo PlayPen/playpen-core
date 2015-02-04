@@ -1,0 +1,19 @@
+{
+  "package": {
+    "id": "test-with-parent",
+    "version": "1.0",
+    "parent": {
+      "id": "test-package",
+      "version": "1.0"
+    }
+  },
+  "provision": [
+    {"id": "expand"},
+    {
+      "id": "string-template",
+      "files": [
+        "test2.txt"
+      ]
+    }
+  ]
+}

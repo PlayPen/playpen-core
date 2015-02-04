@@ -83,7 +83,7 @@ public class P3Tool {
             System.err.println("-- Package doesn't take any resources");
         }
         else {
-            for (Map.Entry<String, Double> resource : p3.getResources().entrySet()) {
+            for (Map.Entry<String, Integer> resource : p3.getResources().entrySet()) {
                 System.out.println("Resource: " + resource.getKey() + " = " + resource.getValue());
             }
         }

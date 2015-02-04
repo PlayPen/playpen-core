@@ -35,13 +35,17 @@ public class PackageManager {
     }
 
     public P3Package resolve(String id, String version) {
+        logger.info("Attempting package resolution for " + id + " at " + version);
         P3Package p3 = null;
         for(IPackageResolver resolver : resolvers) {
-            p3 = resolver.resolvePackage(id, version);
-            if(p3 != null)
+            p3 = resolver.resolvePackage(this, id, version);
+            if(p3 != null) {
+                logger.info("Package resolved by " + resolver.getClass().getName());
                 return p3;
+            }
         }
 
+        logger.error("Package could not be resolved!");
         return null;
     }
 
@@ -76,7 +80,7 @@ public class PackageManager {
             JSONObject resources = JSONUtils.safeGetObject(meta, "resources");
             if (resources != null) {
                 for (String key : resources.keySet()) {
-                    p3.getResources().put(key, JSONUtils.safeGetDouble(resources, key));
+                    p3.getResources().put(key, JSONUtils.safeGetDouble(resources, key).intValue());
                 }
             }
 
@@ -171,10 +175,10 @@ public class PackageManager {
     }
 
     public boolean provision(P3Package p3, File destination, Map<String, String> properties) {
-        return internalProvision(p3, destination, properties, new HashSet<P3Package.P3PackageInfo>());
+        return internalProvision(p3, destination, new HashSet<P3Package.P3PackageInfo>(), null) != null;
     }
 
-    private boolean internalProvision(P3Package p3, File destination, Map<String, String> properties, Set<P3Package.P3PackageInfo> loaded) {
+    private P3Package internalProvision(P3Package p3, File destination, Set<P3Package.P3PackageInfo> loaded, P3Package child) {
         logger.info("Provisioning " + p3.getId() + " at " + p3.getVersion());
 
         P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
@@ -182,14 +186,14 @@ public class PackageManager {
         p3info.setVersion(p3.getVersion());
         if(loaded.contains(p3info)) {
             logger.error("Circular dependency found with " + p3.getId() + " at " + p3.getVersion());
-            return false;
+            return null;
         }
 
         loaded.add(p3info);
 
         if(destination.exists() && !destination.isDirectory()) {
             logger.error("Unable to provision package (destination is not a directory)");
-            return false;
+            return null;
         }
 
         String oldId = p3.getId();
@@ -198,33 +202,45 @@ public class PackageManager {
             p3 = resolve(p3.getId(), p3.getVersion());
         }
 
+        if(child != null) {
+            p3.getResources().putAll(child.getResources());
+            p3.getAttributes().addAll(child.getAttributes());
+            p3.getStrings().putAll(child.getStrings());
+        }
+
         if(p3 == null || !p3.isResolved()) {
-            logger.error("Unable to fully resolve package " + oldId + " at " + oldVersion);
-            return false;
+            logger.error("Unable to resolve package " + oldId + " at " + oldVersion);
+            return null;
         }
 
         if(p3.getParent() != null) {
-            if (!internalProvision(p3.getParent(), destination, properties, loaded)) {
+            P3Package parent = internalProvision(p3.getParent(), destination, loaded, p3);
+            if (parent == null) {
                 logger.error("Unable to provision parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
-                return false;
+                return null;
             }
+
+            p3.setParent(parent);
+
+            p3.getResources().putAll(parent.getResources());
+            p3.getAttributes().addAll(parent.getAttributes());
+            p3.getStrings().putAll(parent.getStrings());
         }
 
         PackageContext context = new PackageContext();
         context.setPackageManager(this);
         context.setP3(p3);
         context.setDestination(destination);
-        context.setProperties(properties);
 
         for(P3Package.ProvisioningStepConfig config : p3.getProvisioningSteps()) {
             logger.info("provision step - " + config.getStep().getStepId());
             if(!config.getStep().runStep(context, config.getConfig())) {
                 logger.error("Step failed!");
-                return false;
+                return null;
             }
         }
 
         logger.info("Provision of " + p3.getId() + " at " + p3.getVersion() + " finished!");
-        return true;
+        return p3;
     }
 }

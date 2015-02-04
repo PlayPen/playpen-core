@@ -12,6 +12,4 @@ public class PackageContext {
     private P3Package p3;
 
     private File destination;
-
-    private Map<String, String> properties;
 }

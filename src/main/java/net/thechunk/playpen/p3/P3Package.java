@@ -1,7 +1,9 @@
 package net.thechunk.playpen.p3;
 
 import lombok.Data;
+import net.thechunk.playpen.utils.STUtils;
 import org.json.JSONObject;
+import org.stringtemplate.v4.ST;
 
 import java.util.*;
 
@@ -51,7 +53,7 @@ public class P3Package {
 
     private P3Package parent;
 
-    private Map<String, Double> resources = new HashMap<>();
+    private Map<String, Integer> resources = new HashMap<>();
 
     private Set<String> attributes = new HashSet<>();
 
