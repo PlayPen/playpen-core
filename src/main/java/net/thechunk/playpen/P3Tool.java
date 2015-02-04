@@ -301,6 +301,8 @@ public class P3Tool {
                 return;
             }
         }
+
+        System.out.println("Finished execution");
     }
 
     private P3Tool() {}
