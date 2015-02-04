@@ -12,11 +12,17 @@
   },
 
   "strings": {
-	"hello": "world"
+	"foo": "bar"
   },
 
   "provision": [
-	{"id": "expand"}
+	{"id": "expand"},
+	{
+	  "id": "string-template",
+	  "files": [
+		"test.txt"
+	  ]
+	}
   ],
 
   "execute": [

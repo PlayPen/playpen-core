@@ -3,12 +3,12 @@
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout>
-                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c: %m%n</Pattern>
+                <Pattern>%-5p %c: %m%n</Pattern>
             </PatternLayout>
         </Console>
-        <File name="file" filename="logs/playpen.log">
+        <File name="file" filename="playpen.log">
             <PatternLayout>
-                <Pattern>%-5p %c: %m%n</Pattern>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c: %m%n</Pattern>
             </PatternLayout>
         </File>
     </Appenders>

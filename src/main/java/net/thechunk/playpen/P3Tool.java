@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -216,7 +217,7 @@ public class P3Tool {
             return;
         }
 
-        if(!pm.provision(p3, destination)) {
+        if(!pm.provision(p3, destination, new HashMap<String, String>())) {
             System.err.println("Unable to provision package");
             return;
         }

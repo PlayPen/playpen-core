@@ -76,28 +76,28 @@ public class PackageManager {
             JSONObject resources = JSONUtils.safeGetObject(meta, "resources");
             if (resources != null) {
                 for (String key : resources.keySet()) {
-                    p3.getResources().put(key, resources.getDouble(key));
+                    p3.getResources().put(key, JSONUtils.safeGetDouble(resources, key));
                 }
             }
 
             JSONArray attributes = JSONUtils.safeGetArray(meta, "requires");
             if (attributes != null) {
                 for (int i = 0; i < attributes.length(); ++i) {
-                    p3.getAttributes().add(attributes.getString(i));
+                    p3.getAttributes().add(JSONUtils.safeGetString(attributes, i));
                 }
             }
 
             JSONObject strings = JSONUtils.safeGetObject(schema, "strings");
             if (strings != null) {
                 for (String key : strings.keySet()) {
-                    p3.getStrings().put(key, strings.getString(key));
+                    p3.getStrings().put(key, JSONUtils.safeGetString(strings, key));
                 }
             }
 
             JSONArray provision = JSONUtils.safeGetArray(schema, "provision");
             if (provision != null) {
                 for (int i = 0; i < provision.length(); ++i) {
-                    JSONObject obj = provision.getJSONObject(i);
+                    JSONObject obj = JSONUtils.safeGetObject(provision, i);
                     if (obj != null) {
                         IProvisioningStep step = getProvisioningStep(JSONUtils.safeGetString(obj, "id"));
                         if (step == null)
@@ -108,13 +108,16 @@ public class PackageManager {
                         config.setConfig(obj);
                         p3.getProvisioningSteps().add(config);
                     }
+                    else {
+                        throw new PackageException("Provision step #" + i + " is not an object!");
+                    }
                 }
             }
 
             JSONArray execute = JSONUtils.safeGetArray(schema, "execute");
             if (execute != null) {
                 for (int i = 0; i < execute.length(); ++i) {
-                    p3.getExecutionSteps().add(execute.getString(i));
+                    p3.getExecutionSteps().add(JSONUtils.safeGetString(execute, i));
                 }
             }
 
@@ -149,11 +152,11 @@ public class PackageManager {
         }
     }
 
-    public boolean provision(P3Package p3, File destination) {
-        return internalProvision(p3, destination, new HashSet<P3Package.P3PackageInfo>());
+    public boolean provision(P3Package p3, File destination, Map<String, String> properties) {
+        return internalProvision(p3, destination, properties, new HashSet<P3Package.P3PackageInfo>());
     }
 
-    private boolean internalProvision(P3Package p3, File destination, Set<P3Package.P3PackageInfo> loaded) {
+    private boolean internalProvision(P3Package p3, File destination, Map<String, String> properties, Set<P3Package.P3PackageInfo> loaded) {
         logger.info("Provisioning " + p3.getId() + " at " + p3.getVersion());
 
         P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
@@ -183,7 +186,7 @@ public class PackageManager {
         }
 
         if(p3.getParent() != null) {
-            if (!internalProvision(p3.getParent(), destination, loaded)) {
+            if (!internalProvision(p3.getParent(), destination, properties, loaded)) {
                 logger.error("Unable to provision parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
                 return false;
             }
@@ -193,6 +196,7 @@ public class PackageManager {
         context.setPackageManager(this);
         context.setP3(p3);
         context.setDestination(destination);
+        context.setProperties(properties);
 
         for(P3Package.ProvisioningStepConfig config : p3.getProvisioningSteps()) {
             logger.info("provision step - " + config.getStep().getStepId());

@@ -1,2 +1,2 @@
 @echo off
-java -jar ${project.build.finalName}.jar %*
+java -Dlog4j.configurationFile=logging.xml -jar "%~dp0${project.build.finalName}.jar" %*

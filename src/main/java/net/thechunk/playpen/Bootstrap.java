@@ -1,61 +1,76 @@
 package net.thechunk.playpen;
 
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Bootstrap {
 
     private static Logger logger = LogManager.getLogger(Bootstrap.class);
 
+    @Getter
+    private static File homeDir;
+
     public static void main(String[] args) {
         boolean didCopyResources = false;
 
         try {
-            File f = new File("keys.json");
+            homeDir = new File(Bootstrap.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile();
+        }
+        catch(URISyntaxException e) {}
+
+        try {
+            File f = Paths.get(homeDir.getPath(), "logging.xml").toFile();
+            if(!f.exists()) {
+                JarUtils.exportResource(Bootstrap.class, "/logging.xml", f.getPath());
+                didCopyResources = true;
+            }
+
+            f = Paths.get(homeDir.getPath(), "keys.json").toFile();
             if (!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/keys.json", "keys.json");
+                JarUtils.exportResource(Bootstrap.class, "/keys.json", f.getPath());
                 didCopyResources = true;
             }
 
-            f = new File("packages.json");
+            f = Paths.get(homeDir.getPath(), "packages.json").toFile();
             if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/packages.json", "packages.json");
+                JarUtils.exportResource(Bootstrap.class, "/packages.json", f.getPath());
                 didCopyResources = true;
             }
 
-            f = new File("local.json");
+            f = Paths.get(homeDir.getPath(), "local.json").toFile();
             if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/local.json", "local.json");
+                JarUtils.exportResource(Bootstrap.class, "/local.json", f.getPath());
                 didCopyResources = true;
             }
 
-            f = new File("network.json");
+            f = Paths.get(homeDir.getPath(), "network.json").toFile();
             if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/network.json", "network.json");
+                JarUtils.exportResource(Bootstrap.class, "/network.json", f.getPath());
                 didCopyResources = true;
             }
 
-            f = new File("playpen.bat");
+            f = Paths.get(homeDir.getPath(), "playpen.bat").toFile();
             if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/playpen.bat", "playpen.bat");
+                JarUtils.exportResource(Bootstrap.class, "/playpen.bat", f.getPath());
                 didCopyResources = true;
             }
 
-            f = new File("playpen.sh");
+            f = Paths.get(homeDir.getPath(), "playpen.sh").toFile();
             if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/playpen.sh", "playpen.sh");
+                JarUtils.exportResource(Bootstrap.class, "/playpen.sh", f.getPath());
                 didCopyResources = true;
             }
 
-            if(new File("cache/packages").mkdirs())
+            if(Paths.get(homeDir.getPath(), "cache/packages").toFile().mkdirs())
                 didCopyResources = true;
 
-            if(new File("packages").mkdirs())
-                didCopyResources = true;
-
-            if(new File("logs").mkdirs())
+            if(Paths.get(homeDir.getPath(), "packages").toFile().mkdirs())
                 didCopyResources = true;
         }
         catch(Exception e) {
