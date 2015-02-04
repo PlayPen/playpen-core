@@ -23,11 +23,37 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                </configuration>
-                <executions>
-                </executions>
+                <version>2.3</version><executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <artifactSet>
+                            <includes>
+                                <include>org.json</include>
+                                <include>org.zeroturnaround</include>
+                                <include>org.slf4j</include>
+                            </includes>
+                        </artifactSet>
+                        <relocations>
+                            <relocation>
+                                <pattern>org.json</pattern>
+                                <shadedPattern>net.thechunk.playpen.internal.json</shadedPattern>
+                            </relocation>
+                            <relocation>
+                                <pattern>org.zeroturnaround</pattern>
+                                <shadedPattern>net.thechunk.playpen.internal.zeroturnaround</shadedPattern>
+                            </relocation>
+                            <relocation>
+                                <pattern>org.slf4j</pattern>
+                                <shadedPattern>net.thechunk.playpen.internal.slf4j</shadedPattern>
+                            </relocation>
+                        </relocations>
+                    </configuration>
+                </execution>
+            </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

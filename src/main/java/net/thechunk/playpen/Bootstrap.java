@@ -47,7 +47,7 @@ public class Bootstrap {
             return;
         }
 
-        if(args.length != 1) {
+        if(args.length < 1) {
             logger.severe("Missing mode parameter (either local, network, or p3)");
             return;
         }

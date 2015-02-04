@@ -26,7 +26,7 @@ public class P3Tool {
 
     private static void inspect(String[] args) {
         if(args.length != 3) {
-            logger.severe("P3Tool inspect takes 1 argument (package)");
+            logger.severe("P3Tool inspect takes 1 argument (package-file)");
             return;
         }
 
@@ -49,13 +49,13 @@ public class P3Tool {
             return;
         }
 
-        logger.info("Package:");
-        logger.info("Id:" + p3.getId());
+        logger.info("== Package ==");
+        logger.info("Id: " + p3.getId());
         logger.info("Version: " + p3.getVersion());
 
         if(p3.getParent() != null) {
-            logger.info("Parent id:" + p3.getParent().getId());
-            logger.info("Parent version: " + p3.getVersion());
+            logger.info("Parent id: " + p3.getParent().getId());
+            logger.info("Parent version: " + p3.getParent().getVersion());
             logger.info("Note: Validation does not resolve parent packages");
         }
         else {
