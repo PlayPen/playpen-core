@@ -1,18 +1,19 @@
 package net.thechunk.playpen.p3;
 
 import net.thechunk.playpen.utils.JSONUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PackageManager {
+
+    private static final Logger logger = LogManager.getLogger(PackageManager.class);
 
     private List<IPackageResolver> resolvers = new LinkedList<>();
 
@@ -146,5 +147,62 @@ public class PackageManager {
         catch(JSONException e) {
             throw new PackageException("Invalid package schema", e);
         }
+    }
+
+    public boolean provision(P3Package p3, File destination) {
+        return internalProvision(p3, destination, new HashSet<P3Package.P3PackageInfo>());
+    }
+
+    private boolean internalProvision(P3Package p3, File destination, Set<P3Package.P3PackageInfo> loaded) {
+        logger.info("Provisioning " + p3.getId() + " at " + p3.getVersion());
+
+        P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
+        p3info.setId(p3.getId());
+        p3info.setVersion(p3.getVersion());
+        if(loaded.contains(p3info)) {
+            logger.error("Circular dependency found with " + p3.getId() + " at " + p3.getVersion());
+            return false;
+        }
+
+        loaded.add(p3info);
+
+        if(destination.exists() && !destination.isDirectory()) {
+            logger.error("Unable to provision package (destination is not a directory)");
+            return false;
+        }
+
+        String oldId = p3.getId();
+        String oldVersion = p3.getVersion();
+        if(!p3.isResolved()) {
+            p3 = resolve(p3.getId(), p3.getVersion());
+        }
+
+        if(p3 == null || !p3.isResolved()) {
+            logger.error("Unable to fully resolve package " + oldId + " at " + oldVersion);
+            return false;
+        }
+
+        if(p3.getParent() != null) {
+            if (!internalProvision(p3.getParent(), destination, loaded)) {
+                logger.error("Unable to provision parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
+                return false;
+            }
+        }
+
+        PackageContext context = new PackageContext();
+        context.setPackageManager(this);
+        context.setP3(p3);
+        context.setDestination(destination);
+
+        for(P3Package.ProvisioningStepConfig config : p3.getProvisioningSteps()) {
+            logger.info("provision step - " + config.getStep().getStepId());
+            if(!config.getStep().runStep(context, config.getConfig())) {
+                logger.error("Step failed!");
+                return false;
+            }
+        }
+
+        logger.info("Provision of " + p3.getId() + " at " + p3.getVersion() + " finished!");
+        return true;
     }
 }

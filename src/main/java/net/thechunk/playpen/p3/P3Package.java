@@ -14,6 +14,27 @@ public class P3Package {
         JSONObject config;
     }
 
+    @Data
+    public static class P3PackageInfo {
+        private String id;
+        private String version;
+
+        @Override
+        public boolean equals(Object other) {
+            if(other instanceof P3PackageInfo) {
+                P3PackageInfo o = (P3PackageInfo)other;
+                return id.equals(o.getId()) && version.equals(o.getVersion());
+            }
+
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return id.hashCode() ^ version.hashCode();
+        }
+    }
+
     private String localPath;
 
     private boolean resolved;
