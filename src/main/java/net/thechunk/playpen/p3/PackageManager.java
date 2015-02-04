@@ -117,7 +117,25 @@ public class PackageManager {
             JSONArray execute = JSONUtils.safeGetArray(schema, "execute");
             if (execute != null) {
                 for (int i = 0; i < execute.length(); ++i) {
-                    p3.getExecutionSteps().add(JSONUtils.safeGetString(execute, i));
+                    P3Package.ExecutionStep step = new P3Package.ExecutionStep();
+                    JSONObject jsonStep = JSONUtils.safeGetObject(execute, i);
+                    if(jsonStep == null) {
+                        throw new PackageException("Invalid json object for execution step #" + i);
+                    }
+
+                    step.setCommand(JSONUtils.safeGetString(jsonStep, "command"));
+                    if(step.getCommand() == null) {
+                        throw new PackageException("Invalid command string for execution step #" + i);
+                    }
+
+                    JSONArray args = JSONUtils.safeGetArray(jsonStep, "arguments");
+                    if(args != null) {
+                        for (int j = 0; j <args.length(); ++j) {
+                            step.getArguments().add(JSONUtils.safeGetString(args, j));
+                        }
+                    }
+
+                    p3.getExecutionSteps().add(step);
                 }
             }
 

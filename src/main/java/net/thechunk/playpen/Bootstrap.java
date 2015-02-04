@@ -100,7 +100,7 @@ public class Bootstrap {
                 break;
 
             case "p3":
-                P3Tool.execute(args);
+                P3Tool.run(args);
                 break;
 
             default:

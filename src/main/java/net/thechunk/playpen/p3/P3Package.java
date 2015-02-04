@@ -15,6 +15,12 @@ public class P3Package {
     }
 
     @Data
+    public static class ExecutionStep {
+        String command;
+        List<String> arguments = new ArrayList<>();
+    }
+
+    @Data
     public static class P3PackageInfo {
         private String id;
         private String version;
@@ -53,7 +59,7 @@ public class P3Package {
 
     private List<ProvisioningStepConfig> provisioningSteps = new ArrayList<>();
 
-    private List<String> executionSteps = new ArrayList<>();
+    private List<ExecutionStep> executionSteps = new ArrayList<>();
 
     boolean validate() {
         if(id == null || id.isEmpty() || version == null || version.isEmpty())

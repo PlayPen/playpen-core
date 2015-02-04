@@ -23,9 +23,5 @@
 		"test.txt"
 	  ]
 	}
-  ],
-
-  "execute": [
-	"echo hi"
   ]
 }
