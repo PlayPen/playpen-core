@@ -1,12 +1,13 @@
 package net.thechunk.playpen;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Bootstrap {
 
-    private static Logger logger = Logger.getLogger(Bootstrap.class.getName());
+    private static Logger logger = LogManager.getLogger(Bootstrap.class);
 
     public static void main(String[] args) {
         boolean didCopyResources = false;
@@ -30,25 +31,41 @@ public class Bootstrap {
                 didCopyResources = true;
             }
 
+            f = new File("playpen.bat");
+            if(!f.exists()) {
+                JarUtils.exportResource(Bootstrap.class, "/playpen.bat", "playpen.bat");
+                didCopyResources = true;
+            }
+
+            f = new File("playpen.sh");
+            if(!f.exists()) {
+                JarUtils.exportResource(Bootstrap.class, "/playpen.sh", "playpen.sh");
+                didCopyResources = true;
+            }
+
             if(new File("cache/packages").mkdirs())
                 didCopyResources = true;
 
             if(new File("packages").mkdirs())
                 didCopyResources = true;
+
+            if(new File("logs").mkdirs())
+                didCopyResources = true;
         }
         catch(Exception e) {
-            logger.log(Level.SEVERE, "Unable to copy default configuration resources", e);
+            System.err.println("Unable to copy default resources");
+            e.printStackTrace(System.err);
             return;
         }
 
         if(didCopyResources) {
-            logger.info("It looks like you were missing some resource files, so I've copied some defaults for you! " +
+            System.err.println("It looks like you were missing some resource files, so I've copied some defaults for you! " +
                     "I'll give you a chance to edit them. Bye!");
             return;
         }
 
         if(args.length < 1) {
-            logger.severe("Missing mode parameter (either local, network, or p3)");
+            System.err.println("playpen <local/network/p3> [arguments...]");
             return;
         }
 
@@ -66,7 +83,7 @@ public class Bootstrap {
                 break;
 
             default:
-                logger.severe("Unknown mode. Should be either local, network, or p3.");
+                System.err.println("playpen <local/network/p3> [arguments...]");
                 return;
         }
     }

@@ -5,15 +5,12 @@ import net.thechunk.playpen.p3.*;
 import java.io.File;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class P3Tool {
 
-    private static final Logger logger = Logger.getLogger(P3Tool.class.getName());
-
     public static void execute(String[] args) {
         if(args.length < 2) {
-            logger.severe("P3Tool requires a command: inspect");
+            System.err.println("playpen p3 <inspect> [arguments...]");
             return;
         }
 
@@ -26,7 +23,7 @@ public class P3Tool {
 
     private static void inspect(String[] args) {
         if(args.length != 3) {
-            logger.severe("P3Tool inspect takes 1 argument (package-file)");
+            System.err.println("playpen p3 inspect <file>");
             return;
         }
 
@@ -35,7 +32,7 @@ public class P3Tool {
 
         File p3File = new File(args[2]);
         if(!p3File.exists() || !p3File.isFile()) {
-            logger.severe("Package doesn't exist or isn't a file!");
+            System.err.println("Package doesn't exist or isn't a file!");
             return;
         }
 
@@ -45,64 +42,65 @@ public class P3Tool {
             p3 = pm.readPackage(p3File);
         }
         catch(PackageException e) {
-            logger.log(Level.SEVERE, "Unable to read package", e);
+            System.err.println("Unable to read package");
+            e.printStackTrace(System.err);
             return;
         }
 
-        logger.info("== Package ==");
-        logger.info("Id: " + p3.getId());
-        logger.info("Version: " + p3.getVersion());
+        System.out.println("=== Package ===");
+        System.out.println("Id: " + p3.getId());
+        System.out.println("Version: " + p3.getVersion());
 
         if(p3.getParent() != null) {
-            logger.info("Parent id: " + p3.getParent().getId());
-            logger.info("Parent version: " + p3.getParent().getVersion());
-            logger.info("Note: Validation does not resolve parent packages");
+            System.out.println("Parent id: " + p3.getParent().getId());
+            System.out.println("Parent version: " + p3.getParent().getVersion());
+            System.out.println("-- Note: Validation does not resolve parent packages");
         }
         else {
-            logger.info("Parent: None");
+            System.out.println("Parent: None");
         }
 
         if(p3.getResources().size() == 0) {
-            logger.warning("Package doesn't take any resources");
+            System.err.println("-- Package doesn't take any resources");
         }
         else {
             for (Map.Entry<String, Double> resource : p3.getResources().entrySet()) {
-                logger.info("Resource: " + resource.getKey() + " = " + resource.getValue());
+                System.out.println("Resource: " + resource.getKey() + " = " + resource.getValue());
             }
         }
 
         if(p3.getAttributes().size() == 0) {
-            logger.warning("Package doesn't require any attributes");
+            System.err.println("-- Package doesn't require any attributes");
         }
         else {
             for(String attr : p3.getAttributes()) {
-                logger.info("Requires: " + attr);
+                System.out.println("Requires: " + attr);
             }
         }
 
         for(Map.Entry<String, String> str : p3.getStrings().entrySet()) {
-            logger.info("String: " + str.getKey() + " = " + str.getValue());
+            System.out.println("String: " + str.getKey() + " = " + str.getValue());
         }
 
         if(p3.getProvisioningSteps().size() == 0) {
-            logger.warning("Package doesn't define any provisioning steps");
+            System.err.println("-- Package doesn't define any provisioning steps");
         }
         else {
             for(P3Package.ProvisioningStepConfig config : p3.getProvisioningSteps()) {
-                logger.info("Provisioning step: " + config.getStep().getStepId());
+                System.out.println("Provisioning step: " + config.getStep().getStepId());
             }
         }
 
         if(p3.getExecutionSteps().size() == 0) {
-            logger.warning("Package doesn't define any execution steps");
+            System.err.println("-- Package doesn't define any execution steps");
         }
         else {
             for(String execute : p3.getExecutionSteps()) {
-                logger.info("Execution step: " + execute);
+                System.out.println("Execution step: " + execute);
             }
         }
 
-        logger.info("Package inspection completed!");
+        System.out.println("=== End Package ===");
     }
 
     private P3Tool() {}
