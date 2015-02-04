@@ -19,6 +19,12 @@ public class Bootstrap {
                 didCopyResources = true;
             }
 
+            f = new File("packages.json");
+            if(!f.exists()) {
+                JarUtils.exportResource(Bootstrap.class, "/packages.json", "packages.json");
+                didCopyResources = true;
+            }
+
             f = new File("local.json");
             if(!f.exists()) {
                 JarUtils.exportResource(Bootstrap.class, "/local.json", "local.json");
