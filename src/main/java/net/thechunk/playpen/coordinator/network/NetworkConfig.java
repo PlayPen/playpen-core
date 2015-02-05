@@ -31,6 +31,7 @@ public class NetworkConfig {
             JSONObject jsonConfig = new JSONObject(configString);
             config.ip = jsonConfig.getString("ip");
             config.port = jsonConfig.getInt("port");
+            config.threads = jsonConfig.getInt("threads");
         }
         catch(JSONException e) {
             throw new ConfigException("Unable to parse network.json", e);
@@ -42,4 +43,6 @@ public class NetworkConfig {
     private String ip;
 
     private int port;
+
+    private int threads;
 }

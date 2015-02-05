@@ -69,21 +69,12 @@ public class StringTemplateStep implements IProvisioningStep {
 
             String rendered = template.render();
 
-            FileOutputStream output = null;
-            try {
-                output = new FileOutputStream(file, false);
+            try (FileOutputStream output = new FileOutputStream(file, false)) {
                 output.write(rendered.getBytes());
             }
             catch(IOException e) {
                 logger.error("Unable to write file " + file.getPath(), e);
                 return false;
-            }
-            finally {
-                try {
-                    if (output != null)
-                        output.close();
-                }
-                catch(IOException e) {}
             }
         }
 

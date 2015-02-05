@@ -3,7 +3,7 @@
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout>
-                <Pattern>%-5p %c: %m%n</Pattern>
+                <Pattern>%-5p %c{1}: %m%n</Pattern>
             </PatternLayout>
         </Console>
         <File name="file" filename="playpen.log">

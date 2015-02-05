@@ -1,6 +1,7 @@
 package net.thechunk.playpen;
 
 import lombok.Getter;
+import net.thechunk.playpen.coordinator.network.NetworkControl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,9 +31,9 @@ public class Bootstrap {
                 didCopyResources = true;
             }
 
-            f = Paths.get(homeDir.getPath(), "clients.json").toFile();
+            f = Paths.get(homeDir.getPath(), "keystore.json").toFile();
             if (!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/clients.json", f.getPath());
+                JarUtils.exportResource(Bootstrap.class, "/keystore.json", f.getPath());
                 didCopyResources = true;
             }
 
@@ -95,7 +96,8 @@ public class Bootstrap {
                 break;
 
             case "network":
-
+                NetworkControl net = new NetworkControl();
+                net.run();
                 break;
 
             case "p3":

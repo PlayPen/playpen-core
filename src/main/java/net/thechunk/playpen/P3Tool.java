@@ -2,24 +2,25 @@ package net.thechunk.playpen;
 
 import net.thechunk.playpen.p3.*;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
+import org.apache.commons.codec.binary.*;
 import org.json.JSONObject;
 import org.zeroturnaround.zip.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class P3Tool {
 
     public static void run(String[] args) {
         if(args.length < 2) {
-            System.err.println("playpen p3 <inspect/pack/provision/execute> [arguments...]");
+            System.err.println("playpen p3 <inspect/pack/provision/execute/decode> [arguments...]");
             return;
         }
 
@@ -38,6 +39,10 @@ public class P3Tool {
 
             case "execute":
                 execute(args);
+                break;
+
+            case "decode":
+                decode(args);
                 break;
         }
     }
@@ -308,6 +313,45 @@ public class P3Tool {
         }
 
         System.out.println("Finished execution");
+    }
+
+    private static void decode(String args[]) {
+        if(args.length != 4) {
+            System.err.println("playpen p3 decode <input-file> <output-file>");
+            return;
+        }
+
+        File inputFile = new File(args[2]);
+        if(!inputFile.exists() || !inputFile.isFile()) {
+            System.err.println("input-file doesn't exist or isn't a file!");
+            return;
+        }
+
+        File outputFile = new File(args[3]);
+
+        System.out.println("Decoding...");
+
+        String input = null;
+        try {
+            input = new String(Files.readAllBytes(inputFile.toPath()));
+        }
+        catch(IOException e) {
+            System.err.println("Unable to read from input");
+            e.printStackTrace(System.err);
+            return;
+        }
+
+        byte[] output = Base64.decodeBase64(input);
+        try (FileOutputStream out = new FileOutputStream(outputFile)){
+            out.write(output);
+        }
+        catch(IOException e) {
+            System.err.println("Unable to write to output file");
+            e.printStackTrace(System.err);
+            return;
+        }
+
+        System.out.println("Decoded package");
     }
 
     private P3Tool() {}
