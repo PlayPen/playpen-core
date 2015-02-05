@@ -14,4 +14,16 @@ launching the jar manuall (after initial configuration, "playpen.sh" and
 
 Running playpen is as simple as
 
-  playpen <command>
+    playpen <command>
+
+To start the network coordinator, run
+
+    playpen network
+
+To start a local coordinator, run
+
+    playpen local
+
+Packaging tools are found at the "p3" command. Run it to see a list of them:
+
+    playpen p3
