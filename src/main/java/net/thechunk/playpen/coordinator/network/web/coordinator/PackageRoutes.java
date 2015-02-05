@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -32,9 +33,12 @@ public class PackageRoutes {
                 halt(404, "package file no longer exists");
             }
 
-            String packageContents = null;
-            try {
-                packageContents = Base64.encodeBase64String(Files.readAllBytes(file.toPath()));
+            try (FileInputStream in = new FileInputStream(file)) {
+                int c = 0;
+                byte[] buf = new byte[2048];
+                while((c = in.read(buf, 0, buf.length)) > 0) {
+                    response.raw().getOutputStream().write(buf, 0, c);
+                }
             }
             catch(IOException e) {
                 logger.error("Couldn't read package", e);
@@ -43,14 +47,14 @@ public class PackageRoutes {
 
             response.header("Content-Description", "File Transfer");
             response.header("Content-Type", "application/octet-stream");
-            response.header("Content-Disposition", "attachment; filename=" + id + "_" + version + ".p64");
+            response.header("Content-Disposition", "attachment; filename=" + id + "_" + version + ".p3");
             response.header("Content-Transfer-Encoding", "binary");
             response.header("Expires", "0");
             response.header("Cache-Control", "must-revalidate");
             response.header("Pragma", "public");
-            response.header("Content-Length", String.valueOf(packageContents.length()));
+            response.header("Content-Length", String.valueOf(file.length()));
 
-            return packageContents;
+            return "";
         });
     }
 
