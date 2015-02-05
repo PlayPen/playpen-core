@@ -1,6 +1,7 @@
 package net.thechunk.playpen;
 
 import net.thechunk.playpen.p3.*;
+import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
 import org.json.JSONObject;
 import org.zeroturnaround.zip.*;
 
@@ -55,6 +56,7 @@ public class P3Tool {
 
         PackageManager pm = new PackageManager();
         Initialization.packageManager(pm);
+        pm.addPackageResolver(new LocalRepositoryResolver(new File(".")));
 
         P3Package p3 = null;
         try {
@@ -156,6 +158,7 @@ public class P3Tool {
 
         PackageManager pm = new PackageManager();
         Initialization.packageManager(pm);
+        pm.addPackageResolver(new LocalRepositoryResolver(new File(".")));
 
         System.out.println("Reading package schema...");
 
@@ -214,6 +217,7 @@ public class P3Tool {
 
         PackageManager pm = new PackageManager();
         Initialization.packageManager(pm);
+        pm.addPackageResolver(new LocalRepositoryResolver(new File(".")));
 
         P3Package p3 = null;
         try {
@@ -263,6 +267,7 @@ public class P3Tool {
 
         PackageManager pm = new PackageManager();
         Initialization.packageManager(pm);
+        pm.addPackageResolver(new LocalRepositoryResolver(new File(".")));
 
         System.out.println("Reading package schema...");
 

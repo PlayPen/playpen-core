@@ -1,5 +1,6 @@
 package net.thechunk.playpen.p3;
 
+import lombok.Getter;
 import net.thechunk.playpen.utils.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +11,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PackageManager {
 
@@ -18,6 +20,9 @@ public class PackageManager {
     private List<IPackageResolver> resolvers = new LinkedList<>();
 
     private Map<String, IProvisioningStep> provisioningSteps = new HashMap<>();
+
+    @Getter
+    private Map<P3Package.P3PackageInfo, P3Package> packageCache = new ConcurrentHashMap<>();
 
     public void addPackageResolver(IPackageResolver resolver) {
         resolvers.add(resolver);
@@ -41,6 +46,16 @@ public class PackageManager {
             p3 = resolver.resolvePackage(this, id, version);
             if(p3 != null) {
                 logger.info("Package resolved by " + resolver.getClass().getName());
+                if(!p3.validate()) {
+                    logger.warn("Package failed to validate. Continuing resolution!");
+                    continue;
+                }
+
+                P3Package.P3PackageInfo info = new P3Package.P3PackageInfo();
+                info.setId(p3.getId());
+                info.setVersion(p3.getVersion());
+                packageCache.put(info, p3);
+
                 return p3;
             }
         }
@@ -80,7 +95,7 @@ public class PackageManager {
             JSONObject resources = JSONUtils.safeGetObject(meta, "resources");
             if (resources != null) {
                 for (String key : resources.keySet()) {
-                    p3.getResources().put(key, JSONUtils.safeGetDouble(resources, key).intValue());
+                    p3.getResources().put(key, JSONUtils.safeGetInt(resources, key));
                 }
             }
 
@@ -200,6 +215,11 @@ public class PackageManager {
         String oldVersion = p3.getVersion();
         if(!p3.isResolved()) {
             p3 = resolve(p3.getId(), p3.getVersion());
+        }
+
+        if(p3 == null) {
+            logger.error("Unable to resolve package " + oldId + " at " + oldVersion);
+            return null;
         }
 
         if(child != null) {

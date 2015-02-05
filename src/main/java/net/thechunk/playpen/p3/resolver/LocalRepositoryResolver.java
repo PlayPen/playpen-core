@@ -15,11 +15,16 @@ import java.nio.file.Paths;
 public class LocalRepositoryResolver implements IPackageResolver {
     private static Logger logger = LogManager.getLogger(LocalRepositoryResolver.class);
 
+    private File localRepoDir = null;
+
+    public LocalRepositoryResolver(File dir) {
+        localRepoDir = dir;
+    }
+
     @Override
     public P3Package resolvePackage(PackageManager pm, String id, String version) {
-        File localRepoDir = Paths.get(Bootstrap.getHomeDir().getPath(), "packages").toFile();
         if(!localRepoDir.exists() || !localRepoDir.isDirectory()) {
-            logger.error("Package repository directory doesn't exist!");
+            logger.error("Package repository at " + localRepoDir.getPath() + " doesn't exist!");
             return null;
         }
 

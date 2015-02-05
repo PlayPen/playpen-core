@@ -78,5 +78,23 @@ public class JSONUtils {
         }
     }
 
+    public static Integer safeGetInt(JSONObject obj, String key) {
+        try {
+            return obj.getInt(key);
+        }
+        catch(JSONException e) {
+            return null;
+        }
+    }
+
+    public static Integer safeGetInt(JSONArray obj, int key) {
+        try {
+            return obj.getInt(key);
+        }
+        catch(JSONException e) {
+            return null;
+        }
+    }
+
     private JSONUtils() {}
 }

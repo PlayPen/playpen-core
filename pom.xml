@@ -44,6 +44,8 @@
                                 <include>org.slf4j</include>
                                 <include>org.apache.logging.log4j</include>
                                 <include>org.antlr</include>
+                                <include>spark</include>
+                                <include>org.eclipse.jetty</include>
                             </includes>
                         </artifactSet>
                     </configuration>
@@ -106,6 +108,11 @@
             <groupId>org.antlr</groupId>
             <artifactId>stringtemplate</artifactId>
             <version>4.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>2.1</version>
         </dependency>
     </dependencies>
 </project>

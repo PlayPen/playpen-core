@@ -67,7 +67,7 @@ public class Bootstrap {
                 didCopyResources = true;
             }
 
-            if(Paths.get(homeDir.getPath(), "cache/packages").toFile().mkdirs())
+            if(Paths.get(homeDir.getPath(), "cache", "packages").toFile().mkdirs())
                 didCopyResources = true;
 
             if(Paths.get(homeDir.getPath(), "packages").toFile().mkdirs())

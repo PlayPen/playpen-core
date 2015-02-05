@@ -3,6 +3,11 @@
 	"id": "test-package",
 	"version": "1.0",
 
+	"parent": {
+	  "id": "test-with-parent",
+	  "version": "1.0"
+	},
+
 	"resources": {
 	  "memory": 1024,
 	  "cpu": 1
