@@ -1,10 +1,23 @@
 package net.thechunk.playpen.utils;
 
+import net.thechunk.playpen.Bootstrap;
+import net.thechunk.playpen.ConfigException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class JSONUtils {
+
+    public static JSONObject parseJsonFile(File file) throws IOException, JSONException {
+        String jsonStr = null;
+        jsonStr = new String(Files.readAllBytes(file.toPath()));
+        return new JSONObject(jsonStr);
+    }
 
     public static JSONObject safeGetObject(JSONObject obj, String key) {
         try {

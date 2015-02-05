@@ -10,5 +10,9 @@ public class CoordinatorInfo {
 
     private String key = null;
 
-    private boolean active = false;
+    private CoordinatorStatus status = CoordinatorStatus.DEAD;
+
+    private String ip = null;
+
+    private int port = 0;
 }

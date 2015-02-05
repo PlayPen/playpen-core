@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Bootstrap {
@@ -31,9 +30,9 @@ public class Bootstrap {
                 didCopyResources = true;
             }
 
-            f = Paths.get(homeDir.getPath(), "keys.json").toFile();
+            f = Paths.get(homeDir.getPath(), "clients.json").toFile();
             if (!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/keys.json", f.getPath());
+                JarUtils.exportResource(Bootstrap.class, "/clients.json", f.getPath());
                 didCopyResources = true;
             }
 
