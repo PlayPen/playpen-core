@@ -1,0 +1,9 @@
+package net.thechunk.playpen.protocol;
+
+option java_outer_classname = "Protocol";
+
+message AuthenticatedMessage {
+    required string uuid = 1;
+    required string hash = 2;
+    repeated bytes payload = 3;
+}

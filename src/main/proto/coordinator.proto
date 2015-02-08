@@ -1,0 +1,16 @@
+package net.thechunk.playpen.protocol;
+
+option java_outer_classname = "Coordinator";
+
+import "p3.proto";
+
+message Resource {
+    required string name = 1;
+    required sint32 value = 2;
+}
+
+message Server {
+    required Meta p3 = 1;
+    required string uuid = 2;
+    optional string name = 3;
+}

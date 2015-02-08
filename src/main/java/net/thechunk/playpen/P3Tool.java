@@ -1,12 +1,14 @@
 package net.thechunk.playpen;
 
-import net.thechunk.playpen.p3.*;
+import net.thechunk.playpen.p3.P3Package;
+import net.thechunk.playpen.p3.PackageException;
+import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
-import org.apache.commons.codec.binary.*;
-import org.json.JSONObject;
-import org.zeroturnaround.zip.*;
+import org.zeroturnaround.zip.ZipException;
+import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class P3Tool {
 

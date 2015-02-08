@@ -1,0 +1,37 @@
+package net.thechunk.playpen.protocol;
+
+option java_outer_classname = "Commands";
+
+import "coordinator.proto";
+
+message BaseCommand {
+    extensions 100 to max;
+
+    enum CommandType {
+        AUTH = 1;
+        SYNC = 2;
+    }
+
+    required CommandType type = 1;
+}
+
+message Auth {
+    extend BaseCommand {
+        optional Auth command = 100;
+    }
+
+    required uint32 protocol = 1;
+    required Sync sync = 2;
+}
+
+message Sync {
+    extend BaseCommand {
+        optional Sync command = 101;
+    }
+
+    optional string name = 1;
+
+    repeated Resource resources = 2;
+
+    repeated Server servers = 3;
+}

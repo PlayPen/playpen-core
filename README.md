@@ -2,6 +2,12 @@
 
 PlayPen is a server management and load balancing system.
 
+## Protobuf Compilation
+
+You must have the protoc compiler installed in order to compile the coordination
+protocol. Run build_protocol.bat or build_protocol.sh from the project's root
+directory.
+
 ## Usage
 
 Before using any playpen tools, PlayPen needs to set itself up. Simply place the

@@ -1,0 +1,13 @@
+package net.thechunk.playpen.protocol;
+
+option java_outer_classname = "P3";
+
+message Meta {
+    required string id = 1;
+    required string version = 2;
+}
+
+message PackageData {
+    required Meta meta = 1;
+    required bytes data = 2;
+}
