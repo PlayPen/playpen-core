@@ -3,19 +3,25 @@ package net.thechunk.playpen.protocol;
 option java_outer_classname = "Commands";
 
 import "coordinator.proto";
+import "p3.proto";
 
 message BaseCommand {
     extensions 100 to max;
 
     enum CommandType {
         AUTH = 1;
-        SYNC = 2;
+        AUTH_RESPONSE = 2;
+        SYNC = 3;
+        PROVISION = 4;
+        PROVISION_RESPONSE = 5;
+        PACKAGE_REQUEST = 6;
+        PACKAGE_RESPONSE = 7;
     }
 
     required CommandType type = 1;
 }
 
-message Auth {
+message Auth { // local -> network
     extend BaseCommand {
         optional Auth command = 100;
     }
@@ -24,9 +30,17 @@ message Auth {
     required Sync sync = 2;
 }
 
-message Sync {
+message AuthResponse { // network -> local
     extend BaseCommand {
-        optional Sync command = 101;
+        optional AuthResponse command = 101;
+    }
+
+    required bool ok = 1;
+}
+
+message Sync { // local -> network
+    extend BaseCommand {
+        optional Sync command = 102;
     }
 
     optional string name = 1;
@@ -34,4 +48,41 @@ message Sync {
     repeated Resource resources = 2;
 
     repeated Server servers = 3;
+
+    required bool enabled = 4 [default=false];
+}
+
+message Provision { // network -> local
+    extend BaseCommand {
+        optional Provision command = 103;
+    }
+
+    required Server server = 1;
+}
+
+message ProvisionResponse { // local -> network
+    extend BaseCommand {
+        optional ProvisionResponse command = 104;
+    }
+
+    required bool ok = 1;
+}
+
+message PackageRequest { // local -> network
+    extend BaseCommand {
+        optional PackageRequest command = 105;
+    }
+
+    required P3Meta p3 = 1;
+}
+
+message PackageResponse { // network -> local
+    extend BaseCommand {
+        optional PackageResponse command = 106;
+    }
+
+    oneof Response {
+        PackageData data = 1;
+        string error = 2;
+    }
 }
