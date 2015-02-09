@@ -5,6 +5,10 @@ option java_outer_classname = "Protocol";
 message AuthenticatedMessage {
     required string uuid = 1;
     required string hash = 2;
-    required string transaction = 3;
-    required bytes payload = 4;
+    required bytes payload = 3;
+}
+
+message Transaction {
+    required string id = 1;
+    required bytes payload = 2;
 }

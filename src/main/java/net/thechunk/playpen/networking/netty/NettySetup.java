@@ -1,4 +1,4 @@
-package net.thechunk.playpen.netty;
+package net.thechunk.playpen.networking.netty;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
