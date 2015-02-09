@@ -13,9 +13,10 @@ message BaseCommand {
         AUTH_RESPONSE = 2;
         SYNC = 3;
         PROVISION = 4;
-        PROVISION_RESPONSE = 5;
-        PACKAGE_REQUEST = 6;
-        PACKAGE_RESPONSE = 7;
+        PROVISION_ACK = 5;
+        PROVISION_RESPONSE = 6;
+        PACKAGE_REQUEST = 7;
+        PACKAGE_RESPONSE = 8;
     }
 
     required CommandType type = 1;
@@ -60,9 +61,17 @@ message Provision { // network -> local
     required Server server = 1;
 }
 
+message ProvisionAck { // local -> network
+    extend BaseCommand {
+        optional ProvisionAck command = 104;
+    }
+
+    required bool ok = 1;
+}
+
 message ProvisionResponse { // local -> network
     extend BaseCommand {
-        optional ProvisionResponse command = 104;
+        optional ProvisionResponse command = 105;
     }
 
     required bool ok = 1;
@@ -70,7 +79,7 @@ message ProvisionResponse { // local -> network
 
 message PackageRequest { // local -> network
     extend BaseCommand {
-        optional PackageRequest command = 105;
+        optional PackageRequest command = 106;
     }
 
     required P3Meta p3 = 1;
@@ -78,7 +87,7 @@ message PackageRequest { // local -> network
 
 message PackageResponse { // network -> local
     extend BaseCommand {
-        optional PackageResponse command = 106;
+        optional PackageResponse command = 107;
     }
 
     oneof Response {
