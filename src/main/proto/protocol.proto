@@ -2,6 +2,8 @@ package net.thechunk.playpen.protocol;
 
 option java_outer_classname = "Protocol";
 
+import "command.proto";
+
 message AuthenticatedMessage {
     required string uuid = 1;
     required string hash = 2;
@@ -9,6 +11,14 @@ message AuthenticatedMessage {
 }
 
 message Transaction {
+    enum Mode {
+        CREATE = 1; // creates a transaction
+        CONTINUE = 2; // uses an existing transaction
+        COMPLETE = 3; // ends an existing transaction
+        SINGLE = 4; // creates and ends a transaction
+    }
+
     required string id = 1;
-    required bytes payload = 2;
+    required Mode mode = 2;
+    required BaseCommand payload = 3;
 }
