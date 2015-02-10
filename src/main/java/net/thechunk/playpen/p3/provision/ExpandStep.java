@@ -1,5 +1,6 @@
 package net.thechunk.playpen.p3.provision;
 
+import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.p3.IProvisioningStep;
 import net.thechunk.playpen.p3.PackageContext;
 import org.apache.logging.log4j.LogManager;
@@ -10,9 +11,8 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 
+@Log4j2
 public class ExpandStep implements IProvisioningStep {
-    private static final Logger logger = LogManager.getLogger(ExpandStep.class);
-
     @Override
     public String getStepId() {
         return "expand";
@@ -20,12 +20,12 @@ public class ExpandStep implements IProvisioningStep {
 
     @Override
     public boolean runStep(PackageContext ctx, JSONObject config) {
-        logger.info("Expanding package to " + ctx.getDestination().getPath());
+        log.info("Expanding package to " + ctx.getDestination().getPath());
         try {
             ZipUtil.unpack(new File(ctx.getP3().getLocalPath()), ctx.getDestination());
         }
         catch(ZipException e) {
-            logger.error("Unable to expand package", e);
+            log.error("Unable to expand package", e);
             return false;
         }
 

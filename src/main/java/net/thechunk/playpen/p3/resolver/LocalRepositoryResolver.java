@@ -1,5 +1,6 @@
 package net.thechunk.playpen.p3.resolver;
 
+import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.p3.IPackageResolver;
 import net.thechunk.playpen.p3.P3Package;
@@ -12,9 +13,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
 
+@Log4j2
 public class LocalRepositoryResolver implements IPackageResolver {
-    private static Logger logger = LogManager.getLogger(LocalRepositoryResolver.class);
-
     private File localRepoDir = null;
 
     public LocalRepositoryResolver(File dir) {
@@ -24,7 +24,7 @@ public class LocalRepositoryResolver implements IPackageResolver {
     @Override
     public P3Package resolvePackage(PackageManager pm, String id, String version) {
         if(!localRepoDir.exists() || !localRepoDir.isDirectory()) {
-            logger.error("Package repository at " + localRepoDir.getPath() + " doesn't exist!");
+            log.error("Package repository at " + localRepoDir.getPath() + " doesn't exist!");
             return null;
         }
 
@@ -44,12 +44,12 @@ public class LocalRepositoryResolver implements IPackageResolver {
                 p3 = pm.readPackage(p3File);
             }
             catch(PackageException e) {
-                logger.warn("Unable to read file " + p3File.getPath());
+                log.warn("Unable to read file " + p3File.getPath());
                 continue;
             }
 
             if(id.equals(p3.getId()) && version.equals(p3.getVersion())) {
-                logger.info("Found matching package at " + p3File.getPath());
+                log.info("Found matching package at " + p3File.getPath());
                 return p3;
             }
         }

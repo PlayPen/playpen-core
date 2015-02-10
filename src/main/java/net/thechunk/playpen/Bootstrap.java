@@ -9,9 +9,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
 public class Bootstrap {
-
-    private static Logger logger = LogManager.getLogger(Bootstrap.class);
-
     @Getter
     private static File homeDir;
 

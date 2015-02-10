@@ -1,5 +1,6 @@
 package net.thechunk.playpen.p3.provision;
 
+import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.p3.IProvisioningStep;
 import net.thechunk.playpen.p3.PackageContext;
@@ -18,9 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+@Log4j2
 public class StringTemplateStep implements IProvisioningStep {
-    private static final Logger logger = LogManager.getLogger(StringTemplateStep.class);
-
     @Override
     public String getStepId() {
         return "string-template";
@@ -30,7 +30,7 @@ public class StringTemplateStep implements IProvisioningStep {
     public boolean runStep(PackageContext ctx, JSONObject config) {
         JSONArray jsonFiles = JSONUtils.safeGetArray(config, "files");
         if(jsonFiles == null) {
-            logger.error("'files' not defined as an array");
+            log.error("'files' not defined as an array");
             return false;
         }
 
@@ -38,13 +38,13 @@ public class StringTemplateStep implements IProvisioningStep {
         for(int i = 0; i < jsonFiles.length(); ++i) {
             String fileName = JSONUtils.safeGetString(jsonFiles, i);
             if(fileName == null) {
-                logger.error("Unable to read files entry #" + i);
+                log.error("Unable to read files entry #" + i);
                 return false;
             }
 
             File file = Paths.get(ctx.getDestination().getPath(), fileName).toFile();
             if(!file.exists()) {
-                logger.error("File does not exist: " + file.getPath());
+                log.error("File does not exist: " + file.getPath());
                 return false;
             }
 
@@ -57,11 +57,11 @@ public class StringTemplateStep implements IProvisioningStep {
                 fileContents = new String(Files.readAllBytes(file.toPath()));
             }
             catch(IOException e) {
-                logger.error("Unable to read file " + file.getPath(), e);
+                log.error("Unable to read file " + file.getPath(), e);
                 return false;
             }
 
-            logger.info("Rendering " + file.getPath());
+            log.info("Rendering " + file.getPath());
 
             ST template = new ST(fileContents);
 
@@ -73,7 +73,7 @@ public class StringTemplateStep implements IProvisioningStep {
                 output.write(rendered.getBytes());
             }
             catch(IOException e) {
-                logger.error("Unable to write file " + file.getPath(), e);
+                log.error("Unable to write file " + file.getPath(), e);
                 return false;
             }
         }

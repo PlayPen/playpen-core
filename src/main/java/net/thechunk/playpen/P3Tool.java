@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class P3Tool {
-
     public static void run(String[] args) {
         if(args.length < 2) {
             System.err.println("playpen p3 <inspect/pack/provision/execute> [arguments...]");

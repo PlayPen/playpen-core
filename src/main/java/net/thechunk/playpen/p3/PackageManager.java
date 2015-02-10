@@ -1,6 +1,7 @@
 package net.thechunk.playpen.p3;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.utils.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,10 +14,8 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Log4j2
 public class PackageManager {
-
-    private static final Logger logger = LogManager.getLogger(PackageManager.class);
-
     private List<IPackageResolver> resolvers = new LinkedList<>();
 
     private Map<String, IProvisioningStep> provisioningSteps = new HashMap<>();
@@ -40,14 +39,14 @@ public class PackageManager {
     }
 
     public P3Package resolve(String id, String version) {
-        logger.info("Attempting package resolution for " + id + " at " + version);
+        log.info("Attempting package resolution for " + id + " at " + version);
         P3Package p3 = null;
         for(IPackageResolver resolver : resolvers) {
             p3 = resolver.resolvePackage(this, id, version);
             if(p3 != null) {
-                logger.info("Package resolved by " + resolver.getClass().getName());
+                log.info("Package resolved by " + resolver.getClass().getName());
                 if(!p3.validate()) {
-                    logger.warn("Package failed to validate. Continuing resolution!");
+                    log.warn("Package failed to validate. Continuing resolution!");
                     continue;
                 }
 
@@ -60,7 +59,7 @@ public class PackageManager {
             }
         }
 
-        logger.error("Package could not be resolved!");
+        log.error("Package could not be resolved!");
         return null;
     }
 
@@ -194,20 +193,20 @@ public class PackageManager {
     }
 
     private P3Package internalProvision(P3Package p3, File destination, Set<P3Package.P3PackageInfo> loaded, P3Package child) {
-        logger.info("Provisioning " + p3.getId() + " at " + p3.getVersion());
+        log.info("Provisioning " + p3.getId() + " at " + p3.getVersion());
 
         P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
         p3info.setId(p3.getId());
         p3info.setVersion(p3.getVersion());
         if(loaded.contains(p3info)) {
-            logger.error("Circular dependency found with " + p3.getId() + " at " + p3.getVersion());
+            log.error("Circular dependency found with " + p3.getId() + " at " + p3.getVersion());
             return null;
         }
 
         loaded.add(p3info);
 
         if(destination.exists() && !destination.isDirectory()) {
-            logger.error("Unable to provision package (destination is not a directory)");
+            log.error("Unable to provision package (destination is not a directory)");
             return null;
         }
 
@@ -218,7 +217,7 @@ public class PackageManager {
         }
 
         if(p3 == null) {
-            logger.error("Unable to resolve package " + oldId + " at " + oldVersion);
+            log.error("Unable to resolve package " + oldId + " at " + oldVersion);
             return null;
         }
 
@@ -229,14 +228,14 @@ public class PackageManager {
         }
 
         if(p3 == null || !p3.isResolved()) {
-            logger.error("Unable to resolve package " + oldId + " at " + oldVersion);
+            log.error("Unable to resolve package " + oldId + " at " + oldVersion);
             return null;
         }
 
         if(p3.getParent() != null) {
             P3Package parent = internalProvision(p3.getParent(), destination, loaded, p3);
             if (parent == null) {
-                logger.error("Unable to provision parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
+                log.error("Unable to provision parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
                 return null;
             }
 
@@ -253,14 +252,14 @@ public class PackageManager {
         context.setDestination(destination);
 
         for(P3Package.ProvisioningStepConfig config : p3.getProvisioningSteps()) {
-            logger.info("provision step - " + config.getStep().getStepId());
+            log.info("provision step - " + config.getStep().getStepId());
             if(!config.getStep().runStep(context, config.getConfig())) {
-                logger.error("Step failed!");
+                log.error("Step failed!");
                 return null;
             }
         }
 
-        logger.info("Provision of " + p3.getId() + " at " + p3.getVersion() + " finished!");
+        log.info("Provision of " + p3.getId() + " at " + p3.getVersion() + " finished!");
         return p3;
     }
 }

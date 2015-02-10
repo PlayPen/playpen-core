@@ -1,5 +1,6 @@
 package net.thechunk.playpen.p3.resolver;
 
+import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.p3.IPackageResolver;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
@@ -8,9 +9,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
+@Log4j2
 public class InMemoryCacheResolver implements IPackageResolver {
-    private static final Logger logger = LogManager.getLogger(InMemoryCacheResolver.class);
-
     @Override
     public P3Package resolvePackage(PackageManager pm, String id, String version) {
         P3Package.P3PackageInfo info = new P3Package.P3PackageInfo();
@@ -24,7 +24,7 @@ public class InMemoryCacheResolver implements IPackageResolver {
         File p3File = new File(p3.getLocalPath());
         if(!p3File.exists() || !p3File.isFile()) {
             pm.getPackageCache().remove(info);
-            logger.warn("In-memory package " + id + " at " + version + " is invalid, removing from cache");
+            log.warn("In-memory package " + id + " at " + version + " is invalid, removing from cache");
             return null;
         }
 

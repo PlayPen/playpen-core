@@ -1,17 +1,16 @@
 package net.thechunk.playpen.networking;
 
+import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.protocol.Protocol;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Log4j2
 public class TransactionManager {
-    private static final Logger logger = LogManager.getLogger(TransactionManager.class);
-
     private static TransactionManager instance = new TransactionManager();
 
     public static TransactionManager get() {
@@ -45,7 +44,7 @@ public class TransactionManager {
     public boolean send(String id) {
         TransactionInfo info = getTransaction(id);
         if(info == null) {
-            logger.error("Cannot send unknown transaction " + id);
+            log.error("Cannot send unknown transaction " + id);
             return false;
         }
 
@@ -59,7 +58,7 @@ public class TransactionManager {
     public boolean cancel(String id) {
         TransactionInfo info = getTransaction(id);
         if(info == null) {
-            logger.error("Cannot cancel unknown transaction " + id);
+            log.error("Cannot cancel unknown transaction " + id);
             return false;
         }
 
@@ -74,7 +73,7 @@ public class TransactionManager {
     public boolean complete(String id) {
         TransactionInfo info = getTransaction(id);
         if(info == null) {
-            logger.error("Cannot complete unknown transaction " + id);
+            log.error("Cannot complete unknown transaction " + id);
             return false;
         }
 
@@ -91,7 +90,7 @@ public class TransactionManager {
         switch(message.getMode()) {
             case CREATE:
                 if(transactions.containsKey(message.getId())) {
-                    logger.error("Received CREATE on an id that already exists (" + message.getId() + ")");
+                    log.error("Received CREATE on an id that already exists (" + message.getId() + ")");
                     return;
                 }
 
@@ -107,7 +106,7 @@ public class TransactionManager {
             case CONTINUE:
                 info = getTransaction(message.getId());
                 if(info == null) {
-                    logger.error("Received CONTINUE on an id that doesn't exist (" + message.getId() + ")");
+                    log.error("Received CONTINUE on an id that doesn't exist (" + message.getId() + ")");
                     return;
                 }
 
@@ -119,7 +118,7 @@ public class TransactionManager {
             case COMPLETE:
                 info = getTransaction(message.getId());
                 if(info == null) {
-                    logger.error("Received COMPLETE on an id that doesn't exist (" + message.getId() + ")");
+                    log.error("Received COMPLETE on an id that doesn't exist (" + message.getId() + ")");
                     return;
                 }
 
@@ -128,7 +127,7 @@ public class TransactionManager {
                 }
 
                 if(!complete(info.getId())) {
-                    logger.error("Unable to complete transaction " + info.getId());
+                    log.error("Unable to complete transaction " + info.getId());
                     return;
                 }
                 break;
