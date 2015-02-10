@@ -19,6 +19,7 @@ message BaseCommand {
         PACKAGE_RESPONSE = 8;
         DEPROVISION = 9;
         DEPROVISION_RESPONSE = 10;
+        CANCEL = 11;
     }
 
     required CommandType type = 1;
@@ -112,4 +113,12 @@ message DeprovisionResponse { // local -> network
     }
 
     required bool ok = 1;
+}
+
+message Cancel {
+    extend BaseCommand {
+        optional Cancel command = 110;
+    }
+
+    required string transaction = 1;
 }

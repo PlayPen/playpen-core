@@ -17,26 +17,42 @@ public class TransactionManager {
 
     private TransactionManager() {}
 
-    public TransactionInfo send(Protocol.Transaction transaction) {
+    public TransactionInfo begin(Protocol.Transaction transaction) {
         TransactionInfo info = new TransactionInfo();
         info.setId(UUID.randomUUID().toString());
-        info.setMode(TransactionMode.SEND);
         info.setTransaction(transaction);
         transactions.put(info.getId(), info);
         return info;
     }
 
-    public void finish(String id) {
-        transactions.remove(id);
+    public void send(String id) {
+        // TODO
     }
 
-    public TransactionInfo receive(String id, Protocol.Transaction transaction) {
-        TransactionInfo info = new TransactionInfo();
-        info.setId(id);
-        info.setTimeout(-1);
-        info.setMode(TransactionMode.RECEIVE);
-        info.setTransaction(transaction);
-        transactions.put(info.getId(), info); // we WANT to replace previous entries of the same transaction
-        return info;
+    public void cancel(String id) {
+        TransactionInfo info = transactions.getOrDefault(id, null);
+        if(info != null) {
+            handleTransactionCompletion(info, TransactionCompletion.CANCEL);
+        }
+    }
+
+    private void handleTransactionCompletion(TransactionInfo info, TransactionCompletion completion) {
+        TransactionResult result;
+        if(info.getCallback() == null) {
+            result = TransactionResult.COMPLETE;
+        }
+        else {
+            result = info.getCallback().apply(completion);
+        }
+
+        switch(result) {
+            case COMPLETE:
+                transactions.remove(info.getId());
+                break;
+
+            case RESEND:
+                send(info.getId());
+                break;
+        }
     }
 }
