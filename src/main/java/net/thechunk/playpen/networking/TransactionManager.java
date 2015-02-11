@@ -1,9 +1,8 @@
 package net.thechunk.playpen.networking;
 
 import lombok.extern.log4j.Log4j2;
+import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.protocol.Protocol;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Map;
@@ -32,27 +31,35 @@ public class TransactionManager {
     public TransactionInfo begin(Protocol.Transaction transaction) {
         TransactionInfo info = new TransactionInfo();
 
-        info.setId(Network.get().generateId());
+        info.setId(PlayPen.get().generateId());
         while(transactions.containsKey(info.getId()))
-            info.setId(Network.get().generateId());
+            info.setId(PlayPen.get().generateId());
 
         info.setTransaction(transaction);
         transactions.put(info.getId(), info);
         return info;
     }
 
-    public boolean send(String id) {
+    public boolean send(String id, Protocol.Transaction message, String target) {
         TransactionInfo info = getTransaction(id);
         if(info == null) {
             log.error("Cannot send unknown transaction " + id);
             return false;
         }
 
+        if(!info.getId().equals(message.getId())) {
+            log.error("Message id does not match transaction id " + id);
+            return false;
+        }
+
+        info.setTransaction(message);
+        info.setTarget(target);
+
         if(info.getHandler() != null) {
             info.getHandler().onTransactionSend(this, info);
         }
 
-        throw new NotImplementedException(); // TODO
+        return PlayPen.get().send(message, info.getTarget());
     }
 
     public boolean cancel(String id) {
