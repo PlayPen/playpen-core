@@ -1,9 +1,11 @@
 package net.thechunk.playpen.coordinator.network;
 
 import com.google.protobuf.ByteString;
-import io.netty.channel.ChannelFuture;
+import com.google.protobuf.InvalidProtocolBufferException;
+import io.netty.channel.Channel;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.coordinator.PlayPen;
+import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
 
@@ -67,6 +69,32 @@ public class Network extends PlayPen {
         }
 
         coord.getChannel().writeAndFlush(auth);
+        return true;
+    }
+
+    @Override
+    public boolean receive(Protocol.AuthenticatedMessage auth, Channel from) {
+        LocalCoordinator local = getCoordinator(auth.getUuid());
+        if(local == null) {
+            log.error("Unknown coordinator on receive (" + auth.getUuid() + ")");
+            return false;
+        }
+
+        if(!AuthUtils.validateHash(auth, local.getKey())) {
+            log.error("Invalid hash on message from " + auth.getUuid());
+            return false;
+        }
+
+        Protocol.Transaction transaction = null;
+        try {
+            transaction = Protocol.Transaction.parseFrom(auth.getPayload());
+        }
+        catch(InvalidProtocolBufferException e) {
+            log.error("Unable to read transaction from message", e);
+            return false;
+        }
+
+        TransactionManager.get().receive(transaction, local.getUuid());
         return true;
     }
 }

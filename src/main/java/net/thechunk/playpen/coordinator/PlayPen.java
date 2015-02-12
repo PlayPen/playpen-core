@@ -30,4 +30,6 @@ public abstract class PlayPen {
     }
 
     public abstract boolean send(Protocol.Transaction message, String target);
+
+    public abstract boolean receive(Protocol.AuthenticatedMessage auth, Channel from);
 }
