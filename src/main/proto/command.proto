@@ -93,10 +93,8 @@ message PackageResponse { // network -> local
         optional PackageResponse command = 107;
     }
 
-    oneof Response {
-        PackageData data = 1;
-        string error = 2;
-    }
+    required bool ok = 1;
+    optional PackageData data = 2;
 }
 
 message Deprovision { // network <-> local
