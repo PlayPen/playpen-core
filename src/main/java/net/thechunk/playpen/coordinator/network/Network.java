@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Log4j2
-public class Network extends NetSendImpl {
+public class Network extends PlayPen {
 
     public static Network get() {
         if(PlayPen.get() == null) {

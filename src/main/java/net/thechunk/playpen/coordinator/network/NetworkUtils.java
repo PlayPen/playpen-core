@@ -16,13 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @Log4j2
-public abstract class NetSendImpl extends PlayPen {
-    protected NetSendImpl() {
-        super();
-    }
-
-    public boolean sendPackage(String target, String transaction, String id, String version) {
-        P3Package p3 = getPackageManager().resolve(id, version);
+public class NetworkUtils {
+    public static boolean sendPackage(String target, String transaction, String id, String version) {
+        P3Package p3 = Network.get().getPackageManager().resolve(id, version);
         if(p3 == null) {
             log.error("Unable to send unresolved package " + id + " at " + version);
             return false;
@@ -31,7 +27,7 @@ public abstract class NetSendImpl extends PlayPen {
         return sendPackage(target, transaction, p3);
     }
 
-    public boolean sendPackage(String target, String transaction, P3Package p3) {
+    public static boolean sendPackage(String target, String transaction, P3Package p3) {
         if(!p3.isResolved()) {
             log.error("Cannot pass an unresolved package to sendPackage(target, p3)");
             return false;
@@ -79,6 +75,8 @@ public abstract class NetSendImpl extends PlayPen {
             return false;
         }
 
-        return send(message, target);
+        return Network.get().send(message, target);
     }
+
+    private NetworkUtils() {}
 }
