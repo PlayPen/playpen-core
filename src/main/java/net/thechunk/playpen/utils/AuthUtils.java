@@ -38,8 +38,8 @@ public class AuthUtils {
         return hash.equals(createHash(key, message));
     }
 
-    public static boolean validateHash(Protocol.AuthenticatedMessage payload) {
-        return validateHash(payload.getHash(), payload.getUuid(), payload.getPayload().toByteArray());
+    public static boolean validateHash(Protocol.AuthenticatedMessage payload, String key) {
+        return validateHash(payload.getHash(), key, payload.getPayload().toByteArray());
     }
 
     private AuthUtils() {}
