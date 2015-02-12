@@ -104,6 +104,7 @@ public class TransactionManager {
 
                 info = new TransactionInfo();
                 info.setId(message.getId());
+                info.setTarget(from);
                 transactions.put(info.getId(), info);
                 break;
 
@@ -141,7 +142,6 @@ public class TransactionManager {
                 break;
         }
 
-        // TODO: Dispatch commands
-        throw new NotImplementedException();
+        PlayPen.get().process(message.getPayload(), info, from);
     }
 }

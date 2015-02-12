@@ -4,8 +4,12 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.channel.Channel;
 import lombok.extern.log4j.Log4j2;
+import net.thechunk.playpen.Initialization;
 import net.thechunk.playpen.coordinator.PlayPen;
+import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
+import net.thechunk.playpen.p3.PackageManager;
+import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
 
@@ -13,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Log4j2
-public class Network extends PlayPen {
+public class Network extends NetSendImpl {
 
     public static Network get() {
         if(PlayPen.get() == null) {
@@ -25,8 +29,12 @@ public class Network extends PlayPen {
 
     private Map<String, LocalCoordinator> coordinators = new HashMap<>();
 
+    private PackageManager packageManager = null;
+
     private Network() {
         super();
+        packageManager = new PackageManager();
+        Initialization.packageManager(packageManager);
     }
 
     public LocalCoordinator getCoordinator(String id) {
@@ -36,6 +44,11 @@ public class Network extends PlayPen {
     @Override
     public String getServerId() {
         return "net";
+    }
+
+    @Override
+    public PackageManager getPackageManager() {
+        return packageManager;
     }
 
     @Override
@@ -96,5 +109,10 @@ public class Network extends PlayPen {
 
         TransactionManager.get().receive(transaction, local.getUuid());
         return true;
+    }
+
+    @Override
+    public boolean process(Commands.BaseCommand command, TransactionInfo info, String from) {
+        return false;
     }
 }

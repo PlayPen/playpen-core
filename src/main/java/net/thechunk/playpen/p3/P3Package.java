@@ -63,7 +63,7 @@ public class P3Package {
 
     private List<ExecutionStep> executionSteps = new ArrayList<>();
 
-    boolean validate() {
+    public boolean validate() {
         if(id == null || id.isEmpty() || version == null || version.isEmpty())
             return false;
 
