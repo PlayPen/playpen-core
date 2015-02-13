@@ -49,15 +49,15 @@ public class Bootstrap {
                 didCopyResources = true;
             }
 
-            f = Paths.get(homeDir.getPath(), "playpen.bat").toFile();
+            f = Paths.get(homeDir.getPath(), "pp.bat").toFile();
             if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/playpen.bat", f.getPath());
+                JarUtils.exportResource(Bootstrap.class, "/pp.bat", f.getPath());
                 didCopyResources = true;
             }
 
-            f = Paths.get(homeDir.getPath(), "playpen.sh").toFile();
+            f = Paths.get(homeDir.getPath(), "pp.sh").toFile();
             if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/playpen.sh", f.getPath());
+                JarUtils.exportResource(Bootstrap.class, "/pp.sh", f.getPath());
                 didCopyResources = true;
             }
 
