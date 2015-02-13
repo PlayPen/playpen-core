@@ -15,4 +15,6 @@ public class Server {
     private String name;
 
     private Map<String, String> properties = new ConcurrentHashMap<>();
+
+    private boolean active = false;
 }

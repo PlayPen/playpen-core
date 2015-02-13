@@ -1,6 +1,7 @@
 package net.thechunk.playpen.coordinator.network;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.channel.Channel;
 import lombok.extern.log4j.Log4j2;
@@ -133,10 +134,10 @@ public class Network extends PlayPen {
         throw new NotImplementedException(); // TODO
     }
 
-    protected boolean receiveSync(Commands.Sync command, TransactionInfo info, String from) {
+    protected boolean processSync(Commands.Sync command, TransactionInfo info, String from) {
         LocalCoordinator coord = getCoordinator(from);
         if(coord == null) {
-            log.error("Can't receive sync on invalid coordinator " + from);
+            log.error("Can't process SYNC on invalid coordinator " + from);
             return false;
         }
 
@@ -163,6 +164,7 @@ public class Network extends PlayPen {
         coord.getServers().clear();
         for(Coordinator.Server cmdServer : command.getServersList()) {
             Server server = new Server();
+            server.setActive(true);
             server.setUuid(cmdServer.getUuid());
             server.setName(cmdServer.hasName() ? cmdServer.getName() : server.getUuid());
             server.setP3(packageManager.resolve(cmdServer.getP3().getId(), cmdServer.getP3().getVersion()));
@@ -247,7 +249,41 @@ public class Network extends PlayPen {
             return false;
         }
 
+        log.info("Sending provision of " + p3.getId() + " at " + p3.getVersion() + " to " + coord.getUuid());
+
         return TransactionManager.get().send(info.getId(), message, target);
+    }
+
+    protected boolean processProvisionResponse(Commands.ProvisionResponse command, TransactionInfo info, String from) {
+        LocalCoordinator coord = getCoordinator(from);
+        if(coord == null) {
+            log.error("Cannot process PROVISION_RESPONSE on invalid coordinator " + from);
+            return false;
+        }
+
+        Commands.BaseCommand previous = info.getTransaction().getPayload();
+        if(previous == null || previous.getType() != Commands.BaseCommand.CommandType.PROVISION) {
+            log.error("PROVISION_RESPONSE expects transaction to have previously contained a PROVISION command");
+            return false;
+        }
+
+        String serverId = previous.getExtension(Commands.Provision.command).getServer().getUuid();
+        Server server = coord.getServers().getOrDefault(serverId, null);
+        if(server == null) {
+            log.error("Unknown server " + serverId + " on PROVISION_RESPONSE");
+            return false;
+        }
+
+        if(command.getOk()) {
+            server.setActive(true);
+            log.info("Server " + serverId + " on " + coord.getUuid() + " has been activated (provision response)");
+            return true;
+        }
+        else {
+            coord.getServers().remove(serverId);
+            log.warn("Server " + serverId + " on " + coord.getUuid() + " failed to activate (provision response)");
+            return false;
+        }
     }
 
     protected boolean sendPackageResponse(String target, String tid, P3Package p3) {

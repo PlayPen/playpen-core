@@ -209,8 +209,8 @@ public class P3Tool {
         }
 
         File destination = new File(args[3]);
-        if(destination.exists() && !destination.isDirectory()) {
-            System.err.println("Directory doesn't exist or isn't a directory!");
+        if(destination.exists()) {
+            System.err.println("Destination already exists!");
             return;
         }
 
