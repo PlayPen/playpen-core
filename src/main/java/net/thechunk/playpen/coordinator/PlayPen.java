@@ -10,6 +10,7 @@ import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
 
 import java.util.UUID;
+import java.util.concurrent.ScheduledExecutorService;
 
 public abstract class PlayPen {
     private static PlayPen instance = null;
@@ -29,6 +30,8 @@ public abstract class PlayPen {
     public abstract String getServerId();
 
     public abstract PackageManager getPackageManager();
+
+    public abstract ScheduledExecutorService getScheduler();
 
     public String generateId() {
         return getServerId() + "-" + UUID.randomUUID().toString();

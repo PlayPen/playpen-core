@@ -79,6 +79,10 @@ public class TransactionManager {
             info.getHandler().onTransactionSend(this, info);
         }
 
+        if(message.getMode() == Protocol.Transaction.Mode.COMPLETE) {
+            complete(info.getId());
+        }
+
         return PlayPen.get().send(message, info.getTarget());
     }
 

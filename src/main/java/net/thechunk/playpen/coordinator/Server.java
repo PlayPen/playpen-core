@@ -5,6 +5,7 @@ import net.thechunk.playpen.p3.P3Package;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 public class Server {
@@ -14,7 +15,7 @@ public class Server {
 
     private String name;
 
-    private Map<String, String> properties = new HashMap<>();
+    private Map<String, String> properties = new ConcurrentHashMap<>();
 
     private String path;
 }

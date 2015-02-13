@@ -7,8 +7,6 @@ import net.thechunk.playpen.protocol.Protocol;
 public class TransactionInfo {
     private String id;
 
-    private float timeout = -1;
-
     private String target = null;
 
     private Protocol.Transaction transaction = null;

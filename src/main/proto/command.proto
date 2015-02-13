@@ -9,37 +9,17 @@ message BaseCommand {
     extensions 100 to max;
 
     enum CommandType {
-        AUTH = 1;
-        AUTH_RESPONSE = 2;
-        SYNC = 3;
-        PROVISION = 4;
-        PROVISION_ACK = 5;
-        PROVISION_RESPONSE = 6;
-        PACKAGE_REQUEST = 7;
-        PACKAGE_RESPONSE = 8;
-        DEPROVISION = 9;
-        DEPROVISION_RESPONSE = 10;
-        CANCEL = 11;
+        SYNC = 1;
+        PROVISION = 2;
+        PROVISION_RESPONSE = 3;
+        PACKAGE_REQUEST = 4;
+        PACKAGE_RESPONSE = 5;
+        DEPROVISION = 6;
+        DEPROVISION_RESPONSE = 7;
+        CANCEL = 8;
     }
 
     required CommandType type = 1;
-}
-
-message Auth { // local -> network
-    extend BaseCommand {
-        optional Auth command = 100;
-    }
-
-    required uint32 protocol = 1;
-    required Sync sync = 2;
-}
-
-message AuthResponse { // network -> local
-    extend BaseCommand {
-        optional AuthResponse command = 101;
-    }
-
-    required bool ok = 1;
 }
 
 message Sync { // local -> network
@@ -51,9 +31,11 @@ message Sync { // local -> network
 
     repeated Resource resources = 2;
 
-    repeated Server servers = 3;
+    repeated string attributes = 3;
 
-    required bool enabled = 4 [default=false];
+    repeated Server servers = 4;
+
+    required bool enabled = 5 [default=false];
 }
 
 message Provision { // network -> local
@@ -62,14 +44,6 @@ message Provision { // network -> local
     }
 
     required Server server = 1;
-}
-
-message ProvisionAck { // local -> network
-    extend BaseCommand {
-        optional ProvisionAck command = 104;
-    }
-
-    required bool ok = 1;
 }
 
 message ProvisionResponse { // local -> network

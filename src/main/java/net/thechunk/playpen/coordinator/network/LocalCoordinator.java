@@ -3,11 +3,13 @@ package net.thechunk.playpen.coordinator.network;
 import io.netty.channel.Channel;
 import lombok.Data;
 import net.thechunk.playpen.coordinator.Server;
+import org.eclipse.jetty.util.ConcurrentHashSet;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 public class LocalCoordinator {
@@ -17,11 +19,13 @@ public class LocalCoordinator {
 
     private String name;
 
-    private Map<String, Integer> resources = new HashMap<>();
+    private Map<String, Integer> resources = new ConcurrentHashMap<>();
 
-    private Set<String> attributes = new HashSet<>();
+    private Set<String> attributes = new ConcurrentHashSet<>();
 
-    private Map<String, Server> servers = new HashMap<>();
+    private Map<String, Server> servers = new ConcurrentHashMap<>();
 
     private Channel channel = null;
+
+    private boolean enabled = false;
 }
