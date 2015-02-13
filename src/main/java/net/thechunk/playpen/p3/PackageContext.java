@@ -3,6 +3,7 @@ package net.thechunk.playpen.p3;
 import lombok.Data;
 
 import java.io.File;
+import java.util.Map;
 
 @Data
 public class PackageContext {
@@ -11,4 +12,6 @@ public class PackageContext {
     private P3Package p3;
 
     private File destination;
+
+    private Map<String, String> properties;
 }

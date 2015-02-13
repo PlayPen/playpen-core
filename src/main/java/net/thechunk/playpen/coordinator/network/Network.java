@@ -133,7 +133,7 @@ public class Network extends PlayPen {
         throw new NotImplementedException(); // TODO
     }
 
-    public boolean receiveSync(Commands.Sync command, TransactionInfo info, String from) {
+    protected boolean receiveSync(Commands.Sync command, TransactionInfo info, String from) {
         LocalCoordinator coord = getCoordinator(from);
         if(coord == null) {
             log.error("Can't receive sync on invalid coordinator " + from);
@@ -184,9 +184,75 @@ public class Network extends PlayPen {
         return true;
     }
 
-    public boolean sendPackageResponse(String target, String tid, P3Package p3) {
+    protected boolean sendProvision(String target, P3Package p3, String name, Map<String, String> properties) {
         if(!p3.isResolved()) {
-            log.error("Cannot pass an unresolved package to sendPackage(target, p3)");
+            log.error("Cannot pass an unresolved package to sendProvision");
+            return false;
+        }
+
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Unknown coordinator " + target + " for sendProvision");
+            return false;
+        }
+
+        if(!coord.isEnabled()) {
+            log.error("Coordinator " + target + " is not enabled for sendProvision");
+            return false;
+        }
+
+        Server server = coord.createServer(p3, name, properties);
+        if(server == null) {
+            log.error("Unable to register server locally before sending for sendProvision");
+            return false;
+        }
+
+        P3.P3Meta meta = P3.P3Meta.newBuilder()
+                .setId(p3.getId())
+                .setVersion(p3.getVersion())
+                .build();
+
+        Coordinator.Server.Builder serverBuilder = Coordinator.Server.newBuilder()
+                .setP3(meta)
+                .setUuid(server.getUuid());
+        if(name != null)
+            serverBuilder.setName(name);
+
+        if(properties != null) {
+            for(Map.Entry<String, String> entry : properties.entrySet()) {
+                Coordinator.Property prop = Coordinator.Property.newBuilder()
+                        .setName(entry.getKey())
+                        .setValue(entry.getValue())
+                        .build();
+
+                serverBuilder.addProperties(prop);
+            }
+        }
+
+        Commands.Provision provision = Commands.Provision.newBuilder()
+                .setServer(serverBuilder.build())
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.PROVISION)
+                .setExtension(Commands.Provision.command, provision)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.CREATE, command);
+        if(message == null) {
+            log.error("Unable to build message for provision");
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
+    protected boolean sendPackageResponse(String target, String tid, P3Package p3) {
+        if(!p3.isResolved()) {
+            log.error("Cannot pass an unresolved package to sendPackage");
             return false;
         }
 

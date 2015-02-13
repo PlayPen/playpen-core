@@ -61,7 +61,7 @@ public class StringTemplateStep implements IProvisioningStep {
 
             ST template = new ST(fileContents);
 
-            STUtils.buildSTProperties(ctx.getP3(), template);
+            STUtils.buildSTProperties(ctx.getP3(), ctx.getProperties(), template);
 
             String rendered = template.render();
 

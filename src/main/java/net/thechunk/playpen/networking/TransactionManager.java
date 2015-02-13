@@ -46,14 +46,13 @@ public class TransactionManager {
                 .build();
     }
 
-    public TransactionInfo begin(Protocol.Transaction transaction) {
+    public TransactionInfo begin() {
         TransactionInfo info = new TransactionInfo();
 
         info.setId(PlayPen.get().generateId());
         while(transactions.containsKey(info.getId()))
             info.setId(PlayPen.get().generateId());
 
-        info.setTransaction(transaction);
         transactions.put(info.getId(), info);
         return info;
     }

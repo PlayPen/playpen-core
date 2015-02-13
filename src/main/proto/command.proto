@@ -17,7 +17,7 @@ message BaseCommand {
         DEPROVISION = 6;
         DEPROVISION_RESPONSE = 7;
         SET_ENABLED = 8;
-        CANCEL = 9;
+        SHUTDOWN = 9; // no command extension
     }
 
     required CommandType type = 1;
@@ -86,14 +86,6 @@ message DeprovisionResponse { // local -> network
     }
 
     required bool ok = 1;
-}
-
-message SetEnabled { // network -> local (local should respond with SYNC)
-    extend BaseCommand {
-        optional SetEnabled command = 110;
-    }
-
-    required bool enabled = 1;
 }
 
 message Cancel {

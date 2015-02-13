@@ -187,10 +187,11 @@ public class PackageManager {
     }
 
     public boolean provision(P3Package p3, File destination, Map<String, String> properties) {
-        return internalProvision(p3, destination, new HashSet<P3Package.P3PackageInfo>(), null) != null;
+        return internalProvision(p3, destination, properties, new HashSet<P3Package.P3PackageInfo>(), null) != null;
     }
 
-    private P3Package internalProvision(P3Package p3, File destination, Set<P3Package.P3PackageInfo> loaded, P3Package child) {
+    private P3Package internalProvision(P3Package p3, File destination, Map<String, String> properties,
+                                        Set<P3Package.P3PackageInfo> loaded, P3Package child) {
         log.info("Provisioning " + p3.getId() + " at " + p3.getVersion());
 
         P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
@@ -231,7 +232,7 @@ public class PackageManager {
         }
 
         if(p3.getParent() != null) {
-            P3Package parent = internalProvision(p3.getParent(), destination, loaded, p3);
+            P3Package parent = internalProvision(p3.getParent(), destination, properties, loaded, p3);
             if (parent == null) {
                 log.error("Unable to provision parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
                 return null;
@@ -248,6 +249,7 @@ public class PackageManager {
         context.setPackageManager(this);
         context.setP3(p3);
         context.setDestination(destination);
+        context.setProperties(properties);
 
         for(P3Package.ProvisioningStepConfig config : p3.getProvisioningSteps()) {
             log.info("provision step - " + config.getStep().getStepId());

@@ -61,6 +61,9 @@ public class P3Package {
 
     private List<ExecutionStep> executionSteps = new ArrayList<>();
 
+    /**
+     * Checks to make sure required fields are filled. Does not check resolution status!
+     */
     public boolean validate() {
         if(id == null || id.isEmpty() || version == null || version.isEmpty())
             return false;
