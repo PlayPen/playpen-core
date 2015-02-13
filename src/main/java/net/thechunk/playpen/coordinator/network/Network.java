@@ -179,7 +179,8 @@ public class Network extends PlayPen {
         }
 
         coord.setEnabled(command.getEnabled());
-        log.info("Sync " + coord.getName() + " with " + coord.getServers().size());
+        log.info("Sync " + coord.getName() + " with " + coord.getServers().size()
+                + " servers (" + (coord.isEnabled() ? "enabled" : "not enabled") + ")");
         return true;
     }
 

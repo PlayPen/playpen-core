@@ -16,7 +16,8 @@ message BaseCommand {
         PACKAGE_RESPONSE = 5;
         DEPROVISION = 6;
         DEPROVISION_RESPONSE = 7;
-        CANCEL = 8;
+        SET_ENABLED = 8;
+        CANCEL = 9;
     }
 
     required CommandType type = 1;
@@ -87,9 +88,17 @@ message DeprovisionResponse { // local -> network
     required bool ok = 1;
 }
 
+message SetEnabled { // network -> local (local should respond with SYNC)
+    extend BaseCommand {
+        optional SetEnabled command = 110;
+    }
+
+    required bool enabled = 1;
+}
+
 message Cancel {
     extend BaseCommand {
-        optional Cancel command = 110;
+        optional Cancel command = 111;
     }
 
     required string transaction = 1;
