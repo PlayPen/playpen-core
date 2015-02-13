@@ -5,8 +5,6 @@ import lombok.Data;
 import net.thechunk.playpen.coordinator.Server;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

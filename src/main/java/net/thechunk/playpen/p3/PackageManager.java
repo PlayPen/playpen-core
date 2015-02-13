@@ -3,8 +3,6 @@ package net.thechunk.playpen.p3;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.utils.JSONUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

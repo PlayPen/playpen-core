@@ -4,8 +4,6 @@ import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.p3.IPackageResolver;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 

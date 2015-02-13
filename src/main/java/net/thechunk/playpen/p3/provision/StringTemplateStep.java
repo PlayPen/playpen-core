@@ -1,13 +1,10 @@
 package net.thechunk.playpen.p3.provision;
 
 import lombok.extern.log4j.Log4j2;
-import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.p3.IProvisioningStep;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
 import net.thechunk.playpen.utils.STUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.stringtemplate.v4.ST;
@@ -17,7 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
 
 @Log4j2
 public class StringTemplateStep implements IProvisioningStep {

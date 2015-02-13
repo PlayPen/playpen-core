@@ -2,12 +2,10 @@ package net.thechunk.playpen.coordinator;
 
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Protocol;
-import net.thechunk.playpen.utils.AuthUtils;
 
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;

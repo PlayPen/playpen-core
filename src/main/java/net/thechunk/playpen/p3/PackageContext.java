@@ -3,7 +3,6 @@ package net.thechunk.playpen.p3;
 import lombok.Data;
 
 import java.io.File;
-import java.util.Map;
 
 @Data
 public class PackageContext {

@@ -1,9 +1,7 @@
 package net.thechunk.playpen.utils;
 
-import com.google.protobuf.Message;
 import net.thechunk.playpen.protocol.Protocol;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

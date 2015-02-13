@@ -1,7 +1,5 @@
 package net.thechunk.playpen.utils;
 
-import net.thechunk.playpen.Bootstrap;
-import net.thechunk.playpen.ConfigException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,7 +7,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class JSONUtils {
 
