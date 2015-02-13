@@ -1,1 +1,1 @@
-My parent says <foo>!
+My child says <foo>!
