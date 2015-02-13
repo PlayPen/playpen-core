@@ -17,5 +17,7 @@
             <AppenderRef ref="console" />
             <AppenderRef ref="file" />
         </Root>
+        <Logger name="org.zeroturnaround.zip.ZipUtil" level="warn">
+        </Logger>
     </Loggers>
 </Configuration>

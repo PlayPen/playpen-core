@@ -16,6 +16,7 @@ import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -129,7 +130,7 @@ public class Network extends PlayPen {
 
     @Override
     public boolean process(Commands.BaseCommand command, TransactionInfo info, String from) {
-        return false;
+        throw new NotImplementedException(); // TODO
     }
 
     public boolean receiveSync(Commands.Sync command, TransactionInfo info, String from) {
