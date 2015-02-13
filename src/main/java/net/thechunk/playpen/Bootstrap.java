@@ -68,6 +68,9 @@ public class Bootstrap {
 
             if(Paths.get(homeDir.getPath(), "packages").toFile().mkdirs())
                 didCopyResources = true;
+
+            if(Paths.get(homeDir.getPath(), "plugins").toFile().mkdirs())
+                didCopyResources = true;
         }
         catch(Exception e) {
             System.err.println("Unable to copy default resources");
