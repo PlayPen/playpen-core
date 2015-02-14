@@ -15,9 +15,8 @@ message BaseCommand {
         PACKAGE_REQUEST = 4;
         PACKAGE_RESPONSE = 5;
         DEPROVISION = 6;
-        DEPROVISION_RESPONSE = 7;
-        SET_ENABLED = 8;
-        SHUTDOWN = 9; // no command extension
+        SET_ENABLED = 7;
+        SHUTDOWN = 8; // no command extension
     }
 
     required CommandType type = 1;
@@ -78,14 +77,6 @@ message Deprovision { // network <-> local
     }
 
     required string uuid = 1;
-}
-
-message DeprovisionResponse { // local -> network
-    extend BaseCommand {
-        optional DeprovisionResponse command = 109;
-    }
-
-    required bool ok = 1;
 }
 
 message Cancel {
