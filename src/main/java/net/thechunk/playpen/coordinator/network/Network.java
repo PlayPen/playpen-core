@@ -387,13 +387,13 @@ public class Network extends PlayPen {
     protected boolean sendDeprovision(String target, String serverId, boolean force) {
         LocalCoordinator coord = getCoordinator(target);
         if(coord == null) {
-            log.error("Cannot process DEPROVISION on invalid coordinator " + target);
+            log.error("Cannot send DEPROVISION on invalid coordinator " + target);
             return false;
         }
 
         Server server = coord.getServers().getOrDefault(serverId, null);
         if(server == null) {
-            log.error("Cannot process DEPROVISION on invalid server " + serverId + " on coordinator " + target);
+            log.error("Cannot send DEPROVISION on invalid server " + serverId + " on coordinator " + target);
             return false;
         }
 
@@ -413,10 +413,57 @@ public class Network extends PlayPen {
         Protocol.Transaction message = TransactionManager.get()
                 .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
         if(message == null) {
-            log.error("Unable to build transaction for deprovision");
+            log.error("Unable to build transaction for DEPROVISION");
             TransactionManager.get().cancel(info.getId());
             return false;
         }
+
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
+    protected boolean processServerShutdown(Commands.ServerShutdown command, TransactionInfo info, String from) {
+        LocalCoordinator coord = getCoordinator(from);
+        if(coord == null) {
+            log.error("Cannot process SERVER_SHUTDOWN on invalid coordinator " + from);
+            return false;
+        }
+
+        Server server = coord.getServers().getOrDefault(command.getUuid(), null);
+        if(server == null) {
+            log.error("Cannot process SERVER_SHUTDOWN on invalid server " + command.getUuid() + " on coordinator " + from);
+            return false;
+        }
+
+        server.setActive(false);
+        coord.getServers().remove(server.getUuid());
+        log.info("Server " + server.getUuid() + " shutdown on " + coord.getUuid());
+
+        return true;
+    }
+
+    protected boolean sendShutdown(String target) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send SHUTDOWN on invalid coordinator " + target);
+            return false;
+        }
+
+        coord.setEnabled(false);
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.SHUTDOWN)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for SHUTDOWN");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Shutting down coordinator " + target);
 
         return TransactionManager.get().send(info.getId(), message, target);
     }

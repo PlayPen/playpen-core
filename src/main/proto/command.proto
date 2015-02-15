@@ -16,7 +16,7 @@ message BaseCommand {
         PACKAGE_RESPONSE = 5;
         DEPROVISION = 6;
         SERVER_SHUTDOWN = 7;
-        ENABLE = 8;
+        SHUTDOWN = 8; // no command extension
     }
 
     required CommandType type = 1;
@@ -86,12 +86,4 @@ message ServerShutdown { // local -> network
     }
 
     required string uuid = 1;
-}
-
-message Enable { // network -> local
-    extend BaseCommand {
-        optional Enable command = 110;
-    }
-
-    required bool enabled = 1;
 }
