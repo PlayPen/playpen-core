@@ -246,6 +246,7 @@ public class Network extends PlayPen {
                 .build(info.getId(), Protocol.Transaction.Mode.CREATE, command);
         if(message == null) {
             log.error("Unable to build message for provision");
+            TransactionManager.get().cancel(info.getId());
             return false;
         }
 
@@ -284,6 +285,52 @@ public class Network extends PlayPen {
             log.warn("Server " + serverId + " on " + coord.getUuid() + " failed to activate (provision response)");
             return false;
         }
+    }
+
+    protected boolean processPackageRequest(Commands.PackageRequest command, TransactionInfo info, String from) {
+        LocalCoordinator coord = getCoordinator(from);
+        if(coord == null) {
+            log.error("Cannot process PACKAGE_REQUEST on invalid coordinator " + from);
+            return false;
+        }
+
+        String id = command.getP3().getId();
+        String version = command.getP3().getVersion();
+        log.info("Package " + id + " at " + version + " requested by " + from);
+
+        P3Package p3 = packageManager.resolve(id, version);
+        if(p3 == null) {
+            log.error("Unable to resolve package " + id + " at " + version + " for " + from);
+            return sendPackageResponseFailure(from, info.getId());
+        }
+
+        return sendPackageResponse(from, info.getId(), p3);
+    }
+
+    protected boolean sendPackageResponseFailure(String target, String tid) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Unknown transaction " + tid + ", unable to send package");
+            return false;
+        }
+
+        Commands.PackageResponse response = Commands.PackageResponse.newBuilder()
+                .setOk(false)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.PACKAGE_RESPONSE)
+                .setExtension(Commands.PackageResponse.command, response)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for package response (failure)");
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, target);
     }
 
     protected boolean sendPackageResponse(String target, String tid, P3Package p3) {
@@ -331,6 +378,43 @@ public class Network extends PlayPen {
                 .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
         if(message == null) {
             log.error("Unable to build transaction for package response");
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
+    protected boolean sendDeprovision(String target, String serverId, boolean force) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot process DEPROVISION on invalid coordinator " + target);
+            return false;
+        }
+
+        Server server = coord.getServers().getOrDefault(serverId, null);
+        if(server == null) {
+            log.error("Cannot process DEPROVISION on invalid server " + serverId + " on coordinator " + target);
+            return false;
+        }
+
+        server.setActive(false);
+
+        Commands.Deprovision deprovision = Commands.Deprovision.newBuilder()
+                .setUuid(serverId)
+                .setForce(force)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.DEPROVISION)
+                .setExtension(Commands.Deprovision.command, deprovision)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for deprovision");
+            TransactionManager.get().cancel(info.getId());
             return false;
         }
 

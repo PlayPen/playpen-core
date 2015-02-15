@@ -15,9 +15,8 @@ message BaseCommand {
         PACKAGE_REQUEST = 4;
         PACKAGE_RESPONSE = 5;
         DEPROVISION = 6;
-        SERVER_UPDATE = 7;
+        SERVER_SHUTDOWN = 7;
         ENABLE = 8;
-        SHUTDOWN = 9; // no command extension
     }
 
     required CommandType type = 1;
@@ -78,7 +77,15 @@ message Deprovision { // network -> local
     }
 
     required string uuid = 1;
-    required bool force = 2 [default=false];
+    required bool force = 2 [default=false]; // if true, local should terminate the process without using shutdown steps
+}
+
+message ServerShutdown { // local -> network
+    extend BaseCommand {
+        optional ServerShutdown command = 109;
+    }
+
+    required string uuid = 1;
 }
 
 message Enable { // network -> local

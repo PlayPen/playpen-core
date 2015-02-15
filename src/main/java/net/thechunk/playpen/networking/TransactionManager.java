@@ -2,14 +2,18 @@ package net.thechunk.playpen.networking;
 
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.coordinator.PlayPen;
+import net.thechunk.playpen.coordinator.network.Network;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Protocol;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class TransactionManager {
+    public static final long TRANSACTION_TIMEOUT = 120; // seconds
+
     private static TransactionManager instance = new TransactionManager();
 
     public static TransactionManager get() {
@@ -54,6 +58,10 @@ public class TransactionManager {
             info.setId(PlayPen.get().generateId());
 
         transactions.put(info.getId(), info);
+
+        final String tid = info.getId();
+        Network.get().getScheduler().schedule(() -> cancel(tid, true), TRANSACTION_TIMEOUT, TimeUnit.SECONDS);
+
         return info;
     }
 
@@ -76,7 +84,7 @@ public class TransactionManager {
             info.getHandler().onTransactionSend(this, info);
         }
 
-        if(message.getMode() == Protocol.Transaction.Mode.COMPLETE) {
+        if(message.getMode() == Protocol.Transaction.Mode.COMPLETE || message.getMode() == Protocol.Transaction.Mode.SINGLE) {
             complete(info.getId());
         }
 
@@ -84,9 +92,13 @@ public class TransactionManager {
     }
 
     public boolean cancel(String id) {
+        return cancel(id, false);
+    }
+
+    public boolean cancel(String id, boolean silentFail) {
         TransactionInfo info = getTransaction(id);
         if(info == null) {
-            log.error("Cannot cancel unknown transaction " + id);
+            if(!silentFail) log.error("Cannot cancel unknown transaction " + id);
             return false;
         }
 
