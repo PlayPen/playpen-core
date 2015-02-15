@@ -1,8 +1,8 @@
 package net.thechunk.playpen;
 
 import net.thechunk.playpen.p3.PackageManager;
-import net.thechunk.playpen.p3.provision.ExpandStep;
-import net.thechunk.playpen.p3.provision.StringTemplateStep;
+import net.thechunk.playpen.p3.step.ExpandStep;
+import net.thechunk.playpen.p3.step.StringTemplateStep;
 import net.thechunk.playpen.p3.resolver.InMemoryCacheResolver;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
 
@@ -20,8 +20,8 @@ public class Initialization {
         // Package cache
         pm.addPackageResolver(new LocalRepositoryResolver(Paths.get(Bootstrap.getHomeDir().getPath(), "cache", "packages").toFile()));
 
-        pm.addProvisioningStep(new ExpandStep());
-        pm.addProvisioningStep(new StringTemplateStep());
+        pm.addPackageStep(new ExpandStep());
+        pm.addPackageStep(new StringTemplateStep());
     }
 
     private Initialization() {}

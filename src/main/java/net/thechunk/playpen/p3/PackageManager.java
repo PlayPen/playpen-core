@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PackageManager {
     private List<IPackageResolver> resolvers = new LinkedList<>();
 
-    private Map<String, IProvisioningStep> provisioningSteps = new HashMap<>();
+    private Map<String, IPackageStep> packageSteps = new HashMap<>();
 
     @Getter
     private Map<P3Package.P3PackageInfo, P3Package> packageCache = new ConcurrentHashMap<>();
@@ -25,15 +25,12 @@ public class PackageManager {
         resolvers.add(resolver);
     }
 
-    public void addProvisioningStep(IProvisioningStep step) {
-        provisioningSteps.put(step.getStepId(), step);
+    public void addPackageStep(IPackageStep step) {
+        packageSteps.put(step.getStepId(), step);
     }
 
-    public IProvisioningStep getProvisioningStep(String id) {
-        if(provisioningSteps.containsKey(id))
-            return provisioningSteps.get(id);
-
-        return null;
+    public IPackageStep getPackageStep(String id) {
+        return packageSteps.getOrDefault(id, null);
     }
 
     public P3Package resolve(String id, String version) {
@@ -115,14 +112,14 @@ public class PackageManager {
                 for (int i = 0; i < provision.length(); ++i) {
                     JSONObject obj = JSONUtils.safeGetObject(provision, i);
                     if (obj != null) {
-                        IProvisioningStep step = getProvisioningStep(JSONUtils.safeGetString(obj, "id"));
+                        IPackageStep step = getPackageStep(JSONUtils.safeGetString(obj, "id"));
                         if (step == null)
-                            throw new PackageException("Unknown provisioning step \"" + JSONUtils.safeGetString(obj, "id") + "\"");
+                            throw new PackageException("Unknown package step \"" + JSONUtils.safeGetString(obj, "id") + "\"");
 
-                        P3Package.ProvisioningStepConfig config = new P3Package.ProvisioningStepConfig();
+                        P3Package.PackageStepConfig config = new P3Package.PackageStepConfig();
                         config.setStep(step);
                         config.setConfig(obj);
-                        p3.getProvisioningSteps().add(config);
+                        p3.getProvisionSteps().add(config);
                     }
                     else {
                         throw new PackageException("Provision step #" + i + " is not an object!");
@@ -132,26 +129,35 @@ public class PackageManager {
 
             JSONArray execute = JSONUtils.safeGetArray(schema, "execute");
             if (execute != null) {
-                for (int i = 0; i < execute.length(); ++i) {
-                    P3Package.ExecutionStep step = new P3Package.ExecutionStep();
-                    JSONObject jsonStep = JSONUtils.safeGetObject(execute, i);
-                    if(jsonStep == null) {
-                        throw new PackageException("Invalid json object for execution step #" + i);
-                    }
+                for(int i = 0; i < execute.length(); ++i) {
+                    JSONObject obj = JSONUtils.safeGetObject(execute, i);
+                    if(obj != null) {
+                        IPackageStep step = getPackageStep(JSONUtils.safeGetString(obj, "id"));
+                        if(step == null)
+                            throw new PackageException("Unknown package step \"" + JSONUtils.safeGetString(obj, "id") + "\"");
 
-                    step.setCommand(JSONUtils.safeGetString(jsonStep, "command"));
-                    if(step.getCommand() == null) {
-                        throw new PackageException("Invalid command string for execution step #" + i);
+                        P3Package.PackageStepConfig config = new P3Package.PackageStepConfig();
+                        config.setStep(step);
+                        config.setConfig(obj);
+                        p3.getExecutionSteps().add(config);
                     }
+                }
+            }
 
-                    JSONArray args = JSONUtils.safeGetArray(jsonStep, "arguments");
-                    if(args != null) {
-                        for (int j = 0; j <args.length(); ++j) {
-                            step.getArguments().add(JSONUtils.safeGetString(args, j));
-                        }
+            JSONArray shutdown = JSONUtils.safeGetArray(schema, "shutdown");
+            if(shutdown != null) {
+                for(int i = 0; i < shutdown.length(); ++i) {
+                    JSONObject obj = JSONUtils.safeGetObject(shutdown, i);
+                    if(obj != null) {
+                        IPackageStep step = getPackageStep(JSONUtils.safeGetString(obj, "id"));
+                        if(step == null)
+                            throw new PackageException("Unknown package step \"" + JSONUtils.safeGetString(obj, "id") + "\"");
+
+                        P3Package.PackageStepConfig config = new P3Package.PackageStepConfig();
+                        config.setStep(step);
+                        config.setConfig(obj);
+                        p3.getShutdownSteps().add(config);
                     }
-
-                    p3.getExecutionSteps().add(step);
                 }
             }
 
@@ -251,7 +257,7 @@ public class PackageManager {
         context.setDestination(destination);
         context.setProperties(properties);
 
-        for(P3Package.ProvisioningStepConfig config : p3.getProvisioningSteps()) {
+        for(P3Package.PackageStepConfig config : p3.getProvisionSteps()) {
             log.info("provision step - " + config.getStep().getStepId());
             if(!config.getStep().runStep(context, config.getConfig())) {
                 log.error("Step failed!");

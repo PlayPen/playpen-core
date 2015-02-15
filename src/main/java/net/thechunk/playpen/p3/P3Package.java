@@ -9,15 +9,9 @@ import java.util.*;
 public class P3Package {
 
     @Data
-    public static class ProvisioningStepConfig {
-        IProvisioningStep step;
+    public static class PackageStepConfig {
+        IPackageStep step;
         JSONObject config;
-    }
-
-    @Data
-    public static class ExecutionStep {
-        String command;
-        List<String> arguments = new ArrayList<>();
     }
 
     @Data
@@ -57,9 +51,11 @@ public class P3Package {
 
     private Map<String, String> strings = new HashMap<>();
 
-    private List<ProvisioningStepConfig> provisioningSteps = new ArrayList<>();
+    private List<PackageStepConfig> provisionSteps = new ArrayList<>();
 
-    private List<ExecutionStep> executionSteps = new ArrayList<>();
+    private List<PackageStepConfig> executionSteps = new ArrayList<>();
+
+    private List<PackageStepConfig> shutdownSteps = new ArrayList<>();
 
     /**
      * Checks to make sure required fields are filled. Does not check resolution status!

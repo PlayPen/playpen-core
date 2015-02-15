@@ -15,8 +15,8 @@ message BaseCommand {
         PACKAGE_REQUEST = 4;
         PACKAGE_RESPONSE = 5;
         DEPROVISION = 6;
-        DEPROVISION_RESPONSE = 7;
-        SET_ENABLED = 8;
+        SERVER_UPDATE = 7;
+        ENABLE = 8;
         SHUTDOWN = 9; // no command extension
     }
 
@@ -72,26 +72,27 @@ message PackageResponse { // network -> local
     optional PackageData data = 2;
 }
 
-message Deprovision { // network <-> local
+message Deprovision { // network -> local
     extend BaseCommand {
         optional Deprovision command = 108;
     }
 
     required string uuid = 1;
+    required bool force = 2 [default=false];
 }
 
-message DeprovisionResponse { // local -> network
+message Shutdown { // local -> network
     extend BaseCommand {
-        optional DeprovisionResponse command = 109;
+        optional Shutdown command = 109;
     }
 
-    required bool ok = 1;
+    required string uuid = 1;
 }
 
-message Cancel {
+message Enable { // network -> local
     extend BaseCommand {
-        optional Cancel command = 111;
+        optional Enable command = 110;
     }
 
-    required string transaction = 1;
+    required bool enabled = 1;
 }

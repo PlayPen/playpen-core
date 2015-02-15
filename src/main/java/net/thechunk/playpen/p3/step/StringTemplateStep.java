@@ -1,7 +1,7 @@
-package net.thechunk.playpen.p3.provision;
+package net.thechunk.playpen.p3.step;
 
 import lombok.extern.log4j.Log4j2;
-import net.thechunk.playpen.p3.IProvisioningStep;
+import net.thechunk.playpen.p3.IPackageStep;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
 import net.thechunk.playpen.utils.STUtils;
@@ -16,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @Log4j2
-public class StringTemplateStep implements IProvisioningStep {
+public class StringTemplateStep implements IPackageStep {
     @Override
     public String getStepId() {
         return "string-template";

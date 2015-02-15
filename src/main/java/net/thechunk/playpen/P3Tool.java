@@ -20,7 +20,7 @@ import java.util.Map;
 public class P3Tool {
     public static void run(String[] args) {
         if(args.length < 2) {
-            System.err.println("playpen p3 <inspect/pack/provision/execute> [arguments...]");
+            System.err.println("playpen p3 <inspect/pack/provision> [arguments...]");
             return;
         }
 
@@ -35,10 +35,6 @@ public class P3Tool {
 
             case "provision":
                 provision(args);
-                break;
-
-            case "execute":
-                execute(args);
                 break;
         }
     }
@@ -104,12 +100,12 @@ public class P3Tool {
             System.out.println("String: " + str.getKey() + " = " + str.getValue());
         }
 
-        if(p3.getProvisioningSteps().size() == 0) {
+        if(p3.getProvisionSteps().size() == 0) {
             System.err.println("-- Package doesn't define any provisioning steps");
         }
         else {
-            for(P3Package.ProvisioningStepConfig config : p3.getProvisioningSteps()) {
-                System.out.println("Provisioning step: " + config.getStep().getStepId());
+            for(P3Package.PackageStepConfig config : p3.getProvisionSteps()) {
+                System.out.println("Provision step: " + config.getStep().getStepId());
             }
         }
 
@@ -117,11 +113,17 @@ public class P3Tool {
             System.err.println("-- Package doesn't define any execution steps");
         }
         else {
-            for(P3Package.ExecutionStep execute : p3.getExecutionSteps()) {
-                System.out.println("Execution step: " + execute.getCommand());
-                for(String arg : execute.getArguments()) {
-                    System.out.println("-- argument: " + arg);
-                }
+            for(P3Package.PackageStepConfig config : p3.getExecutionSteps()) {
+                System.out.println("Execution step: " + config.getStep().getStepId());
+            }
+        }
+
+        if(p3.getShutdownSteps().size() == 0) {
+            System.err.println("-- Package doesn't define any shutdown steps");
+        }
+        else {
+            for(P3Package.PackageStepConfig config : p3.getShutdownSteps()) {
+                System.out.println("Shutdown step: " + config.getStep().getStepId());
             }
         }
 
@@ -236,79 +238,6 @@ public class P3Tool {
         }
 
         System.out.println("Finished provisioning!");
-    }
-
-    private static void execute(String[] args) {
-        if(args.length != 3) {
-            System.err.println("playpen p3 execute <directory>");
-            return;
-        }
-
-        File p3Dir = new File(args[2]);
-        if(!p3Dir.exists() || !p3Dir.isDirectory()) {
-            System.err.println();
-        }
-
-        Path schemaPath = Paths.get(p3Dir.getPath(), "package.json");
-        File schemaFile = schemaPath.toFile();
-        if(!schemaFile.exists() || !schemaFile.isFile()) {
-            System.err.println("package.json is either missing or a directory");
-            return;
-        }
-
-        String schemaString = null;
-        try {
-            schemaString = new String(Files.readAllBytes(schemaPath));
-        }
-        catch(IOException e) {
-            System.err.println("Unable to read schema");
-            e.printStackTrace(System.err);
-            return;
-        }
-
-        PackageManager pm = new PackageManager();
-        Initialization.packageManager(pm);
-        pm.addPackageResolver(new LocalRepositoryResolver(new File(".")));
-
-        System.out.println("Reading package schema...");
-
-        P3Package p3 = null;
-        try {
-            p3 = pm.readSchema(schemaString);
-        }
-        catch(PackageException e) {
-            System.err.println("Unable to read schema");
-            e.printStackTrace(System.err);
-            return;
-        }
-
-        System.out.println("Executing " + p3.getId() + " at " + p3.getVersion());
-        for(P3Package.ExecutionStep step : p3.getExecutionSteps()) {
-            try {
-                List<String> cmd = new ArrayList<>();
-                cmd.add(step.getCommand());
-                cmd.addAll(step.getArguments());
-
-                ProcessBuilder pb = new ProcessBuilder(cmd);
-                pb.directory(p3Dir);
-                pb.inheritIO();
-
-                Process p = pb.start();
-                p.waitFor();
-            }
-            catch(IOException e) {
-                System.err.println("Caught exception while executing package");
-                e.printStackTrace(System.err);
-                return;
-            }
-            catch(InterruptedException e) {
-                System.err.println("Interrupted!");
-                e.printStackTrace(System.err);
-                return;
-            }
-        }
-
-        System.out.println("Finished execution");
     }
 
     private P3Tool() {}
