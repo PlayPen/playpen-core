@@ -81,14 +81,6 @@ message Deprovision { // network -> local
     required bool force = 2 [default=false];
 }
 
-message Shutdown { // local -> network
-    extend BaseCommand {
-        optional Shutdown command = 109;
-    }
-
-    required string uuid = 1;
-}
-
 message Enable { // network -> local
     extend BaseCommand {
         optional Enable command = 110;
