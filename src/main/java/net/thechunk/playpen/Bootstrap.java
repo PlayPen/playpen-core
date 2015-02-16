@@ -119,13 +119,17 @@ public class Bootstrap {
 
         try {
             while(true) {
-                PlayPen.reset();
+                //PlayPen.reset(); // DO NOT RESET PLAYPEN! If we get disconnected from the network, we don't want to
+                                   // shutdown any servers that are running. We just want to reconnect to the network.
                 if(!Local.get().run())
                     break;
+
+                log.info("Waiting 10 seconds before restarting...");
+                Thread.sleep(1000L * 10L);
             }
         }
         catch(Exception e) {
-            log.fatal("Caught exception at bootstrap level while running network coordinator", e);
+            log.fatal("Caught exception at bootstrap level while running local coordinator", e);
             return;
         }
 
@@ -140,6 +144,9 @@ public class Bootstrap {
                 PlayPen.reset();
                 if(!Network.get().run())
                     break;
+
+                log.info("Waiting 10 seconds before restarting...");
+                Thread.sleep(1000L * 10L);
             }
         }
         catch(Exception e) {

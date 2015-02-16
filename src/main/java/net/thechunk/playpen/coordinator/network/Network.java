@@ -52,7 +52,7 @@ public class Network extends PlayPen {
 
     private PackageManager packageManager = null;
 
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
+    private ScheduledExecutorService scheduler = null;
 
     private Network() {
         super();
@@ -84,8 +84,6 @@ public class Network extends PlayPen {
             log.fatal("Unable to read configuration file.", e);
             return false;
         }
-
-        log.info("Network coordinator will start on " + ip + " port " + port);
 
         log.info("Reading keystore configuration");
         try {
@@ -121,6 +119,8 @@ public class Network extends PlayPen {
         log.info("Starting network coordinator");
         EventLoopGroup group = new NioEventLoopGroup();
         try {
+            scheduler = Executors.newScheduledThreadPool(4);
+
             ServerBootstrap b = new ServerBootstrap();
             b.group(group)
                     .channel(NioServerSocketChannel.class)
@@ -129,13 +129,23 @@ public class Network extends PlayPen {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture f = b.bind(ip, port).sync();
+
+            if(!f.isSuccess()) {
+                log.error("Unable to bind on " + ip + " port " + port);
+                return true;
+            }
+
+            log.info("Listening on " + ip + " port " + port);
             f.channel().closeFuture().sync();
         }
         catch(InterruptedException e) {
-            log.warn("Server operation interrupted!", e);
+            log.warn("Operation interrupted!", e);
             return false;
         }
         finally {
+            scheduler.shutdownNow();
+            scheduler = null;
+
             group.shutdownGracefully();
         }
 
