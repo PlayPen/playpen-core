@@ -149,7 +149,6 @@ public class Local extends PlayPen {
 
             log.info("Connected to network coordinator at " + coordIp + " port " + coordPort);
 
-            log.info("Scheduling SYNC for 3 seconds");
             sync();
             f.channel().closeFuture().sync();
         }
