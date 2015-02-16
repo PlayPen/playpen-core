@@ -11,11 +11,15 @@ import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
+import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,6 +48,12 @@ public class Local extends PlayPen {
 
     @Getter
     private String key;
+
+    @Getter
+    private Map<String, Integer> resources = new HashMap<>();
+
+    @Getter
+    private Set<String> attributes = new HashSet<>();
 
     @Getter
     private boolean enabled = true;
@@ -139,6 +149,21 @@ public class Local extends PlayPen {
 
         if(serverName != null)
             syncBuilder.setName(serverName);
+
+        for(Map.Entry<String, Integer> entry : resources.entrySet()) {
+            Coordinator.Resource resource = Coordinator.Resource.newBuilder()
+                    .setName(entry.getKey())
+                    .setValue(entry.getValue())
+                    .build();
+
+            syncBuilder.addResources(resource);
+        }
+
+        syncBuilder.addAllAttributes(attributes);
+
+        for(Server server : servers.values()) {
+            // TODO
+        }
 
         throw new NotImplementedException(); // TODO
     }
