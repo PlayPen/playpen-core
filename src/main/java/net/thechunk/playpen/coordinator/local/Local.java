@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -64,10 +65,10 @@ public class Local extends PlayPen {
     private String key;
 
     @Getter
-    private Map<String, Integer> resources = new HashMap<>();
+    private Map<String, Integer> resources = new ConcurrentHashMap<>();
 
     @Getter
-    private Set<String> attributes = new HashSet<>();
+    private Set<String> attributes = new ConcurrentSkipListSet<>();
 
     @Getter
     private boolean enabled = true;
@@ -82,6 +83,10 @@ public class Local extends PlayPen {
     }
 
     public boolean run() {
+        enabled = true;
+        resources.clear();
+        attributes.clear();
+
         log.info("Reading local configuration");
         String configStr;
         try {
@@ -289,7 +294,7 @@ public class Local extends PlayPen {
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.SYNC)
-                .setExtension(Commands.Sync.command, sync)
+                .setSync(sync)
                 .build();
 
         TransactionInfo info = TransactionManager.get().begin();

@@ -5,28 +5,7 @@ option java_outer_classname = "Commands";
 import "coordinator.proto";
 import "p3.proto";
 
-message BaseCommand {
-    extensions 100 to max;
-
-    enum CommandType {
-        SYNC = 1;
-        PROVISION = 2;
-        PROVISION_RESPONSE = 3;
-        PACKAGE_REQUEST = 4;
-        PACKAGE_RESPONSE = 5;
-        DEPROVISION = 6;
-        SERVER_SHUTDOWN = 7;
-        SHUTDOWN = 8; // no command extension
-    }
-
-    required CommandType type = 1;
-}
-
 message Sync { // local -> network
-    extend BaseCommand {
-        optional Sync command = 102;
-    }
-
     optional string name = 1;
 
     repeated Resource resources = 2;
@@ -39,51 +18,50 @@ message Sync { // local -> network
 }
 
 message Provision { // network -> local
-    extend BaseCommand {
-        optional Provision command = 103;
-    }
-
     required Server server = 1;
 }
 
 message ProvisionResponse { // local -> network
-    extend BaseCommand {
-        optional ProvisionResponse command = 105;
-    }
-
     required bool ok = 1;
 }
 
 message PackageRequest { // local -> network
-    extend BaseCommand {
-        optional PackageRequest command = 106;
-    }
-
     required P3Meta p3 = 1;
 }
 
 message PackageResponse { // network -> local
-    extend BaseCommand {
-        optional PackageResponse command = 107;
-    }
-
     required bool ok = 1;
     optional PackageData data = 2;
 }
 
 message Deprovision { // network -> local
-    extend BaseCommand {
-        optional Deprovision command = 108;
-    }
-
     required string uuid = 1;
     required bool force = 2 [default=false]; // if true, local should terminate the process without using shutdown steps
 }
 
 message ServerShutdown { // local -> network
-    extend BaseCommand {
-        optional ServerShutdown command = 109;
+    required string uuid = 1;
+}
+
+message BaseCommand {
+    enum CommandType {
+        SYNC = 1;
+        PROVISION = 2;
+        PROVISION_RESPONSE = 3;
+        PACKAGE_REQUEST = 4;
+        PACKAGE_RESPONSE = 5;
+        DEPROVISION = 6;
+        SERVER_SHUTDOWN = 7;
+        SHUTDOWN = 8; // no command extension
     }
 
-    required string uuid = 1;
+    required CommandType type = 1;
+
+    optional Sync sync = 2;
+    optional Provision provision = 3;
+    optional ProvisionResponse provisionResponse = 4;
+    optional PackageRequest packageRequest = 5;
+    optional PackageResponse packageResponse = 6;
+    optional Deprovision deprovision = 7;
+    optional ServerShutdown serverShutdown = 8;
 }

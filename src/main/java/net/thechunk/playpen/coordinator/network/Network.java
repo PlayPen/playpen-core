@@ -243,16 +243,16 @@ public class Network extends PlayPen {
                 return false;
 
             case SYNC:
-                return processSync(command.getExtension(Commands.Sync.command), info, from);
+                return processSync(command.getSync(), info, from);
 
             case PROVISION_RESPONSE:
-                return processProvisionResponse(command.getExtension(Commands.ProvisionResponse.command), info, from);
+                return processProvisionResponse(command.getProvisionResponse(), info, from);
 
             case PACKAGE_REQUEST:
-                return processPackageRequest(command.getExtension(Commands.PackageRequest.command), info, from);
+                return processPackageRequest(command.getPackageRequest(), info, from);
 
             case SERVER_SHUTDOWN:
-                return processServerShutdown(command.getExtension(Commands.ServerShutdown.command), info, from);
+                return processServerShutdown(command.getServerShutdown(), info, from);
         }
     }
 
@@ -364,6 +364,7 @@ public class Network extends PlayPen {
         coord.setEnabled(command.getEnabled());
         log.info("Synchronized " + coord.getUuid() + " with " + coord.getServers().size()
                 + " servers (" + (coord.isEnabled() ? "enabled" : "not enabled") + ")");
+        log.debug(coord.getUuid() + " has " + coord.getResources().size() + " resources and " + coord.getAttributes().size() + " attributes");
         return true;
     }
 
@@ -418,7 +419,7 @@ public class Network extends PlayPen {
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.PROVISION)
-                .setExtension(Commands.Provision.command, provision)
+                .setProvision(provision)
                 .build();
 
         TransactionInfo info = TransactionManager.get().begin();
@@ -449,7 +450,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        String serverId = previous.getExtension(Commands.Provision.command).getServer().getUuid();
+        String serverId = previous.getProvision().getServer().getUuid();
         Server server = coord.getServers().getOrDefault(serverId, null);
         if(server == null) {
             log.error("Unknown server " + serverId + " on PROVISION_RESPONSE");
@@ -501,7 +502,7 @@ public class Network extends PlayPen {
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.PACKAGE_RESPONSE)
-                .setExtension(Commands.PackageResponse.command, response)
+                .setPackageResponse(response)
                 .build();
 
         Protocol.Transaction message = TransactionManager.get()
@@ -552,7 +553,7 @@ public class Network extends PlayPen {
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.PACKAGE_RESPONSE)
-                .setExtension(Commands.PackageResponse.command, response)
+                .setPackageResponse(response)
                 .build();
 
         Protocol.Transaction message = TransactionManager.get()
@@ -589,7 +590,7 @@ public class Network extends PlayPen {
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.DEPROVISION)
-                .setExtension(Commands.Deprovision.command, deprovision)
+                .setDeprovision(deprovision)
                 .build();
 
         TransactionInfo info = TransactionManager.get().begin();
