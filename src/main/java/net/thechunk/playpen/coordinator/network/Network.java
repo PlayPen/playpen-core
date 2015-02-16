@@ -117,11 +117,10 @@ public class Network extends PlayPen {
         log.info(coordinators.size() + " coordinator keypairs registered");
 
         log.info("Starting network coordinator");
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup group = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
+            b.group(group)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(NettySetup.BASE_INITIALIZER)
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -135,8 +134,7 @@ public class Network extends PlayPen {
             return false;
         }
         finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
+            group.shutdownGracefully();
         }
 
         return true;
