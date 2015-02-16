@@ -1,11 +1,15 @@
 package net.thechunk.playpen;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
+import net.thechunk.playpen.coordinator.PlayPen;
+import net.thechunk.playpen.coordinator.network.Network;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
+@Log4j2
 public class Bootstrap {
     @Getter
     private static File homeDir;
@@ -93,6 +97,7 @@ public class Bootstrap {
                 break;
 
             case "network":
+                runNetworkCoordinator();
                 break;
 
             case "p3":
@@ -105,4 +110,21 @@ public class Bootstrap {
         }
     }
 
+    private static void runNetworkCoordinator() {
+        log.info("Bootstrap starting network coordinator (autorestart enabled)");
+
+        try {
+            while (true) {
+                PlayPen.reset();
+                if(!Network.get().run())
+                    break;
+            }
+        }
+        catch(Exception e) {
+            log.fatal("Caught exception at bootstrap level while running network coordinator", e);
+            return;
+        }
+
+        log.info("Ending network coordinator session");
+    }
 }

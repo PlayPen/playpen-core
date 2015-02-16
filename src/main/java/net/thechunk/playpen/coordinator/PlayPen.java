@@ -17,6 +17,11 @@ public abstract class PlayPen {
         return instance;
     }
 
+    // do not call except from Bootstrap
+    public static void reset() {
+        instance = null;
+    }
+
     public static int protocolVersion() {
         return 1;
     }

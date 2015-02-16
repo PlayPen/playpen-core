@@ -1,15 +1,21 @@
 package net.thechunk.playpen.coordinator.network;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.log4j.Log4j2;
+import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.Initialization;
 import net.thechunk.playpen.coordinator.PlayPen;
-import net.thechunk.playpen.coordinator.Server;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
+import net.thechunk.playpen.networking.netty.NettySetup;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
@@ -17,12 +23,16 @@ import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,6 +58,88 @@ public class Network extends PlayPen {
         super();
         packageManager = new PackageManager();
         Initialization.packageManager(packageManager);
+    }
+
+    public boolean run() {
+        log.info("Reading network configuration");
+        String configStr;
+        try {
+            configStr = new String(Files.readAllBytes(Paths.get(Bootstrap.getHomeDir().getPath(), "network.json")));
+        }
+        catch(IOException e) {
+            log.fatal("Unable to read configuration file.", e);
+            return false;
+        }
+
+        InetAddress ip = null;
+        int port = 0;
+
+        try {
+            JSONObject config = new JSONObject(configStr);
+            String ipStr = config.getString("ip");
+            ip = InetAddress.getByName(ipStr);
+            port = config.getInt("port");
+        }
+        catch(Exception e) {
+            log.fatal("Unable to read configuration file.", e);
+            return false;
+        }
+
+        log.info("Reading keystore configuration");
+        try {
+            configStr = new String(Files.readAllBytes(Paths.get(Bootstrap.getHomeDir().getPath(), "keystore.json")));
+        }
+        catch(IOException e) {
+            log.fatal("Unable to read keystore configuration", e);
+            return false;
+        }
+
+        try {
+            JSONObject keystore = new JSONObject(configStr);
+            JSONArray coordKeys = keystore.getJSONArray("coordinators");
+            for(int i = 0; i < coordKeys.length(); ++i) {
+                JSONObject obj = coordKeys.getJSONObject(i);
+
+                LocalCoordinator coord = new LocalCoordinator();
+                coord.setEnabled(false);
+                coord.setUuid(obj.getString("uuid"));
+                coord.setKey(obj.getString("key"));
+                coordinators.put(coord.getUuid(), coord);
+
+                log.info("Loaded coordinator keypair " + coord.getUuid());
+            }
+        }
+        catch(JSONException e) {
+            log.fatal("Unable to read keystore configuration", e);
+            return false;
+        }
+
+        log.info(coordinators.size() + " coordinator keypairs registered");
+
+        log.info("Starting network coordinator");
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(NettySetup.BASE_INITIALIZER)
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+
+            ChannelFuture f = b.bind(ip, port).sync();
+            f.channel().closeFuture().sync();
+        }
+        catch(InterruptedException e) {
+            log.warn("Server operation interrupted!", e);
+            return false;
+        }
+        finally {
+            workerGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
+        }
+
+        return true;
     }
 
     public LocalCoordinator getCoordinator(String id) {
@@ -150,6 +242,65 @@ public class Network extends PlayPen {
             case SERVER_SHUTDOWN:
                 return processServerShutdown(command.getExtension(Commands.ServerShutdown.command), info, from);
         }
+    }
+
+    public LocalCoordinator createCoordinator() {
+        LocalCoordinator coord = new LocalCoordinator();
+        coord.setEnabled(false);
+        coord.setUuid(UUID.randomUUID().toString());
+        coord.setKey(UUID.randomUUID().toString());
+        coordinators.put(coord.getUuid(), coord);
+
+        log.info("Generated new coordinator keypair " + coord.getUuid());
+        return coord;
+    }
+
+    /**
+     * Selects a coordinator to use for provisioning. This will only return an active coordinator
+     * with the lowest normalized resource usage.
+     */
+    public LocalCoordinator selectCoordinator() {
+        LocalCoordinator best = null;
+        double bestNRU = Double.MAX_VALUE;
+        for(LocalCoordinator coord : coordinators.values()) {
+            if(!coord.isEnabled() || coord.getChannel() == null || coord.getChannel().isActive())
+                continue;
+
+            double nru = coord.getNormalizedResourceUsage();
+            if(nru < bestNRU) {
+                best = coord;
+                bestNRU = nru;
+            }
+        }
+
+        return best;
+    }
+
+    public boolean provision(P3Package p3, String serverName, Map<String, String> properties) {
+        LocalCoordinator coord = selectCoordinator();
+        if(coord == null) {
+            log.error("Unable to select a coordinator for a provisioning operation");
+            return false;
+        }
+
+        return provision(p3, serverName, properties, coord.getUuid());
+    }
+
+    public boolean provision(P3Package p3, String serverName, Map<String, String> properties, String target) {
+        log.info("Provision requested for " + p3.getId() + " at " + p3.getVersion() + " on coordinator " + target + " with server name " + serverName);
+        return sendProvision(target, p3, serverName, properties);
+    }
+
+    public boolean deprovision(String target, String serverId) {
+        return deprovision(target, serverId, false);
+    }
+
+    public boolean deprovision(String target, String serverId, boolean force) {
+        return sendDeprovision(target, serverId, force);
+    }
+
+    public boolean shutdownCoordinator(String target) {
+        return sendShutdown(target);
     }
 
     protected boolean processSync(Commands.Sync command, TransactionInfo info, String from) {

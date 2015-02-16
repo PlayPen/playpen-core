@@ -20,7 +20,7 @@ public class NettySetup {
     // Shared handlers
     private static final ProtobufVarint32LengthFieldPrepender LENGTH_FIELD_PREPENDER = new ProtobufVarint32LengthFieldPrepender();
     private static final ProtobufEncoder PROTOBUF_ENCODER = new ProtobufEncoder();
-    private static final ChannelInitializer<NioSocketChannel> BASE_INITIALIZER = new ChannelInitializer<NioSocketChannel>() {
+    public static final ChannelInitializer<NioSocketChannel> BASE_INITIALIZER = new ChannelInitializer<NioSocketChannel>() {
         @Override
         protected void initChannel(NioSocketChannel channel) throws Exception {
             ExtensionRegistry registry = ExtensionRegistry.newInstance();

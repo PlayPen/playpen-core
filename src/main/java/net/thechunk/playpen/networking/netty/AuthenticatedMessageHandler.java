@@ -15,4 +15,10 @@ public class AuthenticatedMessageHandler extends SimpleChannelInboundHandler<Pro
             return;
         }
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        log.error("Caught an exception while listening to a channel (closing connection)", cause);
+        ctx.channel().close(); // closing the connection is fine, since a sane coordinator will just reconnect in a bit
+    }
 }

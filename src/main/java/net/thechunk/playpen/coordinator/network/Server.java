@@ -1,4 +1,4 @@
-package net.thechunk.playpen.coordinator;
+package net.thechunk.playpen.coordinator.network;
 
 import lombok.Data;
 import net.thechunk.playpen.p3.P3Package;

@@ -3,7 +3,6 @@ package net.thechunk.playpen.coordinator.network;
 import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
-import net.thechunk.playpen.coordinator.Server;
 import net.thechunk.playpen.p3.P3Package;
 
 import java.util.HashMap;
@@ -91,5 +90,23 @@ public class LocalCoordinator {
         server.getProperties().putAll(properties);
         servers.put(server.getUuid(), server);
         return server;
+    }
+
+    /**
+     * Normalized resource usage is the sum of (resource / max resource) divided by the
+     * number of resources. This should be between 0 and 1.
+     */
+    public double getNormalizedResourceUsage() {
+        double result = 0.0;
+        Map<String, Integer> available = getAvailableResources();
+        for(Map.Entry<String, Integer> max : resources.entrySet()) {
+            if(max.getValue() <= 0) // wat
+                continue;
+
+            Integer used = available.getOrDefault(max.getKey(), 0);
+            result += used.doubleValue() / max.getValue().doubleValue();
+        }
+
+        return result;
     }
 }
