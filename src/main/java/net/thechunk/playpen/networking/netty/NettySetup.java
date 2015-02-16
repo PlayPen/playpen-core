@@ -14,9 +14,6 @@ import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 
 public class NettySetup {
-    // Netty I/O group
-    private static final NioEventLoopGroup EVENT_LOOP_GROUP = new NioEventLoopGroup();
-
     // Shared handlers
     private static final ProtobufVarint32LengthFieldPrepender LENGTH_FIELD_PREPENDER = new ProtobufVarint32LengthFieldPrepender();
     private static final ProtobufEncoder PROTOBUF_ENCODER = new ProtobufEncoder();
