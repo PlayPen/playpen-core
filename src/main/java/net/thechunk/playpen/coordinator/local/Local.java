@@ -102,7 +102,7 @@ public class Local extends PlayPen {
             uuid = config.getString("uuid");
             key = config.getString("key");
             coordIp = InetAddress.getByName(config.getString("coord-ip"));
-            coordPort = config.getInt("port");
+            coordPort = config.getInt("coord-port");
 
             JSONObject res = config.getJSONObject("resources");
             for(String key : res.keySet()) {
