@@ -15,7 +15,7 @@ import net.thechunk.playpen.Initialization;
 import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
-import net.thechunk.playpen.networking.netty.NettySetup;
+import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Coordinator;
@@ -37,7 +37,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class Local extends PlayPen {
@@ -137,19 +136,21 @@ public class Local extends PlayPen {
             b.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(NettySetup.BASE_INITIALIZER);
+                    .handler(new AuthenticatedMessageInitializer());
 
-            ChannelFuture f = b.connect(coordIp, coordPort).sync();
+            ChannelFuture f = b.connect(coordIp, coordPort).await();
 
-            if(!f.channel().isActive()) {
+            if(!f.isSuccess()) {
                 log.error("Unable to connect to network coordinator at " + coordIp + " port " + coordPort);
-                return true;
+                return true; // let's retry!
             }
+
+            channel = f.channel();
 
             log.info("Connected to network coordinator at " + coordIp + " port " + coordPort);
 
             log.info("Scheduling SYNC for 3 seconds");
-            scheduler.schedule(() -> sync(), 3, TimeUnit.SECONDS);
+            sync();
             f.channel().closeFuture().sync();
         }
         catch(InterruptedException e) {

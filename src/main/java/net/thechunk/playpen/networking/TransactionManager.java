@@ -2,7 +2,6 @@ package net.thechunk.playpen.networking;
 
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.coordinator.PlayPen;
-import net.thechunk.playpen.coordinator.network.Network;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Protocol;
 
@@ -60,7 +59,7 @@ public class TransactionManager {
         transactions.put(info.getId(), info);
 
         final String tid = info.getId();
-        Network.get().getScheduler().schedule(() -> cancel(tid, true), TRANSACTION_TIMEOUT, TimeUnit.SECONDS);
+        PlayPen.get().getScheduler().schedule(() -> cancel(tid, true), TRANSACTION_TIMEOUT, TimeUnit.SECONDS);
 
         return info;
     }

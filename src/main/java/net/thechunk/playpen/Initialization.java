@@ -1,10 +1,10 @@
 package net.thechunk.playpen;
 
 import net.thechunk.playpen.p3.PackageManager;
-import net.thechunk.playpen.p3.step.ExpandStep;
-import net.thechunk.playpen.p3.step.StringTemplateStep;
 import net.thechunk.playpen.p3.resolver.InMemoryCacheResolver;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
+import net.thechunk.playpen.p3.step.ExpandStep;
+import net.thechunk.playpen.p3.step.StringTemplateStep;
 
 import java.nio.file.Paths;
 

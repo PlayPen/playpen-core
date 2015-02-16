@@ -15,7 +15,7 @@ import net.thechunk.playpen.Initialization;
 import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
-import net.thechunk.playpen.networking.netty.NettySetup;
+import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
@@ -124,15 +124,15 @@ public class Network extends PlayPen {
             ServerBootstrap b = new ServerBootstrap();
             b.group(group)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(NettySetup.BASE_INITIALIZER)
+                    .childHandler(new AuthenticatedMessageInitializer())
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            ChannelFuture f = b.bind(ip, port).sync();
+            ChannelFuture f = b.bind(ip, port).await();
 
             if(!f.isSuccess()) {
                 log.error("Unable to bind on " + ip + " port " + port);
-                return true;
+                return false; // no retrying
             }
 
             log.info("Listening on " + ip + " port " + port);
@@ -235,7 +235,7 @@ public class Network extends PlayPen {
 
     @Override
     public boolean process(Commands.BaseCommand command, TransactionInfo info, String from) {
-        log.debug("Command " + command.getType() + "received from " + from + " (tid: " + info.getId() + ")");
+        log.debug("Command " + command.getType() + " received from " + from + " (tid: " + info.getId() + ")");
 
         switch(command.getType()) {
             default:
