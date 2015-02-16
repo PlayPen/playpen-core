@@ -85,6 +85,8 @@ public class Network extends PlayPen {
             return false;
         }
 
+        log.info("Network coordinator will start on " + ip + " port " + port);
+
         log.info("Reading keystore configuration");
         try {
             configStr = new String(Files.readAllBytes(Paths.get(Bootstrap.getHomeDir().getPath(), "keystore.json")));
