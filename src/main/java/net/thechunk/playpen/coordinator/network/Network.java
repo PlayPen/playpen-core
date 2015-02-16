@@ -208,6 +208,8 @@ public class Network extends PlayPen {
             return false;
         }
 
+        local.setChannel(from);
+
         Protocol.Transaction transaction = null;
         try {
             transaction = Protocol.Transaction.parseFrom(auth.getPayload());

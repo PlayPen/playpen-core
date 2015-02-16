@@ -3,6 +3,7 @@ package net.thechunk.playpen;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.coordinator.PlayPen;
+import net.thechunk.playpen.coordinator.local.Local;
 import net.thechunk.playpen.coordinator.network.Network;
 
 import java.io.File;
@@ -96,7 +97,7 @@ public class Bootstrap {
 
         switch(args[0].toLowerCase()) {
             case "local":
-
+                runLocalCoordinator();
                 break;
 
             case "network":
@@ -111,6 +112,24 @@ public class Bootstrap {
                 System.err.println("playpen <local/network/p3> [arguments...]");
                 return;
         }
+    }
+
+    private static void runLocalCoordinator() {
+        log.info("Bootstrap starting local coordinator (autorestart enabled)");
+
+        try {
+            while(true) {
+                PlayPen.reset();
+                if(!Local.get().run())
+                    break;
+            }
+        }
+        catch(Exception e) {
+            log.fatal("Caught exception at bootstrap level while running network coordinator", e);
+            return;
+        }
+
+        log.info("Ending local coordinator session");
     }
 
     private static void runNetworkCoordinator() {
