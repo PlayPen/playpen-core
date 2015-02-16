@@ -131,7 +131,25 @@ public class Network extends PlayPen {
 
     @Override
     public boolean process(Commands.BaseCommand command, TransactionInfo info, String from) {
-        throw new NotImplementedException(); // TODO
+        log.debug("Command " + command.getType() + "received from " + from + " (tid: " + info.getId() + ")");
+
+        switch(command.getType()) {
+            default:
+                log.error("Network coordinator cannot process command " + command.getType());
+                return false;
+
+            case SYNC:
+                return processSync(command.getExtension(Commands.Sync.command), info, from);
+
+            case PROVISION_RESPONSE:
+                return processProvisionResponse(command.getExtension(Commands.ProvisionResponse.command), info, from);
+
+            case PACKAGE_REQUEST:
+                return processPackageRequest(command.getExtension(Commands.PackageRequest.command), info, from);
+
+            case SERVER_SHUTDOWN:
+                return processServerShutdown(command.getExtension(Commands.ServerShutdown.command), info, from);
+        }
     }
 
     protected boolean processSync(Commands.Sync command, TransactionInfo info, String from) {
@@ -181,7 +199,7 @@ public class Network extends PlayPen {
         }
 
         coord.setEnabled(command.getEnabled());
-        log.info("Sync " + coord.getName() + " with " + coord.getServers().size()
+        log.info("Synchronized " + coord.getUuid() + " with " + coord.getServers().size()
                 + " servers (" + (coord.isEnabled() ? "enabled" : "not enabled") + ")");
         return true;
     }
@@ -250,7 +268,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        log.info("Sending provision of " + p3.getId() + " at " + p3.getVersion() + " to " + coord.getUuid());
+        log.info("Sending provision of " + p3.getId() + " at " + p3.getVersion() + " to " + coord.getUuid() + ", creating server " + server.getUuid());
 
         return TransactionManager.get().send(info.getId(), message, target);
     }
@@ -381,6 +399,8 @@ public class Network extends PlayPen {
             return false;
         }
 
+        log.info("Sending package " + p3.getId() + " at " + p3.getVersion() + " to " + target);
+
         return TransactionManager.get().send(info.getId(), message, target);
     }
 
@@ -417,6 +437,8 @@ public class Network extends PlayPen {
             TransactionManager.get().cancel(info.getId());
             return false;
         }
+
+        log.info("Deprovisioning " + serverId + " on coordinator " + target);
 
         return TransactionManager.get().send(info.getId(), message, target);
     }
