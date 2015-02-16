@@ -34,10 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 
 @Log4j2
 public class Local extends PlayPen {
@@ -155,6 +152,8 @@ public class Local extends PlayPen {
             log.info("Connected to network coordinator at " + coordIp + " port " + coordPort);
 
             sync();
+            scheduler.schedule(() -> Local.get().sync(), 5, TimeUnit.MINUTES);
+
             f.channel().closeFuture().sync();
         }
         catch(InterruptedException e) {
@@ -308,6 +307,39 @@ public class Local extends PlayPen {
         }
 
         log.info("Sending SYNC to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean processProvision(Commands.Provision command, TransactionInfo info) {
+        Coordinator.Server protoServer = command.getServer();
+        throw new NotImplementedException(); // TODO
+    }
+
+    protected boolean sendProvisionResponse(String tid, boolean ok) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Unknown transaction " + tid + ", unable to send provision response");
+            return false;
+        }
+
+        Commands.ProvisionResponse response = Commands.ProvisionResponse.newBuilder()
+                .setOk(ok)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.PROVISION_RESPONSE)
+                .setProvisionResponse(response)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build message for provision response");
+            return false;
+        }
+
+        log.info("Sending provision response (" + (ok ? "ok" : "not ok") + ")");
+
         return TransactionManager.get().send(info.getId(), message, null);
     }
 }
