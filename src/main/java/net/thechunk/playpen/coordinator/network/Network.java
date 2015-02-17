@@ -220,6 +220,8 @@ public class Network extends PlayPen {
 
         if(!AuthUtils.validateHash(auth, local.getKey())) {
             log.error("Invalid hash on message from " + auth.getUuid());
+            log.error("Closing connection from " + from + " due to bad hash");
+            from.close();
             return false;
         }
 
@@ -404,7 +406,7 @@ public class Network extends PlayPen {
         log.info("Synchronized " + coord.getUuid() + " with " + coord.getServers().size()
                 + " servers (" + (coord.isEnabled() ? "enabled" : "not enabled") + ")");
         log.debug(coord.getUuid() + " has " + coord.getResources().size() + " resources and " + coord.getAttributes().size() + " attributes");
-
+        
         return true;
     }
 

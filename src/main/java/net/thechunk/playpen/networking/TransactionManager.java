@@ -156,6 +156,7 @@ public class TransactionManager {
 
             case SINGLE:
                 info = new TransactionInfo();
+                info.setDone(true);
                 break;
 
             case CONTINUE:
@@ -181,6 +182,7 @@ public class TransactionManager {
                     info.getHandler().onTransactionReceive(this, info, message);
                 }
 
+                info.setDone(true);
                 if(!complete(info.getId())) {
                     log.error("Unable to complete transaction " + info.getId());
                     return;

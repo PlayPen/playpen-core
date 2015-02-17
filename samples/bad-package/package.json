@@ -1,0 +1,26 @@
+{
+  "package": {
+    "id": "bad-package",
+    "version": "1.0",
+
+    "parent": {
+      "id": "non-existant",
+      "version": "1.0"
+    },
+
+    "resources": {
+      "memory": 1024,
+      "cpu": 1
+    },
+
+    "requires": ["java-8"]
+  },
+
+  "strings": {
+    "foo": "bar"
+  },
+
+  "provision": [
+    {"id": "expand"}
+  ]
+}
