@@ -77,6 +77,9 @@ public class Bootstrap {
 
             if(Paths.get(homeDir.getPath(), "servers").toFile().mkdirs())
                 didCopyResources = true;
+
+            if(Paths.get(homeDir.getPath(), "temp").toFile().mkdir())
+                didCopyResources = true;
         }
         catch(Exception e) {
             System.err.println("Unable to copy default resources");

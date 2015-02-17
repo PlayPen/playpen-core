@@ -16,6 +16,7 @@ import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
+import net.thechunk.playpen.p3.IPackageResolver;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
@@ -24,17 +25,17 @@ import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
@@ -80,6 +81,7 @@ public class Local extends PlayPen {
         super();
         packageManager = new PackageManager();
         Initialization.packageManager(packageManager);
+        packageManager.setFallbackResolver(new PackageDownloadResolver());
     }
 
     public boolean run() {
@@ -242,7 +244,19 @@ public class Local extends PlayPen {
 
     @Override
     public boolean process(Commands.BaseCommand command, TransactionInfo info, String from) {
-        throw new NotImplementedException(); // TODO
+        log.debug("Command " + command.getType() + " received (tid: " + info.getId() + ")");
+
+        switch(command.getType()) {
+            default:
+                log.error("Local coordinator cannot process command " + command.getType());
+                return false;
+
+            case PROVISION:
+                return processProvision(command.getProvision(), info);
+
+            case PACKAGE_RESPONSE:
+                return processPackageResponse(command.getPackageResponse(), info);
+        }
     }
 
     public boolean sync() {
@@ -373,23 +387,10 @@ public class Local extends PlayPen {
         final String version = server.getP3().getVersion();
         final String uuid = server.getUuid();
         final String name = server.hasName() ? server.getName() : null;
+        final String tid = info.getId();
+        scheduler.schedule(() -> Local.get().checkPackageForProvision(tid, id, version, uuid, properties, name), 2, TimeUnit.SECONDS);
 
-        P3Package p3 = packageManager.resolve(server.getP3().getId(), server.getP3().getVersion());
-        if(p3 == null) {
-            log.info("Package " + server.getP3().getId() + " at " + server.getP3().getVersion() + " could not be resolved, requesting from network");
-            final String tid = info.getId();
-
-            scheduler.schedule(() -> Local.get().downloadPackageForProvision(tid, id, version, uuid, properties, name), 2, TimeUnit.SECONDS);
-            return true;
-        }
-
-        if(provision(p3, uuid, properties, name)) {
-            return sendProvisionResponse(info.getId(), true);
-        }
-        else {
-            sendProvisionResponse(info.getId(), false);
-            return false;
-        }
+        return true;
     }
 
     protected boolean sendProvisionResponse(String tid, boolean ok) {
@@ -449,41 +450,103 @@ public class Local extends PlayPen {
         return TransactionManager.get().send(info.getId(), message, null);
     }
 
-    protected void downloadPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
+    protected boolean processPackageResponse(Commands.PackageResponse response, TransactionInfo info) {
+        if(!response.getOk()) {
+            log.error("Received non-ok package response");
+            return false;
+        }
+
+        File tmpDest = Paths.get(
+                Bootstrap.getHomeDir().toString(),
+                "temp",
+                response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3").toFile();
+        File trueDest = Paths.get(
+                Bootstrap.getHomeDir().toString(),
+                "cache", "packages",
+                response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3").toFile();
+
+        if(tmpDest.exists()) {
+            log.error("Cannot write package to existing file " + tmpDest);
+            return false;
+        }
+
+        try (FileOutputStream output = new FileOutputStream(tmpDest)) {
+            IOUtils.write(response.getData().getData().toByteArray(), output);
+        }
+        catch(IOException e) {
+            log.error("Unable to write package to " + tmpDest, e);
+            return false;
+        }
+
+        if(trueDest.exists()) {
+            log.error("Cannot move package to existing file " + trueDest);
+            return false;
+        }
+
+        try {
+            Files.move(tmpDest.toPath(), trueDest.toPath());
+        }
+        catch(IOException e) {
+            log.error("Cannot move package to " + trueDest, e);
+            return false;
+        }
+
+        return true;
+    }
+
+    @Log4j2
+    private static class PackageDownloadResolver implements IPackageResolver {
+        @Override
+        public P3Package resolvePackage(PackageManager pm, String id, String version) {
+            log.info("Attempting package download for " + id + " at " + version);
+
+            TransactionInfo info = TransactionManager.get().begin();
+
+            if (!Local.get().sendPackageRequest(info.getId(), id, version)) {
+                log.error("Unable to send package request for " + id + " at " + version + "");
+                return null;
+            }
+
+            log.info("Waiting up to 60 seconds for package download");
+
+            // hacky, fix later
+            P3Package p3 = null;
+            try {
+                for(int i = 0; i < 6; ++i) {
+                    Thread.sleep(1000L * 10L);
+                    p3 = Local.get().getPackageManager().resolve(id, version, false);
+                    if(p3 != null)
+                        break;
+
+                    if(info.isDone())
+                        break;
+                }
+            }
+            catch(InterruptedException e) {
+                log.error("Interrupted while waiting for package download");
+                return null;
+            }
+
+            if(p3 == null) {
+                log.error("Unable to download package " + id + " at " + version);
+                return null;
+            }
+
+            return p3;
+        }
+    }
+
+    protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
         TransactionInfo info = TransactionManager.get().getInfo(tid);
         if(info == null) {
             log.error("Cannot download package for provision with an invalid transaction id " + tid);
             return;
         }
 
-        TransactionInfo reqInfo = TransactionManager.get().begin();
-        if(!sendPackageRequest(reqInfo.getId(), id, version)) {
-            log.error("Unable to send package request for " + id + " at " + version + ", cancelling provision");
-            sendProvisionResponse(tid, false);
-        }
-
-        log.info("Waiting up to 60 seconds for package download");
-
-        // hacky, fix later
-        P3Package p3 = null;
-        try {
-            for(int i = 0; i < 6; ++i) {
-                Thread.sleep(1000L * 10L);
-                p3 = packageManager.resolve(id, version);
-                if(p3 != null)
-                    break;
-
-                if(reqInfo.isDone())
-                    break;
-            }
-        }
-        catch(InterruptedException e) {
-            log.error("Interrupted while waiting for package download");
-            return;
-        }
+        P3Package p3 = packageManager.resolve(id, version);
 
         if(p3 == null) {
-            log.error("Unable to download package " + id + " at " + version);
+            sendProvisionResponse(tid, false);
             return;
         }
 

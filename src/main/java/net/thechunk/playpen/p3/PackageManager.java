@@ -1,6 +1,7 @@
 package net.thechunk.playpen.p3;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.utils.JSONUtils;
 import org.json.JSONArray;
@@ -21,6 +22,10 @@ public class PackageManager {
     @Getter
     private Map<P3Package.P3PackageInfo, P3Package> packageCache = new ConcurrentHashMap<>();
 
+    @Getter
+    @Setter
+    private IPackageResolver fallbackResolver = null;
+
     public void addPackageResolver(IPackageResolver resolver) {
         resolvers.add(resolver);
     }
@@ -34,6 +39,10 @@ public class PackageManager {
     }
 
     public P3Package resolve(String id, String version) {
+        return resolve(id, version, true);
+    }
+
+    public P3Package resolve(String id, String version, boolean allowFallback) {
         log.info("Attempting package resolution for " + id + " at " + version);
         P3Package p3 = null;
         for(IPackageResolver resolver : resolvers) {
@@ -43,6 +52,24 @@ public class PackageManager {
                 if(!p3.validate()) {
                     log.warn("Package failed to validate. Continuing resolution!");
                     continue;
+                }
+
+                P3Package.P3PackageInfo info = new P3Package.P3PackageInfo();
+                info.setId(p3.getId());
+                info.setVersion(p3.getVersion());
+                packageCache.put(info, p3);
+
+                return p3;
+            }
+        }
+
+        if(allowFallback && fallbackResolver != null) {
+            p3 = fallbackResolver.resolvePackage(this, id, version);
+            if(p3 != null) {
+                log.info("Package resolved by fallback " + fallbackResolver.getClass().getName());
+                if(!p3.validate()) {
+                    log.warn("Package failed to validate!");
+                    return null;
                 }
 
                 P3Package.P3PackageInfo info = new P3Package.P3PackageInfo();
