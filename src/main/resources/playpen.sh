@@ -6,4 +6,4 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-java -Dlog4j.configurationFile=logging.xml -jar "${DIR}/${project.build.finalName}.jar" $@
+java -Dlog4j.configurationFile=logging.xml -Xmx1024M -Xms1024M -jar "${DIR}/${project.build.finalName}.jar" $@
