@@ -14,4 +14,6 @@ public class PackageContext {
     private File destination;
 
     private Map<String, String> properties;
+
+    private Object user;
 }

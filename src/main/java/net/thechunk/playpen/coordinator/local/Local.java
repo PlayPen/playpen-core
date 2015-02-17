@@ -16,7 +16,7 @@ import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
-import net.thechunk.playpen.p3.IPackageResolver;
+import net.thechunk.playpen.p3.ExecutionType;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
@@ -301,7 +301,7 @@ public class Local extends PlayPen {
         server.getProperties().putAll(properties);
         server.setLocalPath(destination.toString());
 
-        if(!packageManager.provision(p3, destination, server.getProperties())) {
+        if(!packageManager.execute(ExecutionType.PROVISION, p3, destination, server.getProperties(), server)) {
             log.error("Unable to provision server " + uuid + " (package manager failed provision operation)");
             try {
                 FileUtils.deleteDirectory(destination);

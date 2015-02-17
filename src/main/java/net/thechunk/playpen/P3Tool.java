@@ -230,7 +230,7 @@ public class P3Tool {
             return;
         }
 
-        if(!pm.provision(p3, destination, new HashMap<String, String>())) {
+        if(!pm.execute(p3, destination, new HashMap<String, String>())) {
             System.err.println("Unable to provision package");
             return;
         }

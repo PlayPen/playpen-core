@@ -219,13 +219,13 @@ public class PackageManager {
         }
     }
 
-    public boolean provision(P3Package p3, File destination, Map<String, String> properties) {
-        return internalProvision(p3, destination, properties, new HashSet<P3Package.P3PackageInfo>(), null) != null;
+    public boolean execute(ExecutionType type, P3Package p3, File destination, Map<String, String> properties, Object user) {
+        return internalExecute(type, p3, destination, properties, user, new HashSet<P3Package.P3PackageInfo>(), null) != null;
     }
 
-    private P3Package internalProvision(P3Package p3, File destination, Map<String, String> properties,
-                                        Set<P3Package.P3PackageInfo> loaded, P3Package child) {
-        log.info("Provisioning " + p3.getId() + " at " + p3.getVersion());
+    private P3Package internalExecute(ExecutionType type, P3Package p3, File destination, Map<String, String> properties, Object user,
+                                      Set<P3Package.P3PackageInfo> loaded, P3Package child) {
+        log.info("Executing " + type + " " + p3.getId() + " at " + p3.getVersion());
 
         P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
         p3info.setId(p3.getId());
@@ -238,7 +238,7 @@ public class PackageManager {
         loaded.add(p3info);
 
         if(destination.exists() && !destination.isDirectory()) {
-            log.error("Unable to provision package (destination is not a directory)");
+            log.error("Unable to execute package (destination is not a directory)");
             return null;
         }
 
@@ -265,9 +265,9 @@ public class PackageManager {
         }
 
         if(p3.getParent() != null) {
-            P3Package parent = internalProvision(p3.getParent(), destination, properties, loaded, p3);
+            P3Package parent = internalExecute(type, p3.getParent(), destination, properties, user, loaded, p3);
             if (parent == null) {
-                log.error("Unable to provision parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
+                log.error("Unable to execute parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
                 return null;
             }
 
@@ -283,16 +283,31 @@ public class PackageManager {
         context.setP3(p3);
         context.setDestination(destination);
         context.setProperties(properties);
+        context.setUser(user);
 
-        for(P3Package.PackageStepConfig config : p3.getProvisionSteps()) {
-            log.info("provision step - " + config.getStep().getStepId());
+        List<P3Package.PackageStepConfig> steps = null;
+        switch(type) {
+            case PROVISION:
+                steps = p3.getProvisionSteps();
+                break;
+
+            case EXECUTE:
+                steps = p3.getExecutionSteps();
+                break;
+
+            case SHUTDOWN:
+                steps = p3.getShutdownSteps();
+                break;
+        }
+        for(P3Package.PackageStepConfig config : steps) {
+            log.info("package step - " + config.getStep().getStepId());
             if(!config.getStep().runStep(context, config.getConfig())) {
                 log.error("Step failed!");
                 return null;
             }
         }
 
-        log.info("Provision of " + p3.getId() + " at " + p3.getVersion() + " finished!");
+        log.info("Execution " + type + " of " + p3.getId() + " at " + p3.getVersion() + " finished!");
         return p3;
     }
 }
