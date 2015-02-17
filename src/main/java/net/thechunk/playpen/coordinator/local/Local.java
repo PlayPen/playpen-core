@@ -286,7 +286,7 @@ public class Local extends PlayPen {
             return false;
         }
 
-        File destination = Paths.get(Bootstrap.getHomeDir().toString(), "servers", uuid).toFile();
+        File destination = Paths.get(Bootstrap.getHomeDir().getPath(), "servers", uuid).toFile();
         if(destination.exists()) {
             log.error("Cannot provision into directory that already exists! " + destination.toString());
             return false;
@@ -470,11 +470,11 @@ public class Local extends PlayPen {
         }
 
         File tmpDest = Paths.get(
-                Bootstrap.getHomeDir().toString(),
+                Bootstrap.getHomeDir().getPath(),
                 "temp",
                 response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3").toFile();
         File trueDest = Paths.get(
-                Bootstrap.getHomeDir().toString(),
+                Bootstrap.getHomeDir().getPath(),
                 "cache", "packages",
                 response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3").toFile();
 

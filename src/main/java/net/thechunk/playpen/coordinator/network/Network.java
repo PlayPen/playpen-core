@@ -23,13 +23,16 @@ import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -266,7 +269,41 @@ public class Network extends PlayPen {
         coordinators.put(coord.getUuid(), coord);
 
         log.info("Generated new coordinator keypair " + coord.getUuid());
+
+        saveKeystore();
         return coord;
+    }
+
+    public void saveKeystore() {
+        log.info("Saving keystore...");
+        try {
+            Path path = Paths.get(Bootstrap.getHomeDir().getPath(), "keystore.json");
+            JSONObject config = new JSONObject(new String(Files.readAllBytes(path)));
+
+            JSONArray coords = new JSONArray();
+            for(LocalCoordinator coord : coordinators.values()) {
+                JSONObject obj = new JSONObject();
+                obj.put("uuid", coord.getUuid());
+                obj.put("key", coord.getKey());
+
+                coords.put(obj);
+            }
+
+            config.put("coordinators", coords);
+            String json = config.toString(2);
+
+            try (FileOutputStream output = new FileOutputStream(path.toFile())) {
+                IOUtils.write(json, output);
+            }
+        }
+        catch(JSONException e) {
+            log.error("Unable to save keystore", e);
+        }
+        catch(IOException e) {
+            log.error("Unable to save keystore", e);
+        }
+
+        log.info("Saved keystore");
     }
 
     /**
