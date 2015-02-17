@@ -83,7 +83,15 @@ public class Local extends PlayPen {
         Initialization.packageManager(packageManager);
         packageManager.setFallbackResolver(new PackageDownloadResolver());
 
-        // TODO: delete and recreate servers directory
+        log.info("Removing old server installations");
+        try {
+            File serversDir = Paths.get(Bootstrap.getHomeDir().toString(), "servers").toFile();
+            FileUtils.deleteDirectory(serversDir);
+            serversDir.mkdirs();
+        }
+        catch(IOException e) {
+            log.warn("Unable to remove old server installations", e);
+        }
     }
 
     public boolean run() {
