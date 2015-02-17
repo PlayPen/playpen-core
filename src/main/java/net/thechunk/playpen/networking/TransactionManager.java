@@ -59,7 +59,10 @@ public class TransactionManager {
         transactions.put(info.getId(), info);
 
         final String tid = info.getId();
-        info.setCancelTask(PlayPen.get().getScheduler().schedule(() -> cancel(tid, true), TRANSACTION_TIMEOUT, TimeUnit.SECONDS));
+        info.setCancelTask(PlayPen.get().getScheduler().schedule(() -> {
+            log.warn("Transaction " + tid + " has been cancelled due to timeout");
+            cancel(tid, true);
+        }, TRANSACTION_TIMEOUT, TimeUnit.SECONDS));
 
         return info;
     }

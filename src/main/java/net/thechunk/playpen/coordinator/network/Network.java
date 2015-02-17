@@ -367,7 +367,6 @@ public class Network extends PlayPen {
                 + " servers (" + (coord.isEnabled() ? "enabled" : "not enabled") + ")");
         log.debug(coord.getUuid() + " has " + coord.getResources().size() + " resources and " + coord.getAttributes().size() + " attributes");
 
-        sendProvision(coord.getUuid(), packageManager.resolve("test-package", "1.0"), "test-server", new HashMap<>());
         return true;
     }
 

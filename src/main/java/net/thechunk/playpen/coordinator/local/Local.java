@@ -82,6 +82,8 @@ public class Local extends PlayPen {
         packageManager = new PackageManager();
         Initialization.packageManager(packageManager);
         packageManager.setFallbackResolver(new PackageDownloadResolver());
+
+        // TODO: delete and recreate servers directory
     }
 
     public boolean run() {
@@ -268,6 +270,8 @@ public class Local extends PlayPen {
     }
 
     public boolean provision(P3Package p3, String uuid, Map<String, String> properties, String name) {
+        // TODO: Resource + Attribute checks
+
         if(!p3.isResolved()) {
             log.error("Cannot provision unresolved package " + p3.getId() + " at " + p3.getVersion());
             return false;
