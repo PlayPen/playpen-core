@@ -2,6 +2,7 @@ package net.thechunk.playpen.coordinator.local;
 
 import lombok.Data;
 import net.thechunk.playpen.p3.P3Package;
+import net.thechunk.playpen.p3.P3Process;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,4 +18,6 @@ public class Server {
     private Map<String, String> properties = new ConcurrentHashMap<>();
 
     private String localPath;
+
+    private P3Process process;
 }
