@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PackageManager {
     private List<IPackageResolver> resolvers = new LinkedList<>();
 
-    private Map<String, IPackageStep> packageSteps = new HashMap<>();
+    private Map<String, IPackageStep> packageSteps = new ConcurrentHashMap<>();
 
     @Getter
     private Map<P3Package.P3PackageInfo, P3Package> packageCache = new ConcurrentHashMap<>();

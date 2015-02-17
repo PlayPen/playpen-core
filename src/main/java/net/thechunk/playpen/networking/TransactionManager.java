@@ -59,7 +59,7 @@ public class TransactionManager {
         transactions.put(info.getId(), info);
 
         final String tid = info.getId();
-        PlayPen.get().getScheduler().schedule(() -> cancel(tid, true), TRANSACTION_TIMEOUT, TimeUnit.SECONDS);
+        info.setCancelTask(PlayPen.get().getScheduler().schedule(() -> cancel(tid, true), TRANSACTION_TIMEOUT, TimeUnit.SECONDS));
 
         return info;
     }
@@ -105,6 +105,12 @@ public class TransactionManager {
             info.getHandler().onTransactionCancel(this, info);
         }
 
+        if(info.getCancelTask() != null && !info.getCancelTask().isDone()) {
+            info.getCancelTask().cancel(false);
+        }
+
+        info.setDone(true);
+
         transactions.remove(id);
         return true;
     }
@@ -119,6 +125,12 @@ public class TransactionManager {
         if(info.getHandler() != null) {
             info.getHandler().onTransactionComplete(this, info);
         }
+
+        if(info.getCancelTask() != null && !info.getCancelTask().isDone()) {
+            info.getCancelTask().cancel(false);
+        }
+
+        info.setDone(true);
 
         transactions.remove(id);
         return true;

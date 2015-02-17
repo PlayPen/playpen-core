@@ -11,7 +11,7 @@ public class AuthenticatedMessageHandler extends SimpleChannelInboundHandler<Pro
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Protocol.AuthenticatedMessage msg) throws Exception {
         if(!PlayPen.get().receive(msg, ctx.channel())) {
-            log.error("Unable to pass message to PlayPen coordinator");
+            log.error("Message failed");
             return;
         }
     }

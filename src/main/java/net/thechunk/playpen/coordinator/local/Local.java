@@ -16,6 +16,7 @@ import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
+import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Coordinator;
@@ -246,6 +247,14 @@ public class Local extends PlayPen {
         return sendSync();
     }
 
+    public boolean provision(P3Package p3, String uuid, Map<String, String> properties) {
+        return provision(p3, uuid, properties, null);
+    }
+
+    public boolean provision(P3Package p3, String uuid, Map<String, String> properties, String name) {
+        throw new NotImplementedException();
+    }
+
     protected boolean sendSync() {
         Commands.Sync.Builder syncBuilder = Commands.Sync.newBuilder()
                 .setEnabled(enabled);
@@ -311,8 +320,40 @@ public class Local extends PlayPen {
     }
 
     protected boolean processProvision(Commands.Provision command, TransactionInfo info) {
-        Coordinator.Server protoServer = command.getServer();
-        throw new NotImplementedException(); // TODO
+        Coordinator.Server server = command.getServer();
+
+        if(servers.containsKey(server.getUuid())) {
+            log.error("PROVISION contained existing server uuid");
+            sendProvisionResponse(info.getId(), false);
+            return false;
+        }
+
+        final Map<String, String> properties = new HashMap<>();
+        for(Coordinator.Property prop : server.getPropertiesList()) {
+            properties.put(prop.getName(), prop.getValue());
+        }
+
+        final String id = server.getP3().getId();
+        final String version = server.getP3().getVersion();
+        final String uuid = server.getUuid();
+        final String name = server.hasName() ? server.getName() : null;
+
+        P3Package p3 = packageManager.resolve(server.getP3().getId(), server.getP3().getVersion());
+        if(p3 == null) {
+            log.info("Package " + server.getP3().getId() + " at " + server.getP3().getVersion() + " could not be resolved, requesting from network");
+            final String tid = info.getId();
+
+            scheduler.schedule(() -> Local.get().downloadPackageForProvision(tid, id, version, uuid, properties, name), 2, TimeUnit.SECONDS);
+            return true;
+        }
+
+        if(provision(p3, uuid, properties, name)) {
+            return sendProvisionResponse(info.getId(), true);
+        }
+        else {
+            sendProvisionResponse(info.getId(), false);
+            return false;
+        }
     }
 
     protected boolean sendProvisionResponse(String tid, boolean ok) {
@@ -341,5 +382,80 @@ public class Local extends PlayPen {
         log.info("Sending provision response (" + (ok ? "ok" : "not ok") + ")");
 
         return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean sendPackageRequest(String tid, String id, String version) {
+        P3.P3Meta meta = P3.P3Meta.newBuilder()
+                .setId(id)
+                .setVersion(version)
+                .build();
+
+        Commands.PackageRequest request = Commands.PackageRequest.newBuilder()
+                .setP3(meta)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.PACKAGE_REQUEST)
+                .setPackageRequest(request)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.CREATE, command);
+        if(message == null) {
+            log.error("Unable to build message for package request");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending package request of " + id + " at " + version);
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected void downloadPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Cannot download package for provision with an invalid transaction id " + tid);
+            return;
+        }
+
+        TransactionInfo reqInfo = TransactionManager.get().begin();
+        if(!sendPackageRequest(reqInfo.getId(), id, version)) {
+            log.error("Unable to send package request for " + id + " at " + version + ", cancelling provision");
+            sendProvisionResponse(tid, false);
+        }
+
+        log.info("Waiting up to 60 seconds for package download");
+
+        // hacky, fix later
+        P3Package p3 = null;
+        try {
+            for(int i = 0; i < 6; ++i) {
+                Thread.sleep(1000L * 10L);
+                p3 = packageManager.resolve(id, version);
+                if(p3 != null)
+                    break;
+
+                if(reqInfo.isDone())
+                    break;
+            }
+        }
+        catch(InterruptedException e) {
+            log.error("Interrupted while waiting for package download");
+            return;
+        }
+
+        if(p3 == null) {
+            log.error("Unable to download package " + id + " at " + version);
+            return;
+        }
+
+        if(provision(p3, uuid, properties, name)) {
+            sendProvisionResponse(tid, true);
+        }
+        else {
+            sendProvisionResponse(tid, false);
+        }
     }
 }
