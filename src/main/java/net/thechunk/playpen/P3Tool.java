@@ -1,5 +1,6 @@
 package net.thechunk.playpen;
 
+import net.thechunk.playpen.p3.ExecutionType;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageException;
 import net.thechunk.playpen.p3.PackageManager;
@@ -230,7 +231,7 @@ public class P3Tool {
             return;
         }
 
-        if(!pm.execute(p3, destination, new HashMap<String, String>())) {
+        if(!pm.execute(ExecutionType.PROVISION, p3, destination, new HashMap<String, String>(), null)) {
             System.err.println("Unable to provision package");
             return;
         }
