@@ -37,6 +37,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class Network extends PlayPen {
@@ -272,15 +273,15 @@ public class Network extends PlayPen {
      * Selects a coordinator to use for provisioning. This will only return an active coordinator
      * with the lowest normalized resource usage.
      */
-    public LocalCoordinator selectCoordinator() {
+    public LocalCoordinator selectCoordinator(P3Package p3) {
         LocalCoordinator best = null;
         double bestNRU = Double.MAX_VALUE;
         for(LocalCoordinator coord : coordinators.values()) {
-            if(!coord.isEnabled() || coord.getChannel() == null || coord.getChannel().isActive())
+            if(!coord.isEnabled() || coord.getChannel() == null || !coord.getChannel().isActive())
                 continue;
 
             double nru = coord.getNormalizedResourceUsage();
-            if(nru < bestNRU) {
+            if(nru < bestNRU && coord.canProvisionPackage(p3)) {
                 best = coord;
                 bestNRU = nru;
             }
@@ -290,7 +291,7 @@ public class Network extends PlayPen {
     }
 
     public boolean provision(P3Package p3, String serverName, Map<String, String> properties) {
-        LocalCoordinator coord = selectCoordinator();
+        LocalCoordinator coord = selectCoordinator(p3);
         if(coord == null) {
             log.error("Unable to select a coordinator for a provisioning operation");
             return false;

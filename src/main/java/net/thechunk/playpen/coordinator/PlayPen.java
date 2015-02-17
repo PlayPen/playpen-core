@@ -22,10 +22,6 @@ public abstract class PlayPen {
         instance = null;
     }
 
-    public static int protocolVersion() {
-        return 1;
-    }
-
     public PlayPen() {
         instance = this;
     }

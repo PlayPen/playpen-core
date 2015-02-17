@@ -19,6 +19,7 @@ import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.IPackageResolver;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
+import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
@@ -511,7 +512,11 @@ public class Local extends PlayPen {
     }
 
     @Log4j2
-    private static class PackageDownloadResolver implements IPackageResolver {
+    private static class PackageDownloadResolver extends LocalRepositoryResolver {
+        public PackageDownloadResolver() {
+            super(Paths.get(Bootstrap.getHomeDir().getPath(), "cache", "packages").toFile());
+        }
+
         @Override
         public P3Package resolvePackage(PackageManager pm, String id, String version) {
             log.info("Attempting package download for " + id + " at " + version);
@@ -525,12 +530,12 @@ public class Local extends PlayPen {
 
             log.info("Waiting up to 60 seconds for package download");
 
-            // hacky, fix later
+            // Waiting is hacky, fix later
             P3Package p3 = null;
             try {
                 for(int i = 0; i < 12; ++i) {
                     Thread.sleep(1000L * 5L);
-                    p3 = Local.get().getPackageManager().resolve(id, version, false);
+                    p3 = super.resolvePackage(pm, id, version);
                     if(p3 != null)
                         break;
 
