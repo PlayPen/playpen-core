@@ -474,6 +474,8 @@ public class Local extends PlayPen {
             return false;
         }
 
+        log.info("Writing received package " + response.getData().getMeta().getId() + " at " + response.getData().getMeta().getVersion() + " to temp");
+
         try (FileOutputStream output = new FileOutputStream(tmpDest)) {
             IOUtils.write(response.getData().getData().toByteArray(), output);
         }
@@ -486,6 +488,8 @@ public class Local extends PlayPen {
             log.error("Cannot move package to existing file " + trueDest);
             return false;
         }
+
+        log.info("Moving package " + response.getData().getMeta().getId() +  " at " + response.getData().getMeta().getVersion() + " to cache");
 
         try {
             Files.move(tmpDest.toPath(), trueDest.toPath());
@@ -516,8 +520,8 @@ public class Local extends PlayPen {
             // hacky, fix later
             P3Package p3 = null;
             try {
-                for(int i = 0; i < 6; ++i) {
-                    Thread.sleep(1000L * 10L);
+                for(int i = 0; i < 12; ++i) {
+                    Thread.sleep(1000L * 5L);
                     p3 = Local.get().getPackageManager().resolve(id, version, false);
                     if(p3 != null)
                         break;
