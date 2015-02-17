@@ -23,10 +23,12 @@ import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
@@ -252,7 +254,41 @@ public class Local extends PlayPen {
     }
 
     public boolean provision(P3Package p3, String uuid, Map<String, String> properties, String name) {
-        throw new NotImplementedException();
+        if(!p3.isResolved()) {
+            log.error("Cannot provision unresolved package " + p3.getId() + " at " + p3.getVersion());
+            return false;
+        }
+
+        File destination = Paths.get(Bootstrap.getHomeDir().toString(), "servers", uuid).toFile();
+        if(destination.exists()) {
+            log.error("Cannot provision into directory that already exists! " + destination.toString());
+            return false;
+        }
+
+        destination.mkdirs();
+
+        Server server = new Server();
+        server.setP3(p3);
+        server.setUuid(uuid);
+        server.setName(name);
+        server.getProperties().putAll(properties);
+        server.setLocalPath(destination.toString());
+
+        if(!packageManager.provision(p3, destination, server.getProperties())) {
+            log.error("Unable to provision server " + uuid + " (package manager failed provision operation)");
+            try {
+                FileUtils.deleteDirectory(destination);
+            }
+            catch(IOException e) {
+                log.error("Unable to clean up directory " + destination.toString());
+            }
+
+            return false;
+        }
+
+        log.info("Provisioned server " + uuid + ", executing!");
+        // TODO: actually execute the server
+        return true;
     }
 
     protected boolean sendSync() {
