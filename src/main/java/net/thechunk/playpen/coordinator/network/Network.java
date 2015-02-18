@@ -34,11 +34,13 @@ import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class Network extends PlayPen {
@@ -725,7 +727,7 @@ public class Network extends PlayPen {
         }
 
         for(LocalCoordinator coord : coordinators.values()) {
-            if(!coord.isEnabled())
+            if(!coord.isEnabled() || coord.getChannel() == null || !coord.getChannel().isActive())
                 continue;
 
             Coordinator.LocalCoordinator.Builder coordBuilder = Coordinator.LocalCoordinator.newBuilder()
@@ -741,6 +743,9 @@ public class Network extends PlayPen {
             }
 
             for(Server server : coord.getServers().values()) {
+                if(!server.isActive())
+                    continue;
+
                 P3.P3Meta meta = P3.P3Meta.newBuilder()
                         .setId(server.getP3().getId())
                         .setVersion(server.getP3().getVersion())

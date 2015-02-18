@@ -125,6 +125,7 @@ public class Client extends PlayPen {
 
             if(!f.isSuccess()) {
                 log.error("Unable to connect to network coordinator at " + coordIp + " port " + coordPort);
+                System.err.println("Unable to connect to network coordinator at " + coordIp + " port " + coordPort);
                 return;
             }
 
@@ -152,7 +153,7 @@ public class Client extends PlayPen {
 
     @Override
     public void onVMShutdown() {
-        log.info("VM shutting down, shutting down all servers (force)");
+        log.info("VM shutting down, stopping all tasks");
 
         if(scheduler != null && !scheduler.isShutdown()) {
             scheduler.shutdownNow();
@@ -273,6 +274,7 @@ public class Client extends PlayPen {
         clientMode = ClientMode.LIST;
         if(!sendListRequest()) {
             log.error("Unable to send list request to coordinator");
+            System.out.println("Unable to send list request to coordinator");
             channel.close();
             return;
         }

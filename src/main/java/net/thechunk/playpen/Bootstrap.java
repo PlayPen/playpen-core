@@ -80,7 +80,10 @@ public class Bootstrap {
             if(Paths.get(homeDir.getPath(), "servers").toFile().mkdirs())
                 didCopyResources = true;
 
-            if(Paths.get(homeDir.getPath(), "temp").toFile().mkdir())
+            if(Paths.get(homeDir.getPath(), "temp").toFile().mkdirs())
+                didCopyResources = true;
+
+            if(Paths.get(homeDir.getPath(), "server-logs").toFile().mkdirs())
                 didCopyResources = true;
         }
         catch(Exception e) {

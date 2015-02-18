@@ -1,15 +1,19 @@
 package net.thechunk.playpen.p3.step;
 
 import lombok.extern.log4j.Log4j2;
+import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.coordinator.local.Server;
 import net.thechunk.playpen.p3.IPackageStep;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
+import net.thechunk.playpen.utils.process.FileProcessListener;
 import net.thechunk.playpen.utils.process.XProcess;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,6 +54,13 @@ public class ExecuteStep implements IPackageStep {
         if(server != null) {
             log.info("Registering process with server " + server.getUuid());
             server.setProcess(proc);
+
+            try {
+                proc.addListener(new FileProcessListener(Paths.get(Bootstrap.getHomeDir().getPath(), "server-logs", server.getUuid() + ".log").toFile()));
+            }
+            catch(IOException e) {
+                log.warn("Unable to create log for server, no logging of console output will be done");
+            }
         }
 
         if(!proc.run()) {
