@@ -80,6 +80,8 @@ public class Local extends PlayPen {
     @Getter
     private Channel channel = null;
 
+    private boolean shuttingDown = false;
+
     private Local() {
         super();
         packageManager = new PackageManager();
@@ -195,7 +197,7 @@ public class Local extends PlayPen {
             group.shutdownGracefully();
         }
 
-        return true;
+        return !shuttingDown;
     }
 
     @Override
@@ -280,6 +282,19 @@ public class Local extends PlayPen {
         }
 
         servers.remove(id);
+    }
+
+    public void shutdownCoordinator() {
+        log.info("Shutting down coordinator");
+        shuttingDown = true;
+
+        if(channel != null && channel.isOpen()) {
+            channel.close();
+        }
+
+        for(Server server : servers.values()) {
+            shutdownServer(server.getUuid(), false, false);
+        }
     }
 
     public void shutdownServer(String id) {
@@ -392,6 +407,9 @@ public class Local extends PlayPen {
 
             case DEPROVISION:
                 return processDeprovision(command.getDeprovision(), info);
+
+            case SHUTDOWN:
+                return processShutdown(info);
         }
     }
 
@@ -681,6 +699,12 @@ public class Local extends PlayPen {
         log.info("Sending server shutdown notice to network coordinator");
 
         return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean processShutdown(TransactionInfo info) {
+        log.info("SHUTDOWN received, closing everything");
+        shutdownCoordinator();
+        return true;
     }
 
     protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {

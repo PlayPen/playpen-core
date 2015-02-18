@@ -16,10 +16,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Log4j2
-public class AsyncExecuteStep implements IPackageStep {
+public class ExecuteStep implements IPackageStep {
     @Override
     public String getStepId() {
-        return "async-execute";
+        return "execute";
     }
 
     @Override
