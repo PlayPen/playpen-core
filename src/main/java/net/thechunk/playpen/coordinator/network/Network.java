@@ -329,7 +329,10 @@ public class Network extends PlayPen {
         return best;
     }
 
-    public boolean provision(P3Package p3, String serverName, Map<String, String> properties) {
+    /**
+     * Synchronized due to the use of selectCoordinator
+     */
+    public synchronized boolean provision(P3Package p3, String serverName, Map<String, String> properties) {
         LocalCoordinator coord = selectCoordinator(p3);
         if(coord == null) {
             log.error("Unable to select a coordinator for a provisioning operation");
@@ -410,7 +413,7 @@ public class Network extends PlayPen {
         return true;
     }
 
-    protected boolean sendProvision(String target, P3Package p3, String name, Map<String, String> properties) {
+    protected synchronized boolean sendProvision(String target, P3Package p3, String name, Map<String, String> properties) {
         if(!p3.isResolved()) {
             log.error("Cannot pass an unresolved package to sendProvision");
             return false;

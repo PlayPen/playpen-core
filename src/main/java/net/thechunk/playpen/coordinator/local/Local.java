@@ -186,6 +186,44 @@ public class Local extends PlayPen {
         return true;
     }
 
+    public Map<String, Integer> getAvailableResources() {
+        Map<String, Integer> used = new HashMap<>();
+        for(Map.Entry<String, Integer> entry : resources.entrySet()) {
+            Integer value = entry.getValue();
+            for(Server server : servers.values()) {
+                value -= server.getP3().getResources().getOrDefault(entry.getKey(), 0);
+            }
+
+            used.put(entry.getKey(), value);
+        }
+
+        return used;
+    }
+
+    public boolean canProvisionPackage(P3Package p3) {
+        for(String attr : p3.getAttributes()) {
+            if(!attributes.contains(attr)) {
+                log.warn("Missing attribute " + attr + " for " + p3.getId() + " at " + p3.getVersion());
+                return false;
+            }
+        }
+
+        Map<String, Integer> resources = getAvailableResources();
+        for(Map.Entry<String, Integer> entry : p3.getResources().entrySet()) {
+            if(!resources.containsKey(entry.getKey())) {
+                log.warn("Misisng resource " + entry.getKey() + " for " + p3.getId() + " at " + p3.getVersion());
+                return false;
+            }
+
+            if(resources.get(entry.getKey()) - entry.getValue() < 0) {
+                log.warn("Not enough of resource " + entry.getKey() + " for " + p3.getId() + " at " + p3.getVersion());
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public Server getServer(String id) {
         return servers.getOrDefault(id, null);
     }
@@ -279,10 +317,13 @@ public class Local extends PlayPen {
     }
 
     public boolean provision(P3Package p3, String uuid, Map<String, String> properties, String name) {
-        // TODO: Resource + Attribute checks
-
         if(!p3.isResolved()) {
             log.error("Cannot provision unresolved package " + p3.getId() + " at " + p3.getVersion());
+            return false;
+        }
+
+        if(!canProvisionPackage(p3)) {
+            log.error("Cannot provision package " + p3.getId() + " at " + p3.getVersion());
             return false;
         }
 
@@ -313,8 +354,10 @@ public class Local extends PlayPen {
             return false;
         }
 
+        servers.put(server.getUuid(), server);
+
         log.info("Provisioned server " + uuid + ", executing!");
-        // TODO: actually execute the server
+        new ServerExecutionThread(server).start();
         return true;
     }
 

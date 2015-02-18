@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,9 +24,20 @@ public class ExecuteStep implements IPackageStep {
 
     @Override
     public boolean runStep(PackageContext ctx, JSONObject config) {
+        Server server = null;
+        if(ctx.getUser() instanceof Server) {
+            server = (Server)ctx.getUser();
+        }
+
         List<String> command = new LinkedList<>();
         try {
-            command.add(config.getString("command"));
+            if(server == null) {
+                command.add(config.getString("command"));
+            }
+            else {
+                command.add(Paths.get(server.getLocalPath(), config.getString("command")).toString());
+            }
+
             JSONArray args = JSONUtils.safeGetArray(config, "arguments");
             if(args != null) {
                 for(int i = 0; i < args.length(); ++i) {
@@ -43,8 +55,7 @@ public class ExecuteStep implements IPackageStep {
 
         XProcess proc = new XProcess(command, ctx.getDestination().toString());
 
-        if(ctx.getUser() instanceof Server) {
-            Server server = (Server) ctx.getUser();
+        if(server != null) {
             log.info("Registering process with server " + server.getUuid());
             server.setProcess(proc);
         }

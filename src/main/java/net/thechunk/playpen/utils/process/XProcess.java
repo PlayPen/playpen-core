@@ -88,6 +88,7 @@ public class XProcess {
             this.proc = proc;
         }
 
+        @Override
         public void run() {
             try(InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader reader = new BufferedReader(isr)) {
