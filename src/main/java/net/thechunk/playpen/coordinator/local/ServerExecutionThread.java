@@ -16,6 +16,7 @@ public class ServerExecutionThread extends Thread {
     @Override
     public void run() {
         log.info("Executing server " + server.getUuid());
+
         if(Local.get().getPackageManager().execute(
                 ExecutionType.EXECUTE,
                 server.getP3(),
@@ -27,5 +28,8 @@ public class ServerExecutionThread extends Thread {
         else {
             log.error("Server " + server.getUuid() + " execution did not complete successfully");
         }
+
+        log.info("Notifying LC of server shutdown");
+        Local.get().notifyServerShutdown(server.getUuid());
     }
 }

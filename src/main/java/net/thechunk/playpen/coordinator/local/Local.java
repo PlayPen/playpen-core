@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -228,6 +229,21 @@ public class Local extends PlayPen {
         return servers.getOrDefault(id, null);
     }
 
+    public void notifyServerShutdown(String id) {
+        Server server = getServer(id);
+        if(server == null) {
+            log.error("Unable to notify for server shutdown (invalid id: " + id + ")");
+            return;
+        }
+
+        log.info("LC notify server shutdown");
+
+        servers.remove(id);
+        if(!sendServerShutdown(id)) {
+            log.error("Unable to notify network coordinator of server shutdown");
+        }
+    }
+
     @Override
     public String getServerId() {
         return coordName;
@@ -305,6 +321,9 @@ public class Local extends PlayPen {
 
             case PACKAGE_RESPONSE:
                 return processPackageResponse(command.getPackageResponse(), info);
+
+            case DEPROVISION:
+                return processDeprovision(command.getDeprovision(), info);
         }
     }
 
@@ -554,6 +573,61 @@ public class Local extends PlayPen {
         return true;
     }
 
+    protected boolean processDeprovision(Commands.Deprovision command, TransactionInfo info) {
+        throw new NotImplementedException();
+    }
+
+    protected boolean sendServerShutdown(String id) {
+        Server server = getServer(id);
+        if(server == null) {
+            log.error("Cannot send SERVER_SHUTDOWN with invalid server id " + id);
+        }
+
+        Commands.ServerShutdown shutdown = Commands.ServerShutdown.newBuilder()
+                .setUuid(id)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.SERVER_SHUTDOWN)
+                .setServerShutdown(shutdown)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for SERVER_SHUTDOWN");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending server shutdown notice to network coordinator");
+
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Cannot download package for provision with an invalid transaction id " + tid);
+            return;
+        }
+
+        P3Package p3 = packageManager.resolve(id, version);
+
+        if(p3 == null) {
+            sendProvisionResponse(tid, false);
+            return;
+        }
+
+        if(provision(p3, uuid, properties, name)) {
+            sendProvisionResponse(tid, true);
+        }
+        else {
+            sendProvisionResponse(tid, false);
+        }
+    }
+
     @Log4j2
     private static class PackageDownloadResolver extends LocalRepositoryResolver {
         public PackageDownloadResolver() {
@@ -597,28 +671,6 @@ public class Local extends PlayPen {
             }
 
             return p3;
-        }
-    }
-
-    protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
-        if(info == null) {
-            log.error("Cannot download package for provision with an invalid transaction id " + tid);
-            return;
-        }
-
-        P3Package p3 = packageManager.resolve(id, version);
-
-        if(p3 == null) {
-            sendProvisionResponse(tid, false);
-            return;
-        }
-
-        if(provision(p3, uuid, properties, name)) {
-            sendProvisionResponse(tid, true);
-        }
-        else {
-            sendProvisionResponse(tid, false);
         }
     }
 }

@@ -52,7 +52,6 @@ public class ExecuteStep implements IPackageStep {
 
         log.info("Running command " + command.get(0));
 
-
         XProcess proc = new XProcess(command, ctx.getDestination().toString());
 
         if(server != null) {
