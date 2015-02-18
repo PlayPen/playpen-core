@@ -3,6 +3,7 @@ package net.thechunk.playpen;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.p3.resolver.InMemoryCacheResolver;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
+import net.thechunk.playpen.p3.resolver.PromotedResolver;
 import net.thechunk.playpen.p3.step.ExecuteStep;
 import net.thechunk.playpen.p3.step.ExpandStep;
 import net.thechunk.playpen.p3.step.PipeStep;
@@ -13,6 +14,9 @@ import java.nio.file.Paths;
 public class Initialization {
 
     public static void packageManager(PackageManager pm) {
+        // Promoted, should always come first
+        pm.addPackageResolver(new PromotedResolver());
+
         // In-memory cache
         pm.addPackageResolver(new InMemoryCacheResolver());
 
