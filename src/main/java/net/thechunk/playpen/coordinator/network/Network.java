@@ -240,8 +240,6 @@ public class Network extends PlayPen {
 
     @Override
     public boolean process(Commands.BaseCommand command, TransactionInfo info, String from) {
-        log.debug("Command " + command.getType() + " received from " + from + " (tid: " + info.getId() + ")");
-
         switch(command.getType()) {
             default:
                 log.error("Network coordinator cannot process command " + command.getType());
@@ -258,6 +256,10 @@ public class Network extends PlayPen {
 
             case SERVER_SHUTDOWN:
                 return processServerShutdown(command.getServerShutdown(), info, from);
+
+
+            case C_GET_COORDINATOR_LIST:
+                return c_processGetCoordinatorList(info, from);
         }
     }
 
@@ -708,5 +710,73 @@ public class Network extends PlayPen {
         log.info("Shutting down coordinator " + target);
 
         return TransactionManager.get().send(info.getId(), message, target);
+    }
+
+    protected boolean c_processGetCoordinatorList(TransactionInfo info, String from) {
+        log.info(from + " requested active coordinator list");
+        return c_sendCoordinatorListResponse(from, info.getId());
+    }
+
+    protected boolean c_sendCoordinatorListResponse(String target, String tid) {Commands.C_CoordinatorListResponse.Builder responseBuilder = Commands.C_CoordinatorListResponse.newBuilder();
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Unable to send C_COORDINATOR_LIST_RESPONSE with invalid transaction " + tid);
+            return false;
+        }
+
+        for(LocalCoordinator coord : coordinators.values()) {
+            if(!coord.isEnabled())
+                continue;
+
+            Coordinator.LocalCoordinator.Builder coordBuilder = Coordinator.LocalCoordinator.newBuilder()
+                    .setUuid(coord.getUuid())
+                    .setEnabled(coord.isEnabled())
+                    .addAllAttributes(coord.getAttributes());
+
+            if(coord.getName() != null)
+                coordBuilder.setName(coord.getName());
+
+            for(Map.Entry<String, Integer> entry : coord.getResources().entrySet()) {
+                coordBuilder.addResources(Coordinator.Resource.newBuilder().setName(entry.getKey()).setValue(entry.getValue()).build());
+            }
+
+            for(Server server : coord.getServers().values()) {
+                P3.P3Meta meta = P3.P3Meta.newBuilder()
+                        .setId(server.getP3().getId())
+                        .setVersion(server.getP3().getVersion())
+                        .build();
+
+                Coordinator.Server.Builder serverBuilder = Coordinator.Server.newBuilder()
+                        .setP3(meta)
+                        .setUuid(server.getUuid());
+
+                if(server.getName() != null)
+                    serverBuilder.setName(server.getName());
+
+                for(Map.Entry<String, String> entry : server.getProperties().entrySet()) {
+                    serverBuilder.addProperties(Coordinator.Property.newBuilder().setName(entry.getKey()).setValue(entry.getValue()).build());
+                }
+
+                coordBuilder.addServers(serverBuilder.build());
+            }
+
+            responseBuilder.addCoordinators(coordBuilder.build());
+        }
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_COORDINATOR_LIST_RESPONSE)
+                .setCCoordinatorListResponse(responseBuilder.build())
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(tid, Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for coordinator list response");
+            return false;
+        }
+
+        log.info("Sending active coordinator list to " + target);
+
+        return TransactionManager.get().send(tid, message, target);
     }
 }

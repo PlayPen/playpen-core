@@ -391,8 +391,6 @@ public class Local extends PlayPen {
 
     @Override
     public boolean process(Commands.BaseCommand command, TransactionInfo info, String from) {
-        log.debug("Command " + command.getType() + " received (tid: " + info.getId() + ")");
-
         switch(command.getType()) {
             default:
                 log.error("Local coordinator cannot process command " + command.getType());

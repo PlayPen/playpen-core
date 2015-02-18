@@ -5,7 +5,6 @@ import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 
-import java.io.File;
 import java.nio.file.Paths;
 
 @Log4j2

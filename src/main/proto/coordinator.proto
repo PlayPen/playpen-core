@@ -20,3 +20,14 @@ message Server {
     optional string name = 3;
     repeated Property properties = 4;
 }
+
+message LocalCoordinator {
+    required string uuid = 1;
+    optional string name = 2;
+    required bool enabled = 3;
+
+    repeated Resource resources = 4;
+    repeated string attributes = 5;
+
+    repeated Server servers = 6;
+}

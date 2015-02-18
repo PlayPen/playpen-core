@@ -43,8 +43,31 @@ message ServerShutdown { // local -> network
     required string uuid = 1;
 }
 
+message C_CoordinatorListResponse {
+    repeated LocalCoordinator coordinators = 1;
+}
+
+message C_Provision {
+    required P3Meta p3 = 1;
+    optional string coordinator = 2;
+}
+
+message C_ProvisionResponse {
+    required bool ok = 1;
+}
+
+message C_Promote {
+    required P3Meta p3 = 1;
+}
+
+message C_CoordinatorCreated {
+    required string uuid = 1;
+    required string key = 2;
+}
+
 message BaseCommand {
     enum CommandType {
+        // Coordination commands
         SYNC = 1;
         PROVISION = 2;
         PROVISION_RESPONSE = 3;
@@ -52,7 +75,16 @@ message BaseCommand {
         PACKAGE_RESPONSE = 5;
         DEPROVISION = 6;
         SERVER_SHUTDOWN = 7;
-        SHUTDOWN = 8; // no command extension
+        SHUTDOWN = 8; // no message body
+
+        // Client commands
+        C_GET_COORDINATOR_LIST = 9; // no message body
+        C_COORDINATOR_LIST_RESPONSE = 10;
+        C_PROVISION = 11;
+        C_PROVISION_RESPONSE = 12;
+        C_PROMOTE = 13;
+        C_CREATE_COORDINATOR = 15; // no message body
+        C_COORDINATOR_CREATED = 16;
     }
 
     required CommandType type = 1;
@@ -64,4 +96,10 @@ message BaseCommand {
     optional PackageResponse packageResponse = 6;
     optional Deprovision deprovision = 7;
     optional ServerShutdown serverShutdown = 8;
+
+    optional C_CoordinatorListResponse c_coordinatorListResponse = 9;
+    optional C_Provision c_provision = 10;
+    optional C_ProvisionResponse c_provisionResponse = 11;
+    optional C_Promote c_promote = 12;
+    optional C_CoordinatorCreated c_coordinatorCreated = 13;
 }
