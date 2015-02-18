@@ -238,10 +238,11 @@ public class Local extends PlayPen {
 
         log.info("LC notify server shutdown");
 
-        servers.remove(id);
         if(!sendServerShutdown(id)) {
             log.error("Unable to notify network coordinator of server shutdown");
         }
+
+        servers.remove(id);
     }
 
     @Override
@@ -581,6 +582,7 @@ public class Local extends PlayPen {
         Server server = getServer(id);
         if(server == null) {
             log.error("Cannot send SERVER_SHUTDOWN with invalid server id " + id);
+            return false;
         }
 
         Commands.ServerShutdown shutdown = Commands.ServerShutdown.newBuilder()
