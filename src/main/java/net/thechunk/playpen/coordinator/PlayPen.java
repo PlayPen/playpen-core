@@ -41,4 +41,6 @@ public abstract class PlayPen {
     public abstract boolean receive(Protocol.AuthenticatedMessage auth, Channel from);
 
     public abstract boolean process(Commands.BaseCommand command, TransactionInfo info, String from);
+
+    public abstract void onVMShutdown();
 }

@@ -72,6 +72,14 @@ public class XProcess {
         return true;
     }
 
+    public boolean isRunning() {
+        return process.isAlive();
+    }
+
+    public void stop() {
+        process.destroy();
+    }
+
     protected void receiveOutput(String out) {
         for(IProcessListener listener : listeners) {
             listener.onProcessOutput(this, out);

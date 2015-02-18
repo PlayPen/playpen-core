@@ -3,6 +3,7 @@ package net.thechunk.playpen;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.coordinator.PlayPen;
+import net.thechunk.playpen.coordinator.VMShutdownThread;
 import net.thechunk.playpen.coordinator.local.Local;
 import net.thechunk.playpen.coordinator.network.Network;
 
@@ -120,6 +121,8 @@ public class Bootstrap {
     private static void runLocalCoordinator() {
         log.info("Bootstrap starting local coordinator (autorestart enabled)");
 
+        Runtime.getRuntime().addShutdownHook(new VMShutdownThread());
+
         try {
             while(true) {
                 //PlayPen.reset(); // DO NOT RESET PLAYPEN! If we get disconnected from the network, we don't want to
@@ -141,6 +144,8 @@ public class Bootstrap {
 
     private static void runNetworkCoordinator() {
         log.info("Bootstrap starting network coordinator (autorestart enabled)");
+
+        Runtime.getRuntime().addShutdownHook(new VMShutdownThread());
 
         try {
             while (true) {

@@ -40,6 +40,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 @Log4j2
@@ -93,6 +94,16 @@ public class Local extends PlayPen {
         }
         catch(IOException e) {
             log.warn("Unable to remove old server installations", e);
+        }
+
+        log.info("Clearing package cache");
+        try {
+            File cacheDir = Paths.get(Bootstrap.getHomeDir().toString(), "cache", "packages").toFile();
+            FileUtils.deleteDirectory(cacheDir);
+            cacheDir.mkdirs();
+        }
+        catch(IOException e) {
+            log.warn("Unable to clear package cache", e);
         }
     }
 
@@ -187,6 +198,18 @@ public class Local extends PlayPen {
         return true;
     }
 
+    @Override
+    public void onVMShutdown() {
+        log.info("VM shutting down, shutting down all servers (force)");
+
+        for(Server server : servers.values()) {
+            shutdownServer(server.getUuid(), true, true);
+        }
+
+        scheduler.shutdownNow();
+        channel.close().syncUninterruptibly();
+    }
+
     public Map<String, Integer> getAvailableResources() {
         Map<String, Integer> used = new HashMap<>();
         for(Map.Entry<String, Integer> entry : resources.entrySet()) {
@@ -242,7 +265,46 @@ public class Local extends PlayPen {
             log.error("Unable to notify network coordinator of server shutdown");
         }
 
+        log.info("Deleting server " + id + " from disk");
+
+        try {
+            FileUtils.deleteDirectory(new File(server.getLocalPath()));
+        }
+        catch(IOException e) {
+            log.warn("Unable to remove server " + id + " from disk, ignoring.");
+        }
+
         servers.remove(id);
+    }
+
+    public void shutdownServer(String id) {
+        shutdownServer(id, false, true);
+    }
+
+    public void shutdownServer(String id, boolean force) {
+        shutdownServer(id, force, true);
+    }
+
+    public void shutdownServer(String id, boolean force, boolean notify) {
+        log.info("Shutting down server " + id + " (force: " + (force ? "yes" : "no") + ")");
+        Server server = getServer(id);
+        if(force) {
+            if(server.getProcess() != null && server.getProcess().isRunning()) {
+                server.getProcess().stop();
+            }
+        }
+        else {
+            if(!packageManager.execute(ExecutionType.SHUTDOWN, server.getP3(), new File(server.getLocalPath()), server.getProperties(), server)) {
+                log.info("Unable to run normal shutdown process on server " + id + ", forcing");
+                if(server.getProcess() != null && server.getProcess().isRunning()) {
+                    server.getProcess().stop();
+                }
+            }
+        }
+
+        if(notify) {
+            notifyServerShutdown(id);
+        }
     }
 
     @Override
@@ -535,7 +597,7 @@ public class Local extends PlayPen {
         File tmpDest = Paths.get(
                 Bootstrap.getHomeDir().getPath(),
                 "temp",
-                response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3").toFile();
+                UUID.randomUUID() + ".p3").toFile();
         File trueDest = Paths.get(
                 Bootstrap.getHomeDir().getPath(),
                 "cache", "packages",
