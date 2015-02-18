@@ -262,6 +262,9 @@ public class Network extends PlayPen {
 
             case C_GET_COORDINATOR_LIST:
                 return c_processGetCoordinatorList(info, from);
+
+            case C_PROVISION:
+                return c_processProvision(command.getCProvision(), info, from);
         }
     }
 
@@ -347,17 +350,17 @@ public class Network extends PlayPen {
     /**
      * Synchronized due to the use of selectCoordinator
      */
-    public synchronized boolean provision(P3Package p3, String serverName, Map<String, String> properties) {
+    public synchronized ProvisionResult provision(P3Package p3, String serverName, Map<String, String> properties) {
         LocalCoordinator coord = selectCoordinator(p3);
         if(coord == null) {
             log.error("Unable to select a coordinator for a provisioning operation");
-            return false;
+            return null;
         }
 
         return provision(p3, serverName, properties, coord.getUuid());
     }
 
-    public boolean provision(P3Package p3, String serverName, Map<String, String> properties, String target) {
+    public ProvisionResult provision(P3Package p3, String serverName, Map<String, String> properties, String target) {
         log.info("Provision requested for " + p3.getId() + " at " + p3.getVersion() + " on coordinator " + target + " with server name " + serverName);
         return sendProvision(target, p3, serverName, properties);
     }
@@ -428,27 +431,27 @@ public class Network extends PlayPen {
         return true;
     }
 
-    protected synchronized boolean sendProvision(String target, P3Package p3, String name, Map<String, String> properties) {
+    protected synchronized ProvisionResult sendProvision(String target, P3Package p3, String name, Map<String, String> properties) {
         if(!p3.isResolved()) {
             log.error("Cannot pass an unresolved package to sendProvision");
-            return false;
+            return null;
         }
 
         LocalCoordinator coord = getCoordinator(target);
         if(coord == null) {
             log.error("Unknown coordinator " + target + " for sendProvision");
-            return false;
+            return null;
         }
 
         if(!coord.isEnabled()) {
             log.error("Coordinator " + target + " is not enabled for sendProvision");
-            return false;
+            return null;
         }
 
         Server server = coord.createServer(p3, name, properties);
         if(server == null) {
             log.error("Unable to register server locally before sending for sendProvision");
-            return false;
+            return null;
         }
 
         P3.P3Meta meta = P3.P3Meta.newBuilder()
@@ -489,12 +492,18 @@ public class Network extends PlayPen {
         if(message == null) {
             log.error("Unable to build message for provision");
             TransactionManager.get().cancel(info.getId());
-            return false;
+            return null;
         }
 
         log.info("Sending provision of " + p3.getId() + " at " + p3.getVersion() + " to " + coord.getUuid() + ", creating server " + server.getUuid());
 
-        return TransactionManager.get().send(info.getId(), message, target);
+        if(!TransactionManager.get().send(info.getId(), message, target))
+            return null;
+
+        ProvisionResult result = new ProvisionResult();
+        result.setCoordinator(target);
+        result.setServer(server.getUuid());
+        return result;
     }
 
     protected boolean processProvisionResponse(Commands.ProvisionResponse command, TransactionInfo info, String from) {
@@ -781,6 +790,94 @@ public class Network extends PlayPen {
         }
 
         log.info("Sending active coordinator list to " + target);
+
+        return TransactionManager.get().send(tid, message, target);
+    }
+
+    protected boolean c_processProvision(Commands.C_Provision request, TransactionInfo info, String from) {
+        log.info("Attempting provision operation (C_PROVISION)");
+        P3Package p3 = packageManager.resolve(request.getP3().getId(), request.getP3().getVersion());
+        if(p3 == null) {
+            log.error("Unknown package for C_PROVISION " + request.getP3().getId() + " at " + request.getP3().getVersion());
+            c_sendProvisionResponseFailure(from, info.getId());
+            return false;
+        }
+
+        log.info("Attempting provision at client's request of " + p3.getId() + " at " + p3.getVersion());
+
+        ProvisionResult result;
+        if(request.hasCoordinator()) {
+            result = provision(p3, null, new HashMap<>(), request.getCoordinator()); // TODO: Property support
+        }
+        else {
+            result = provision(p3, null, new HashMap<>()); // TODO: Property support
+        }
+
+        if(result != null) {
+            log.info("Provision request succeeded");
+            return c_sendProvisionResponse(from, info.getId(), result.getCoordinator(), result.getServer());
+        }
+        else {
+            log.error("Provision request failed");
+            c_sendProvisionResponseFailure(from, info.getId());
+            return false;
+        }
+    }
+
+    protected boolean c_sendProvisionResponseFailure(String target, String tid) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Cannot send C_PROVISION_RESPONSE with invalid transaction " + tid);
+            return false;
+        }
+
+        Commands.C_ProvisionResponse response = Commands.C_ProvisionResponse.newBuilder()
+                .setOk(false)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_PROVISION_RESPONSE)
+                .setCProvisionResponse(response)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(tid, Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for client provision response (failure)");
+            return false;
+        }
+
+        log.info("Sending C_PROVISION_RESPONSE (failure)");
+
+        return TransactionManager.get().send(tid, message, target);
+    }
+
+    protected boolean c_sendProvisionResponse(String target, String tid, String coordinator, String server) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Cannot send C_PROVISION_RESPONSE with invalid transaction " + tid);
+            return false;
+        }
+
+        Commands.C_ProvisionResponse response = Commands.C_ProvisionResponse.newBuilder()
+                .setOk(true)
+                .setCoordinatorId(coordinator)
+                .setServerId(server)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_PROVISION_RESPONSE)
+                .setCProvisionResponse(response)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(tid, Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for client provision response");
+            return false;
+        }
+
+        log.info("Sending C_PROVISION_RESPONSE");
 
         return TransactionManager.get().send(tid, message, target);
     }

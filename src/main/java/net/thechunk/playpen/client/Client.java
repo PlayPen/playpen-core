@@ -17,6 +17,7 @@ import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
+import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
 import org.json.JSONObject;
@@ -64,7 +65,7 @@ public class Client extends PlayPen {
     }
 
     protected void printHelpText() {
-        System.err.println("playpen cli <list>");
+        System.err.println("playpen cli <list/provision> [arguments...]");
     }
 
     public void run(String[] arguments) {
@@ -236,6 +237,9 @@ public class Client extends PlayPen {
 
             case C_COORDINATOR_LIST_RESPONSE:
                 return processListResponse(command.getCCoordinatorListResponse(), info);
+
+            case C_PROVISION_RESPONSE:
+                return processProvisionResponse(command.getCProvisionResponse(), info);
         }
     }
 
@@ -247,7 +251,7 @@ public class Client extends PlayPen {
         }
 
 
-        if(!sync()) {
+        if(!sendSync()) {
             log.error("Unable to SYNC");
             channel.close();
             return;
@@ -258,15 +262,21 @@ public class Client extends PlayPen {
                 runListCommand(arguments);
                 break;
 
+            case "provision":
+                runProvisionCommand(arguments);
+                break;
+
             default:
                 printHelpText();
                 channel.close();
                 break;
         }
     }
+
     protected void runListCommand(String[] arguments) {
         if(arguments.length != 2) {
             printHelpText();
+            System.err.println("list");
             channel.close();
             return;
         }
@@ -274,14 +284,38 @@ public class Client extends PlayPen {
         clientMode = ClientMode.LIST;
         if(!sendListRequest()) {
             log.error("Unable to send list request to coordinator");
-            System.out.println("Unable to send list request to coordinator");
+            System.err.println("Unable to send list request to coordinator");
             channel.close();
             return;
         }
+
+        System.out.println("Retrieving coordinator list...");
     }
 
-    public boolean sync() {
-        return sendSync();
+    protected void runProvisionCommand(String[] arguments) {
+        if(arguments.length != 3 && arguments.length != 4 && arguments.length != 5) {
+            printHelpText();
+            System.err.println("provision <package-id> [version] [coordinator-uuid]");
+            System.err.println("If version is unspecified, 'promoted' will be used.");
+            System.err.println("If coordinator-uuid is unspecified, the network will choose a coordinator.");
+            channel.close();
+            return;
+        }
+
+        clientMode = ClientMode.PROVISION;
+
+        String id = arguments[2];
+        String version = arguments.length == 4 ? arguments[3] : "promoted";
+        String coordinator = arguments.length == 5 ? arguments[4] : null;
+
+        if(!sendProvision(id, version, coordinator)) {
+            log.error("Unable to send provision to coordinator");
+            System.err.println("Unable to send provision to coordinator");
+            channel.close();
+            return;
+        }
+
+        System.out.println("Waiting for provision response...");
     }
 
     protected boolean sendSync() {
@@ -337,6 +371,56 @@ public class Client extends PlayPen {
         switch(clientMode) {
             case LIST:
                 System.out.println(response.toString());
+                channel.close();
+                break;
+        }
+
+        return true;
+    }
+
+    protected boolean sendProvision(String id, String version, String coordinator) {
+        P3.P3Meta meta = P3.P3Meta.newBuilder()
+                .setId(id)
+                .setVersion(version)
+                .build();
+
+        Commands.C_Provision.Builder provisionBuilder = Commands.C_Provision.newBuilder()
+                .setP3(meta);
+        if(coordinator != null) {
+            provisionBuilder.setCoordinator(coordinator);
+        }
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_PROVISION)
+                .setCProvision(provisionBuilder.build())
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.CREATE, command);
+        if(message == null) {
+            log.error("Unable to build message for provision");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_PROVISION to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean processProvisionResponse(Commands.C_ProvisionResponse response, TransactionInfo info) {
+        switch(clientMode) {
+            case PROVISION:
+                log.info("Provision response: " + (response.getOk() ? "ok" : "not ok"));
+                if(response.getOk()) {
+                    System.out.println("Provision operation succeeded");
+                    System.out.println("Coordinator: " + response.getCoordinatorId());
+                    System.out.println("Server: " + response.getServerId());
+                }
+                else {
+                    System.err.println("Provision operation unsuccessful");
+                }
                 channel.close();
                 break;
         }

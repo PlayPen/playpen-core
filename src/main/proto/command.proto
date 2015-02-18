@@ -54,6 +54,17 @@ message C_Provision {
 
 message C_ProvisionResponse {
     required bool ok = 1;
+    optional string coordinatorId = 2;
+    optional string serverId = 3;
+}
+
+message C_ShutdownServer {
+    required string coordinatorId = 1;
+    required string serverId = 2;
+}
+
+message C_Shutdown {
+    required string uuid = 1;
 }
 
 message C_Promote {
@@ -82,9 +93,11 @@ message BaseCommand {
         C_COORDINATOR_LIST_RESPONSE = 10;
         C_PROVISION = 11;
         C_PROVISION_RESPONSE = 12;
-        C_PROMOTE = 13;
-        C_CREATE_COORDINATOR = 15; // no message body
-        C_COORDINATOR_CREATED = 16;
+        C_SHUTDOWN_SERVER = 13;
+        C_SHUTDOWN = 14;
+        C_PROMOTE = 15;
+        C_CREATE_COORDINATOR = 16; // no message body
+        C_COORDINATOR_CREATED = 17;
     }
 
     required CommandType type = 1;

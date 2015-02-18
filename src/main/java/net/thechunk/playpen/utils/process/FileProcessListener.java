@@ -5,13 +5,19 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FileProcessListener implements IProcessListener {
     private BufferedWriter writer = null;
 
     public FileProcessListener(File file) throws IOException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // quick, will probably change later
+        Date date = new Date();
+
         writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
-        writer.write("-- FileProcessListener SESSION STARTED\r\n");
+        writer.write("-- FileProcessListener SESSION STARTED " + dateFormat.format(date) + "\r\n");
         writer.flush();
     }
 
