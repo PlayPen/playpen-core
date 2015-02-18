@@ -336,6 +336,10 @@ public class Client extends PlayPen {
         String serverId = arguments[3];
         boolean force = arguments.length == 5 ? (arguments[4].trim().toLowerCase().equals("true") ? true : false) : false; // dat nested ternary
 
+        if(force) {
+            System.out.println("NOTE: forcing deprovision operation");
+        }
+
         if(sendDeprovision(coordId, serverId, force)) {
             System.out.println("Sent deprovision to network");
             channel.close();
