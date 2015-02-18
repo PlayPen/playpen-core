@@ -24,9 +24,9 @@ public class PackageManager {
 
     private Map<String, IPackageStep> packageSteps = new ConcurrentHashMap<>();
 
+    @Getter
     private Map<P3Package.P3PackageInfo, P3Package> packageCache = new ConcurrentHashMap<>();
 
-    @Getter
     private Map<String, String> promoted = new ConcurrentHashMap<>();
 
     @Getter
