@@ -31,12 +31,7 @@ public class AsyncExecuteStep implements IPackageStep {
 
         List<String> command = new LinkedList<>();
         try {
-            if(server == null) {
-                command.add(config.getString("command"));
-            }
-            else {
-                command.add(Paths.get(server.getLocalPath(), config.getString("command")).toString());
-            }
+            command.add(config.getString("command"));
 
             JSONArray args = JSONUtils.safeGetArray(config, "arguments");
             if(args != null) {

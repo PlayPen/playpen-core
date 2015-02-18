@@ -30,6 +30,7 @@ public class XProcess {
     public void sendInput(String in) {
         try {
             inputWriter.write(in);
+            inputWriter.flush();
         } catch (IOException e) {
             log.error("Error while writing to input stream", e);
         }

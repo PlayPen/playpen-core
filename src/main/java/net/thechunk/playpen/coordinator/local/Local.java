@@ -202,12 +202,17 @@ public class Local extends PlayPen {
     public void onVMShutdown() {
         log.info("VM shutting down, shutting down all servers (force)");
 
-        for(Server server : servers.values()) {
-            shutdownServer(server.getUuid(), true, true);
+        if(scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdownNow();
         }
 
-        scheduler.shutdownNow();
-        channel.close().syncUninterruptibly();
+        for(Server server : servers.values()) {
+            shutdownServer(server.getUuid(), true, false);
+        }
+
+        if(channel != null && channel.isOpen()) {
+            channel.close().syncUninterruptibly();
+        }
     }
 
     public Map<String, Integer> getAvailableResources() {
@@ -637,7 +642,15 @@ public class Local extends PlayPen {
     }
 
     protected boolean processDeprovision(Commands.Deprovision command, TransactionInfo info) {
-        throw new NotImplementedException();
+        Server server = getServer(command.getUuid());
+        if(server == null) {
+            log.error("Unknown server for DEPROVISION " + command.getUuid());
+            return false;
+        }
+
+        shutdownServer(command.getUuid(), command.getForce(), false); // do not notify, since the server stopping will
+                                                                      // do that anyway.
+        return true;
     }
 
     protected boolean sendServerShutdown(String id) {

@@ -266,6 +266,14 @@ public class Network extends PlayPen {
     @Override
     public void onVMShutdown() {
         log.info("VM shutting down");
+
+        scheduler.shutdownNow();
+
+        for(LocalCoordinator coord : coordinators.values()) {
+            if(coord.getChannel() != null && coord.getChannel().isOpen()) {
+                coord.getChannel().close().syncUninterruptibly();
+            }
+        }
     }
 
     public LocalCoordinator createCoordinator() {
