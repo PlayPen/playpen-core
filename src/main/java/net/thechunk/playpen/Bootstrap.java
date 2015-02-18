@@ -121,7 +121,7 @@ public class Bootstrap {
                 break;
 
             default:
-                System.err.println("playpen <local/network/p3> [arguments...]");
+                System.err.println("playpen <local/network/p3/cli> [arguments...]");
                 return;
         }
     }
