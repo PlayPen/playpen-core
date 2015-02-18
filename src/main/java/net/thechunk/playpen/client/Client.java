@@ -65,7 +65,7 @@ public class Client extends PlayPen {
     }
 
     protected void printHelpText() {
-        System.err.println("playpen cli <list/provision> [arguments...]");
+        System.err.println("playpen cli <list/provision/deprovision> [arguments...]");
     }
 
     public void run(String[] arguments) {
@@ -266,6 +266,10 @@ public class Client extends PlayPen {
                 runProvisionCommand(arguments);
                 break;
 
+            case "deprovision":
+                runDeprovisionCommand(arguments);
+                break;
+
             default:
                 printHelpText();
                 channel.close();
@@ -305,7 +309,7 @@ public class Client extends PlayPen {
         clientMode = ClientMode.PROVISION;
 
         String id = arguments[2];
-        String version = arguments.length == 4 ? arguments[3] : "promoted";
+        String version = arguments.length >= 4 ? arguments[3] : "promoted";
         String coordinator = arguments.length == 5 ? arguments[4] : null;
 
         if(!sendProvision(id, version, coordinator)) {
@@ -316,6 +320,30 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Waiting for provision response...");
+    }
+
+    protected void runDeprovisionCommand(String[] arguments) {
+        if(arguments.length != 4 && arguments.length != 5) {
+            printHelpText();
+            System.err.println("deprovision <coordinator-uuid> <server-uuid> [force=false]");
+            channel.close();
+            return;
+        }
+
+        clientMode = ClientMode.SHUTDOWN_SERVER;
+
+        String coordId = arguments[2];
+        String serverId = arguments[3];
+        boolean force = arguments.length == 5 ? (arguments[4].trim().toLowerCase().equals("true") ? true : false) : false; // dat nested ternary
+
+        if(sendDeprovision(coordId, serverId, force)) {
+            System.out.println("Sent deprovision to network");
+            channel.close();
+        }
+        else {
+            System.err.println("Unable to send deprovision to network");
+            channel.close();
+        }
     }
 
     protected boolean sendSync() {
@@ -426,5 +454,31 @@ public class Client extends PlayPen {
         }
 
         return true;
+    }
+
+    protected boolean sendDeprovision(String coordId, String serverId, boolean force) {
+        Commands.C_Deprovision shutdown = Commands.C_Deprovision.newBuilder()
+                .setCoordinatorId(coordId)
+                .setServerId(serverId)
+                .setForce(force)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_DEPROVISION)
+                .setCDeprovision(shutdown)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build message for deprovision");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_DEPROVISION to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
     }
 }

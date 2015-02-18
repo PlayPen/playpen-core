@@ -40,7 +40,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class Network extends PlayPen {
@@ -265,6 +264,9 @@ public class Network extends PlayPen {
 
             case C_PROVISION:
                 return c_processProvision(command.getCProvision(), info, from);
+
+            case C_DEPROVISION:
+                return c_deprovision(command.getCDeprovision(), info, from);
         }
     }
 
@@ -880,5 +882,16 @@ public class Network extends PlayPen {
         log.info("Sending C_PROVISION_RESPONSE");
 
         return TransactionManager.get().send(tid, message, target);
+    }
+
+    protected boolean c_deprovision(Commands.C_Deprovision depro, TransactionInfo info, String from) {
+        log.info("Attempting deprovision of " + depro.getServerId() + " on " + depro.getCoordinatorId() + " on behalf of client " + from);
+        if(deprovision(depro.getCoordinatorId(), depro.getServerId(), depro.getForce())) {
+            return true;
+        }
+        else {
+            log.error("Unable to deprovision " + depro.getServerId() + " on " + depro.getCoordinatorId() + " on behalf of client " + from);
+            return false;
+        }
     }
 }

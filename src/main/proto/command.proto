@@ -58,9 +58,10 @@ message C_ProvisionResponse {
     optional string serverId = 3;
 }
 
-message C_ShutdownServer {
+message C_Deprovision {
     required string coordinatorId = 1;
     required string serverId = 2;
+    required bool force = 3 [default=false];
 }
 
 message C_Shutdown {
@@ -93,7 +94,7 @@ message BaseCommand {
         C_COORDINATOR_LIST_RESPONSE = 10;
         C_PROVISION = 11;
         C_PROVISION_RESPONSE = 12;
-        C_SHUTDOWN_SERVER = 13;
+        C_DEPROVISION = 13;
         C_SHUTDOWN = 14;
         C_PROMOTE = 15;
         C_CREATE_COORDINATOR = 16; // no message body
@@ -113,6 +114,8 @@ message BaseCommand {
     optional C_CoordinatorListResponse c_coordinatorListResponse = 9;
     optional C_Provision c_provision = 10;
     optional C_ProvisionResponse c_provisionResponse = 11;
-    optional C_Promote c_promote = 12;
-    optional C_CoordinatorCreated c_coordinatorCreated = 13;
+    optional C_Deprovision c_deprovision = 12;
+    optional C_Shutdown c_shutdown = 13;
+    optional C_Promote c_promote = 14;
+    optional C_CoordinatorCreated c_coordinatorCreated = 15;
 }
