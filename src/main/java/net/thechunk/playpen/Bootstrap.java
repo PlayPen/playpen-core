@@ -2,6 +2,7 @@ package net.thechunk.playpen;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import net.thechunk.playpen.client.Client;
 import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.coordinator.VMShutdownThread;
 import net.thechunk.playpen.coordinator.local.Local;
@@ -95,7 +96,7 @@ public class Bootstrap {
         }
 
         if(args.length < 1) {
-            System.err.println("playpen <local/network/p3> [arguments...]");
+            System.err.println("playpen <local/network/p3/cli> [arguments...]");
             return;
         }
 
@@ -110,6 +111,10 @@ public class Bootstrap {
 
             case "p3":
                 P3Tool.run(args);
+                break;
+
+            case "cli":
+                runClient(args);
                 break;
 
             default:
@@ -163,5 +168,21 @@ public class Bootstrap {
         }
 
         log.info("Ending network coordinator session");
+    }
+
+    private static void runClient(String[] arguments) {
+        log.info("Bootstrap starting client");
+
+        Runtime.getRuntime().addShutdownHook(new VMShutdownThread());
+
+        try {
+            Client.get().run(arguments);
+        }
+        catch(Exception e) {
+            log.fatal("Caught exception at bootstrap level while running client", e);
+            return;
+        }
+
+        log.info("Ending client session");
     }
 }
