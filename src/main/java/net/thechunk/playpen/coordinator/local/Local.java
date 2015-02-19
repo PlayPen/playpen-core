@@ -426,6 +426,9 @@ public class Local extends PlayPen {
 
             case ATTACH_CONSOLE:
                 return processAttachConsole(command.getAttachConsole(), info);
+
+            case DETACH_CONSOLE:
+                return processDetachConsole(command.getDetachConsole(), info);
         }
     }
 
@@ -853,6 +856,18 @@ public class Local extends PlayPen {
         log.info("Sending DETACH_CONSOLE for " + consoleId);
 
         return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean processDetachConsole(Commands.DetachConsole message, TransactionInfo info) {
+        if(!consoles.containsKey(message.getConsoleId())) {
+            log.error("Cannot DETACH_CONSOLE on invalid console id " + message.getConsoleId());
+            return false;
+        }
+
+        log.info("Detaching console " + message.getConsoleId());
+        consoles.remove(message.getConsoleId());
+
+        return true;
     }
 
     protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {

@@ -883,7 +883,7 @@ public class Client extends PlayPen {
     protected boolean processConsoleMessage(Commands.C_ConsoleMessage message, TransactionInfo info) {
         switch(clientMode) {
             case ATTACH:
-                System.out.print(message.getValue());
+                System.out.println(message.getValue());
                 return true;
         }
 
