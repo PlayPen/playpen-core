@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,6 +58,8 @@ public class Network extends PlayPen {
     private PackageManager packageManager = null;
 
     private ScheduledExecutorService scheduler = null;
+
+    private Map<String, String> consoles = new ConcurrentHashMap<>();
 
     private Network() {
         super();
@@ -266,6 +269,12 @@ public class Network extends PlayPen {
             case SERVER_SHUTDOWN:
                 return processServerShutdown(command.getServerShutdown(), info, from);
 
+            case CONSOLE_MESSAGE:
+                return processConsoleMessage(command.getConsoleMessage(), info, from);
+
+            case DETACH_CONSOLE:
+                return processDetachConsole(command.getDetachConsole(), info, from);
+
 
             case C_GET_COORDINATOR_LIST:
                 return c_processGetCoordinatorList(info, from);
@@ -287,6 +296,12 @@ public class Network extends PlayPen {
 
             case C_SEND_INPUT:
                 return c_processSendInput(command.getCSendInput(), info, from);
+
+            case C_ATTACH_CONSOLE:
+                return c_processAttachConsole(command.getCAttachConsole(), info, from);
+
+            case C_DETACH_CONSOLE:
+                return c_processDetachConsole(info, from);
         }
     }
 
@@ -782,6 +797,117 @@ public class Network extends PlayPen {
         return TransactionManager.get().send(info.getId(), message, coord.getUuid());
     }
 
+    protected boolean sendAttachConsole(String target, String serverId, String consoleId) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send ATTACH_CONSOLE to invalid coordinator " + target);
+            return false;
+        }
+
+        Server server = coord.getServer(serverId);
+        if(server == null) {
+            log.error("Cannot send ATTACH_CONSOLE to invalid server " + serverId + " on " + target);
+            return false;
+        }
+
+        if(!consoles.containsKey(consoleId)) {
+            log.error("Cannot send ATTACH_CONSOLE with invalid console id " + consoleId);
+            return false;
+        }
+
+        Commands.AttachConsole attach = Commands.AttachConsole.newBuilder()
+                .setServerId(serverId)
+                .setConsoleId(consoleId)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.ATTACH_CONSOLE)
+                .setAttachConsole(attach)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for ATTACH_CONSOLE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
+    }
+
+    protected boolean processConsoleMessage(Commands.ConsoleMessage message, TransactionInfo info, String from) {
+        String targetId = consoles.getOrDefault(message.getConsoleId(), null);
+        if(targetId == null) {
+            log.error("CONSOLE_MESSAGE received with invalid console id");
+            sendDetachConsole(from, message.getConsoleId());
+            return false;
+        }
+
+        LocalCoordinator target = getCoordinator(targetId);
+        if(target == null || target.getChannel() == null || !target.getChannel().isActive()) {
+            log.warn("CONSOLE_MESSAGE received but attached coordinator isn't valid. Sending detach.");
+            sendDetachConsole(from, message.getConsoleId());
+            consoles.remove(message.getConsoleId());
+            return false;
+        }
+
+        return c_sendConsoleMessage(target.getUuid(), message.getValue());
+    }
+
+    protected boolean sendDetachConsole(String target, String consoleId) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send DETACH_CONSOLE to invalid coordinator " + target);
+            return false;
+        }
+
+        Commands.DetachConsole detach = Commands.DetachConsole.newBuilder()
+                .setConsoleId(consoleId)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.DETACH_CONSOLE)
+                .setDetachConsole(detach)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for DETACH_CONSOLE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending DETACH_CONSOLE for " + consoleId);
+
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
+    }
+
+    protected boolean processDetachConsole(Commands.DetachConsole message, TransactionInfo info, String from) {
+        String targetId = consoles.getOrDefault(message.getConsoleId(), null);
+        if(targetId == null) {
+            log.error("DETACH_CONSOLE received with invalid console id");
+            return false;
+        }
+
+        LocalCoordinator target = getCoordinator(targetId);
+        consoles.remove(message.getConsoleId());
+
+        log.info("Detaching from console " + message.getConsoleId());
+        if(target == null || target.getChannel() == null || !target.getChannel().isActive()) {
+            return true;
+        }
+
+        log.info("Detaching client " + target.getUuid() + " from console");
+
+        return c_sendDetachConsole(target.getUuid());
+    }
+
     protected boolean c_processGetCoordinatorList(TransactionInfo info, String from) {
         log.info(from + " requested active coordinator list");
         return c_sendCoordinatorListResponse(from, info.getId());
@@ -1012,5 +1138,100 @@ public class Network extends PlayPen {
     protected boolean c_processSendInput(Commands.C_SendInput protoInput, TransactionInfo info, String from) {
         log.info("Sending input to " + protoInput.getServerId() + " on coordinator " + protoInput.getCoordinatorId() + " on behalf of client " + from);
         return sendInput(protoInput.getCoordinatorId(), protoInput.getServerId(), protoInput.getInput());
+    }
+
+    protected boolean c_processAttachConsole(Commands.C_AttachConsole message, TransactionInfo info, String from) {
+        LocalCoordinator coord = getCoordinator(message.getCoordinatorId());
+        if(coord == null) {
+            log.error("Unable to process C_ATTACH_CONSOLE with invalid target " + message.getCoordinatorId());
+            c_sendDetachConsole(from);
+            return false;
+        }
+
+        Server server = coord.getServer(message.getServerId());
+        if(server == null) {
+            log.error("Unable to process C_ATTACH_CONSOLE with invalid server " + message.getServerId() + " on " + message.getCoordinatorId());
+            c_sendDetachConsole(from);
+            return false;
+        }
+
+        String consoleId = UUID.randomUUID().toString();
+        while(consoles.containsKey(consoleId))
+            consoleId = UUID.randomUUID().toString();
+
+        consoles.put(consoleId, from);
+        if(!sendAttachConsole(coord.getUuid(), server.getUuid(), consoleId)) {
+            consoles.remove(consoleId);
+            c_sendDetachConsole(from);
+            return false;
+        }
+
+        return true;
+    }
+
+    protected boolean c_sendConsoleMessage(String target, String consoleMessage) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send C_CONSOLE_MESSAGE to invalid coordinator " + target);
+            return false;
+        }
+
+        Commands.C_ConsoleMessage cm = Commands.C_ConsoleMessage.newBuilder()
+                .setValue(consoleMessage)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_CONSOLE_MESSAGE)
+                .setCConsoleMessage(cm)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to create transaction for C_CONSOLE_MESSAGE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
+    }
+
+    protected boolean c_sendDetachConsole(String target) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send C_DETACH_CONSOLE to invalid coordinator " + target);
+            return false;
+        }
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_DETACH_CONSOLE)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to create transaction for C_DETACH_CONSOLE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
+    }
+
+    protected boolean c_processDetachConsole(TransactionInfo info, String from) {
+        log.info("Detaching " + from + " from all consoles");
+        Iterator<Map.Entry<String, String>> itr = consoles.entrySet().iterator();
+        while(itr.hasNext()) {
+            Map.Entry<String, String> entry = itr.next();
+            if(from.equals(entry.getValue()))
+                itr.remove();
+
+        }
+
+        return true;
     }
 }

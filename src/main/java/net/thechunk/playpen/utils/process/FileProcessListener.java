@@ -22,6 +22,14 @@ public class FileProcessListener implements IProcessListener {
     }
 
     @Override
+    public void onProcessAttach(XProcess proc) {
+    }
+
+    @Override
+    public void onProcessDetach(XProcess proc) {
+    }
+
+    @Override
     public void onProcessOutput(XProcess proc, String out) {
         try {
             writer.write(out + "\r\n");

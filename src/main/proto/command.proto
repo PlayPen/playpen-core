@@ -5,7 +5,7 @@ option java_outer_classname = "Commands";
 import "coordinator.proto";
 import "p3.proto";
 
-message Sync { // local -> network
+message Sync {
     optional string name = 1;
 
     repeated Resource resources = 2;
@@ -17,35 +17,49 @@ message Sync { // local -> network
     required bool enabled = 5 [default=false];
 }
 
-message Provision { // network -> local
+message Provision {
     required Server server = 1;
 }
 
-message ProvisionResponse { // local -> network
+message ProvisionResponse {
     required bool ok = 1;
 }
 
-message PackageRequest { // local -> network
+message PackageRequest {
     required P3Meta p3 = 1;
 }
 
-message PackageResponse { // network -> local
+message PackageResponse {
     required bool ok = 1;
     optional PackageData data = 2;
 }
 
-message Deprovision { // network -> local
+message Deprovision {
     required string uuid = 1;
     required bool force = 2 [default=false]; // if true, local should terminate the process without using shutdown steps
 }
 
-message ServerShutdown { // local -> network
+message ServerShutdown {
     required string uuid = 1;
 }
 
 message SendInput {
     required string id = 1;
     required string input = 2;
+}
+
+message AttachConsole {
+    required string serverId = 1;
+    required string consoleId = 2;
+}
+
+message ConsoleMessage {
+    required string consoleId = 1;
+    required string value = 2;
+}
+
+message DetachConsole {
+    required string consoleId = 1;
 }
 
 message C_CoordinatorListResponse {
@@ -90,6 +104,15 @@ message C_SendInput {
     required string input = 3;
 }
 
+message C_AttachConsole {
+    required string coordinatorId = 1;
+    required string serverId = 2;
+}
+
+message C_ConsoleMessage {
+    required string value = 1;
+}
+
 message BaseCommand {
     enum CommandType {
         // Coordination commands
@@ -102,18 +125,24 @@ message BaseCommand {
         SERVER_SHUTDOWN = 7;
         SHUTDOWN = 8; // no message body
         SEND_INPUT = 9;
+        ATTACH_CONSOLE = 10;
+        CONSOLE_MESSAGE = 11;
+        DETACH_CONSOLE = 12;
 
         // Client commands
-        C_GET_COORDINATOR_LIST = 10; // no message body
-        C_COORDINATOR_LIST_RESPONSE = 11;
-        C_PROVISION = 12;
-        C_PROVISION_RESPONSE = 13;
-        C_DEPROVISION = 14;
-        C_SHUTDOWN = 15;
-        C_PROMOTE = 16;
-        C_CREATE_COORDINATOR = 17; // no message body
-        C_COORDINATOR_CREATED = 18;
-        C_SEND_INPUT = 19;
+        C_GET_COORDINATOR_LIST = 13; // no message body
+        C_COORDINATOR_LIST_RESPONSE = 14;
+        C_PROVISION = 15;
+        C_PROVISION_RESPONSE = 16;
+        C_DEPROVISION = 17;
+        C_SHUTDOWN = 18;
+        C_PROMOTE = 19;
+        C_CREATE_COORDINATOR = 20; // no message body
+        C_COORDINATOR_CREATED = 21;
+        C_SEND_INPUT = 22;
+        C_ATTACH_CONSOLE = 23;
+        C_CONSOLE_MESSAGE = 24;
+        C_DETACH_CONSOLE = 25; // no message body
     }
 
     required CommandType type = 1;
@@ -126,13 +155,18 @@ message BaseCommand {
     optional Deprovision deprovision = 7;
     optional ServerShutdown serverShutdown = 8;
     optional SendInput sendInput = 9;
+    optional AttachConsole attachConsole = 10;
+    optional ConsoleMessage consoleMessage = 11;
+    optional DetachConsole detachConsole = 12;
 
-    optional C_CoordinatorListResponse c_coordinatorListResponse = 10;
-    optional C_Provision c_provision = 11;
-    optional C_ProvisionResponse c_provisionResponse = 12;
-    optional C_Deprovision c_deprovision = 13;
-    optional C_Shutdown c_shutdown = 14;
-    optional C_Promote c_promote = 15;
-    optional C_CoordinatorCreated c_coordinatorCreated = 16;
-    optional C_SendInput c_sendInput = 17;
+    optional C_CoordinatorListResponse c_coordinatorListResponse = 13;
+    optional C_Provision c_provision = 14;
+    optional C_ProvisionResponse c_provisionResponse = 15;
+    optional C_Deprovision c_deprovision = 16;
+    optional C_Shutdown c_shutdown = 17;
+    optional C_Promote c_promote = 18;
+    optional C_CoordinatorCreated c_coordinatorCreated = 19;
+    optional C_SendInput c_sendInput = 20;
+    optional C_AttachConsole c_attachConsole = 21;
+    optional C_ConsoleMessage c_consoleMessage = 22;
 }

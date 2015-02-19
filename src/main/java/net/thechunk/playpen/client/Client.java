@@ -75,7 +75,7 @@ public class Client extends PlayPen {
 
     protected void printHelpText() {
         System.err.println("playpen cli <command> [arguments...]");
-        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair, send");
+        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair, send, attach");
     }
 
     public void run(String[] arguments) {
@@ -170,6 +170,10 @@ public class Client extends PlayPen {
             scheduler.shutdownNow();
         }
 
+        if(clientMode == ClientMode.ATTACH) {
+            sendDetachConsole();
+        }
+
         if(channel != null && channel.isOpen()) {
             channel.close().syncUninterruptibly();
         }
@@ -253,6 +257,12 @@ public class Client extends PlayPen {
 
             case C_COORDINATOR_CREATED:
                 return processCoordinatorCreated(command.getCCoordinatorCreated(), info);
+
+            case C_CONSOLE_MESSAGE:
+                return processConsoleMessage(command.getCConsoleMessage(), info);
+
+            case C_DETACH_CONSOLE:
+                return processDetachConsole(info);
         }
     }
 
@@ -262,7 +272,6 @@ public class Client extends PlayPen {
             channel.close();
             return;
         }
-
 
         if(!sendSync()) {
             log.error("Unable to SYNC");
@@ -297,6 +306,10 @@ public class Client extends PlayPen {
 
             case "send":
                 runSendCommand(arguments);
+                break;
+
+            case "attach":
+                runAttachCommand(arguments);
                 break;
 
             default:
@@ -560,6 +573,31 @@ public class Client extends PlayPen {
         channel.close();
     }
 
+    protected void runAttachCommand(String[] arguments) {
+        if(arguments.length != 4) {
+            printHelpText();
+            System.err.println("attach <coordinator> <server>");
+            System.err.println("Attaches to the console of the specified server");
+            System.err.println("NOTE: Regex is not supported by this command.");
+            channel.close();
+            return;
+        }
+
+        clientMode = ClientMode.ATTACH;
+
+        String coordId = arguments[2];
+        String serverId = arguments[3];
+
+        if(!sendAttachConsole(coordId, serverId)) {
+            System.err.println("Unable to send attach command. Exiting.");
+            channel.close();
+            return;
+        }
+        else {
+            System.out.println("Attaching console...");
+        }
+    }
+
     protected boolean sendSync() {
         Commands.Sync.Builder syncBuilder = Commands.Sync.newBuilder()
                 .setEnabled(false);
@@ -814,6 +852,70 @@ public class Client extends PlayPen {
         }
 
         log.info("Sending C_SEND_INPUT to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean sendAttachConsole(String coordId, String serverId) {
+        Commands.C_AttachConsole attach = Commands.C_AttachConsole.newBuilder()
+                .setCoordinatorId(coordId)
+                .setServerId(serverId)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_ATTACH_CONSOLE)
+                .setCAttachConsole(attach)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build message for C_ATTACH_CONSOLE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_ATTACH_CONSOLE to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean processConsoleMessage(Commands.C_ConsoleMessage message, TransactionInfo info) {
+        switch(clientMode) {
+            case ATTACH:
+                System.out.print(message.getValue());
+                return true;
+        }
+
+        return false;
+    }
+
+    protected boolean processDetachConsole(TransactionInfo info) {
+        switch(clientMode) {
+            case ATTACH:
+                channel.close();
+                return true;
+        }
+
+        return false;
+    }
+
+    protected boolean sendDetachConsole() {
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_DETACH_CONSOLE)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build message for C_DETACH_CONSOLE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_DETACH_CONSOLE to network coordinator");
         return TransactionManager.get().send(info.getId(), message, null);
     }
 

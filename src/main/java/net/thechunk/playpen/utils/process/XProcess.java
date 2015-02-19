@@ -21,6 +21,7 @@ public class XProcess {
 
     public void addListener(IProcessListener listener) {
         listeners.add(listener);
+        listener.onProcessAttach(this);
     }
 
     public void removeListener(IProcessListener listener) {

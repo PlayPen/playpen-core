@@ -8,5 +8,6 @@ public enum ClientMode {
     SHUTDOWN,
     PROMOTE,
     GENERATE_KEYPAIR,
-    SEND_INPUT
+    SEND_INPUT,
+    ATTACH
 }

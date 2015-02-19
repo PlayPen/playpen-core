@@ -82,6 +82,8 @@ public class Local extends PlayPen {
 
     private boolean shuttingDown = false;
 
+    private Map<String, ConsoleMessageListener> consoles = new ConcurrentHashMap<>();
+
     private Local() {
         super();
         packageManager = new PackageManager();
@@ -421,6 +423,9 @@ public class Local extends PlayPen {
 
             case SEND_INPUT:
                 return processSendInput(command.getSendInput(), info);
+
+            case ATTACH_CONSOLE:
+                return processAttachConsole(command.getAttachConsole(), info);
         }
     }
 
@@ -485,6 +490,21 @@ public class Local extends PlayPen {
         log.info("Provisioned server " + uuid + ", executing!");
         new ServerExecutionThread(server).start();
         return true;
+    }
+
+    public boolean detachConsole(String consoleId) {
+        ConsoleMessageListener listener = consoles.getOrDefault(consoleId, null);
+        if(listener == null) {
+            log.error("Cannot detach unknown console " + consoleId);
+            return false;
+        }
+        else {
+            log.info("Detaching console " + consoleId);
+            consoles.remove(consoleId);
+            listener.remove();
+            sendDetachConsole(consoleId);
+            return true;
+        }
     }
 
     protected boolean sendSync() {
@@ -747,6 +767,92 @@ public class Local extends PlayPen {
         server.getProcess().sendInput(protoInput.getInput());
 
         return true;
+    }
+
+    protected boolean processAttachConsole(Commands.AttachConsole message, TransactionInfo info) {
+        Server server = getServer(message.getServerId());
+        if(server == null) {
+            log.error("Cannot ATTACH_CONSOLE to unknown server " + message.getServerId());
+            sendDetachConsole(message.getConsoleId());
+            return false;
+        }
+
+        if(consoles.containsKey(message.getConsoleId())) {
+            log.warn("Received ATTACH_CONSOLE with existing console id, ignoring");
+            return false;
+        }
+
+        if(server.getProcess() == null || !server.getProcess().isRunning()) {
+            log.warn("Server " + server.getUuid() + " has no listenable process");
+            sendDetachConsole(message.getConsoleId());
+            return false;
+        }
+
+        log.info("Attaching console " + message.getConsoleId() + " to server " + server.getUuid());
+        ConsoleMessageListener listener = new ConsoleMessageListener(message.getConsoleId());
+        consoles.put(message.getConsoleId(), listener);
+        server.getProcess().addListener(listener);
+
+        return true;
+    }
+
+    public boolean sendConsoleMessage(String consoleId, String consoleMessage) { // yes, that's public
+        if(!consoles.containsKey(consoleId)) {
+            log.error("Cannot send CONSOLE_MESSAGE with invalid console id " + consoleId);
+            return false;
+        }
+
+        Commands.ConsoleMessage cm = Commands.ConsoleMessage.newBuilder()
+                .setConsoleId(consoleId)
+                .setValue(consoleMessage)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.CONSOLE_MESSAGE)
+                .setConsoleMessage(cm)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to create transaction for CONSOLE_MESSAGE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean sendDetachConsole(String consoleId) {
+        if(!consoles.containsKey(consoleId)) {
+            log.error("Cannot send DETACH_CONSOLE with invalid console id " + consoleId);
+            return false;
+        }
+
+        Commands.DetachConsole detach = Commands.DetachConsole.newBuilder()
+                .setConsoleId(consoleId)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.DETACH_CONSOLE)
+                .setDetachConsole(detach)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to create transaction for DETACH_CONSOLE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending DETACH_CONSOLE for " + consoleId);
+
+        return TransactionManager.get().send(info.getId(), message, null);
     }
 
     protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
