@@ -18,6 +18,7 @@ import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.ExecutionType;
 import net.thechunk.playpen.p3.P3Package;
+import net.thechunk.playpen.p3.PackageException;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
 import net.thechunk.playpen.protocol.Commands;
@@ -181,7 +182,9 @@ public class Local extends PlayPen {
             log.info("Connected to network coordinator at " + coordIp + " port " + coordPort);
 
             sync();
-            scheduler.schedule(() -> Local.get().sync(), 5, TimeUnit.MINUTES);
+
+            log.info("Scheduling SYNC for every 2 minutes");
+            scheduler.schedule(() -> Local.get().sync(), 2, TimeUnit.MINUTES);
 
             f.channel().closeFuture().sync();
         }
@@ -466,6 +469,16 @@ public class Local extends PlayPen {
 
             return false;
         }
+
+        try {
+            String schema = new String(Files.readAllBytes(Paths.get(server.getLocalPath(), "package.json")));
+            p3 = Local.get().getPackageManager().readSchema(schema);
+        }
+        catch(Exception e) {
+            log.error("Encountered exception while loading P3 from server's local directory, using packaged instead of provisioned schema", e);
+        }
+
+        server.setP3(p3);
 
         servers.put(server.getUuid(), server);
 
