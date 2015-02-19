@@ -550,12 +550,12 @@ public class Network extends PlayPen {
 
         if(command.getOk()) {
             server.setActive(true);
-            log.info("Server " + serverId + " on " + coord.getUuid() + " has been activated (provision response)");
+            log.info("Server " + server.getUuid() + " on " + coord.getUuid() + " has been activated (provision response)");
             return true;
         }
         else {
-            coord.getServers().remove(serverId);
-            log.warn("Server " + serverId + " on " + coord.getUuid() + " failed to activate (provision response)");
+            coord.getServers().remove(server.getUuid());
+            log.warn("Server " + server.getUuid() + " on " + coord.getUuid() + " failed to activate (provision response)");
             return false;
         }
     }
@@ -675,7 +675,7 @@ public class Network extends PlayPen {
         server.setActive(false);
 
         Commands.Deprovision deprovision = Commands.Deprovision.newBuilder()
-                .setUuid(serverId)
+                .setUuid(server.getUuid())
                 .setForce(force)
                 .build();
 
@@ -693,7 +693,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        log.info("Deprovisioning " + serverId + " on coordinator " + target);
+        log.info("Deprovisioning " + server.getUuid() + " on coordinator " + target);
 
         return TransactionManager.get().send(info.getId(), message, target);
     }
@@ -707,7 +707,7 @@ public class Network extends PlayPen {
 
         Server server = coord.getServer(command.getUuid());
         if(server == null) {
-            log.error("Cannot process SERVER_SHUTDOWN on invalid server " + command.getUuid() + " on coordinator " + from);
+            log.error("Cannot process SERVER_SHUTDOWN on invalid server " + command.getUuid() + " on coordinator " + coord.getUuid());
             return false;
         }
 
@@ -742,7 +742,7 @@ public class Network extends PlayPen {
 
         log.info("Shutting down coordinator " + target);
 
-        return TransactionManager.get().send(info.getId(), message, target);
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
     }
 
     protected boolean sendInput(String target, String serverId, String input) {
@@ -754,12 +754,12 @@ public class Network extends PlayPen {
 
         Server server = coord.getServer(serverId);
         if(server == null) {
-            log.error("Cannot send SEND_INPUT to invalid server " + serverId + " on coordinator " + target);
+            log.error("Cannot send SEND_INPUT to invalid server " + serverId + " on coordinator " + coord.getUuid());
             return false;
         }
 
         Commands.SendInput protoInput = Commands.SendInput.newBuilder()
-                .setId(serverId)
+                .setId(server.getUuid())
                 .setInput(input)
                 .build();
 
@@ -777,9 +777,9 @@ public class Network extends PlayPen {
             return false;
         }
 
-        log.info("Sending input to server " + serverId + " on coordinator " + target);
+        log.info("Sending input to server " + serverId + " on coordinator " + coord.getUuid());
 
-        return TransactionManager.get().send(info.getId(), message, target);
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
     }
 
     protected boolean c_processGetCoordinatorList(TransactionInfo info, String from) {

@@ -254,8 +254,16 @@ public class Local extends PlayPen {
         return true;
     }
 
-    public Server getServer(String id) {
-        return servers.getOrDefault(id, null);
+    public Server getServer(String idOrName) {
+        if(servers.containsKey(idOrName))
+            return servers.get(idOrName);
+
+        for(Server server : servers.values()) {
+            if(server.getName() != null && server.getName().equals(idOrName))
+                return server;
+        }
+
+        return null;
     }
 
     public void notifyServerShutdown(String id) {
