@@ -65,7 +65,7 @@ public class Client extends PlayPen {
     }
 
     protected void printHelpText() {
-        System.err.println("playpen cli <list/provision/deprovision/shutdown> [arguments...]");
+        System.err.println("playpen cli <list/provision/deprovision/shutdown/promote> [arguments...]");
     }
 
     public void run(String[] arguments) {
@@ -274,6 +274,10 @@ public class Client extends PlayPen {
                 runShutdownCommand(arguments);
                 break;
 
+            case "promote":
+                runPromoteCommand(arguments);
+                break;
+
             default:
                 printHelpText();
                 channel.close();
@@ -285,6 +289,7 @@ public class Client extends PlayPen {
         if(arguments.length != 2) {
             printHelpText();
             System.err.println("list");
+            System.err.println("Retrieves and displays the list of all active coordinators, their configurations, and active servers.");
             channel.close();
             return;
         }
@@ -304,6 +309,7 @@ public class Client extends PlayPen {
         if(arguments.length != 3 && arguments.length != 4 && arguments.length != 5) {
             printHelpText();
             System.err.println("provision <package-id> [version] [coordinator-uuid]");
+            System.err.println("Provisions a server on the network.");
             System.err.println("If version is unspecified, 'promoted' will be used.");
             System.err.println("If coordinator-uuid is unspecified, the network will choose a coordinator.");
             channel.close();
@@ -330,6 +336,7 @@ public class Client extends PlayPen {
         if(arguments.length != 4 && arguments.length != 5) {
             printHelpText();
             System.err.println("deprovision <coordinator-uuid> <server-uuid> [force=false]");
+            System.err.println("Deprovisions a server from the network.");
             channel.close();
             return;
         }
@@ -358,6 +365,7 @@ public class Client extends PlayPen {
         if(arguments.length != 3) {
             printHelpText();
             System.err.println("shutdown <coordinator-uuid>");
+            System.err.println("Shuts down a coordinator and any related servers.");
             channel.close();
             return;
         }
@@ -372,6 +380,33 @@ public class Client extends PlayPen {
         }
         else {
             System.err.println("Unable to send shutdown to network");
+            channel.close();
+        }
+    }
+
+    protected void runPromoteCommand(String[] arguments) {
+        if(arguments.length != 4) {
+            printHelpText();
+            System.err.println("promote <package-id> <package-version>");
+            System.err.println("Promotes a package.");
+            channel.close();
+            return;
+        }
+
+        String id = arguments[2];
+        String version = arguments[3];
+        if(version.equals("promoted")) {
+            System.err.println("Cannot promote a package of version 'promoted'");
+            channel.close();
+            return;
+        }
+
+        if(sendPromote(id, version)) {
+            System.out.println("Sent promote to network");
+            channel.close();
+        }
+        else {
+            System.err.println("Unable to send promote to network");
             channel.close();
         }
     }
@@ -533,6 +568,30 @@ public class Client extends PlayPen {
         }
 
         log.info("Sending C_SHUTDOWN to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean sendPromote(String id, String version) {
+        Commands.C_Promote promote = Commands.C_Promote.newBuilder()
+                .setP3(P3.P3Meta.newBuilder().setId(id).setVersion(version).build())
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_PROMOTE)
+                .setCPromote(promote)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build message for promote");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_PROMOTE to network coordinator");
         return TransactionManager.get().send(info.getId(), message, null);
     }
 }

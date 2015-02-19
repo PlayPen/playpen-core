@@ -270,6 +270,9 @@ public class Network extends PlayPen {
 
             case C_SHUTDOWN:
                 return c_processShutdown(command.getCShutdown(), info, from);
+
+            case C_PROMOTE:
+                return c_processPromote(command.getCPromote(), info, from);
         }
     }
 
@@ -907,5 +910,16 @@ public class Network extends PlayPen {
             log.error("Unable to shutdown coordinator " + shutdown.getUuid() + " on behalf of client " + from);
             return false;
         }
+    }
+
+    protected boolean c_processPromote(Commands.C_Promote promote, TransactionInfo info, String from) {
+        log.info("Attemping promotion of package " + promote.getP3().getId() + " at " + promote.getP3().getVersion() + " on behalf of client " + from);
+        P3Package p3 = packageManager.resolve(promote.getP3().getId(), promote.getP3().getVersion());
+        if(p3 == null) {
+            log.error("Unable to resolve package " + promote.getP3().getId() + " at " + promote.getP3().getVersion() + " for promotion");
+            return false;
+        }
+
+        return packageManager.promote(p3);
     }
 }

@@ -52,15 +52,25 @@ public class PackageManager {
         return promoted.getOrDefault(id, null);
     }
 
-    public void promote(String id, String version) {
-        promoted.put(id, version);
+    public boolean promote(P3Package p3) {
+        if(!p3.isResolved()) {
+            log.error("Cannot promote unresolved package " + p3.getId() + " at " + p3.getVersion());
+            return false;
+        }
+
+        if(p3.getVersion().equals("promoted")) {
+            log.error("Cannot promote package of version 'promoted'");
+            return false;
+        }
+
+        promoted.put(p3.getId(), p3.getVersion());
 
         try {
             File packagesFile = Paths.get(Bootstrap.getHomeDir().getPath(), "packages.json").toFile();
             String packagesStr = new String(Files.readAllBytes(packagesFile.toPath()));
             JSONObject config = new JSONObject(packagesStr);
             JSONObject packages = config.getJSONObject("promoted");
-            packages.put(id, version);
+            packages.put(p3.getId(), p3.getVersion());
             String jsonStr = packages.toString(2);
             try (FileOutputStream out = new FileOutputStream(packagesFile)) {
                 IOUtils.write(jsonStr, out);
@@ -69,6 +79,8 @@ public class PackageManager {
         catch(Exception e) {
             log.error("Unable to save promoted packages", e);
         }
+
+        return true;
     }
 
     public void addPackageResolver(IPackageResolver resolver) {
