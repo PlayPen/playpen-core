@@ -829,11 +829,6 @@ public class Local extends PlayPen {
     }
 
     protected boolean sendDetachConsole(String consoleId) {
-        if(!consoles.containsKey(consoleId)) {
-            log.error("Cannot send DETACH_CONSOLE with invalid console id " + consoleId);
-            return false;
-        }
-
         Commands.DetachConsole detach = Commands.DetachConsole.newBuilder()
                 .setConsoleId(consoleId)
                 .build();
