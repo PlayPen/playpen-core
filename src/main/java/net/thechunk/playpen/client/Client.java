@@ -893,6 +893,7 @@ public class Client extends PlayPen {
     protected boolean processDetachConsole(TransactionInfo info) {
         switch(clientMode) {
             case ATTACH:
+                System.out.println("Console detached!");
                 channel.close();
                 return true;
         }
