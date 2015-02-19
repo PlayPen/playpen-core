@@ -320,10 +320,10 @@ public class Client extends PlayPen {
     protected void runProvisionCommand(String[] arguments) {
         if(arguments.length != 3 && arguments.length != 4 && arguments.length != 5) {
             printHelpText();
-            System.err.println("provision <package-id> [version] [coordinator-uuid]");
+            System.err.println("provision <package-id> [version] [coordinator]");
             System.err.println("Provisions a server on the network.");
             System.err.println("If version is unspecified, 'promoted' will be used.");
-            System.err.println("If coordinator-uuid is unspecified, the network will choose a coordinator.");
+            System.err.println("If coordinator is unspecified, the network will choose a coordinator.");
             channel.close();
             return;
         }
@@ -347,7 +347,7 @@ public class Client extends PlayPen {
     protected void runDeprovisionCommand(String[] arguments) {
         if(arguments.length != 4 && arguments.length != 5) {
             printHelpText();
-            System.err.println("deprovision <coordinator-uuid> <server-uuid> [force=false]");
+            System.err.println("deprovision <coordinator> <server> [force=false]");
             System.err.println("Deprovisions a server from the network.");
             channel.close();
             return;
@@ -376,7 +376,7 @@ public class Client extends PlayPen {
     protected void runShutdownCommand(String[] arguments) {
         if(arguments.length != 3) {
             printHelpText();
-            System.err.println("shutdown <coordinator-uuid>");
+            System.err.println("shutdown <coordinator>");
             System.err.println("Shuts down a coordinator and any related servers.");
             channel.close();
             return;
@@ -449,7 +449,7 @@ public class Client extends PlayPen {
     protected void runSendCommand(String[] arguments) {
         if(arguments.length != 5) {
             printHelpText();
-            System.err.println("send <coordinator-id> <server-id> <input>");
+            System.err.println("send <coordinator> <server> <input>");
             channel.close();
             return;
         }

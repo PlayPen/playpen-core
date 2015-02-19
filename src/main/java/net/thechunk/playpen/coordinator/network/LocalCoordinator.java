@@ -31,6 +31,18 @@ public class LocalCoordinator {
 
     private boolean enabled = false;
 
+    public Server getServer(String idOrName) {
+        if(servers.containsKey(idOrName))
+            return servers.get(idOrName);
+
+        for(Server server : servers.values()) {
+            if(server.getName() != null && server.getName().equals(idOrName))
+                return server;
+        }
+
+        return null;
+    }
+
     public Map<String, Integer> getAvailableResources() {
         Map<String, Integer> used = new HashMap<>();
         for(Map.Entry<String, Integer> entry : resources.entrySet()) {

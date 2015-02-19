@@ -156,8 +156,16 @@ public class Network extends PlayPen {
         return true;
     }
 
-    public LocalCoordinator getCoordinator(String id) {
-        return coordinators.getOrDefault(id, null);
+    public LocalCoordinator getCoordinator(String idOrName) {
+        if(coordinators.containsKey(idOrName))
+            return coordinators.get(idOrName);
+
+        for(LocalCoordinator coord : coordinators.values()) {
+            if(coord.getName() != null && coord.getName().equals(idOrName))
+                return coord;
+        }
+
+        return null;
     }
 
     @Override
@@ -534,7 +542,7 @@ public class Network extends PlayPen {
         }
 
         String serverId = previous.getProvision().getServer().getUuid();
-        Server server = coord.getServers().getOrDefault(serverId, null);
+        Server server = coord.getServer(serverId);
         if(server == null) {
             log.error("Unknown server " + serverId + " on PROVISION_RESPONSE");
             return false;
@@ -658,7 +666,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        Server server = coord.getServers().getOrDefault(serverId, null);
+        Server server = coord.getServer(serverId);
         if(server == null) {
             log.error("Cannot send DEPROVISION on invalid server " + serverId + " on coordinator " + target);
             return false;
@@ -697,7 +705,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        Server server = coord.getServers().getOrDefault(command.getUuid(), null);
+        Server server = coord.getServer(command.getUuid());
         if(server == null) {
             log.error("Cannot process SERVER_SHUTDOWN on invalid server " + command.getUuid() + " on coordinator " + from);
             return false;
@@ -744,7 +752,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        Server server = coord.getServers().getOrDefault(serverId, null);
+        Server server = coord.getServer(serverId);
         if(server == null) {
             log.error("Cannot send SEND_INPUT to invalid server " + serverId + " on coordinator " + target);
             return false;
