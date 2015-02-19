@@ -321,7 +321,7 @@ public class Client extends PlayPen {
     }
 
     protected void runProvisionCommand(String[] arguments) {
-        if(arguments.length != 3 && arguments.length != 4 && arguments.length != 5) {
+        if(arguments.length < 3) {
             printHelpText();
             System.err.println("provision <package-id> [properties...]");
             System.err.println("Provisions a server on the network.");
@@ -340,7 +340,7 @@ public class Client extends PlayPen {
         String serverName = null;
         Map<String, String> properties = new HashMap<>();
 
-        for(int i = 4; i < arguments.length; i += 2) {
+        for(int i = 3; i < arguments.length; i += 2) {
             if(i + 1 >= arguments.length) {
                 System.err.println("Properties must be in the form <key> <value>");
                 channel.close();
