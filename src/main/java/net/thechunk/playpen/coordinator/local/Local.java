@@ -722,7 +722,7 @@ public class Local extends PlayPen {
             return false;
         }
 
-        log.info("Sending input to server " + server.getUuid() + ": " + protoInput.getInput());
+        log.info("Sending input to server " + server.getUuid());
         server.getProcess().sendInput(protoInput.getInput());
 
         return true;

@@ -777,7 +777,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        log.info("Sending input to coordinator: " + input);
+        log.info("Sending input to server " + serverId + " on coordinator " + target);
 
         return TransactionManager.get().send(info.getId(), message, target);
     }
