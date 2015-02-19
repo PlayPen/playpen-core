@@ -28,9 +28,13 @@ import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Client is basically a "light" version of a local coordinator. It implements a local coordinator that
@@ -62,6 +66,8 @@ public class Client extends PlayPen {
 
     @Getter
     private ClientMode clientMode = ClientMode.NONE;
+
+    private Commands.C_CoordinatorListResponse coordList = null;
 
     private Client() {
         super();
@@ -384,29 +390,52 @@ public class Client extends PlayPen {
         if(arguments.length != 4 && arguments.length != 5) {
             printHelpText();
             System.err.println("deprovision <coordinator> <server> [force=false]");
-            System.err.println("Deprovisions a server from the network.");
+            System.err.println("Deprovisions a server from the network. Coordinator and server accept regex.");
+            System.err.println("For safety, all regex will have ^ prepended and $ appended.");
             channel.close();
             return;
         }
 
         clientMode = ClientMode.DEPROVISION;
 
-        String coordId = arguments[2];
-        String serverId = arguments[3];
+        Pattern coordPattern = Pattern.compile('^' + arguments[2] + '$');
+        Pattern serverPattern = Pattern.compile('^' + arguments[3] + '$');
         boolean force = arguments.length == 5 ? (arguments[4].trim().toLowerCase().equals("true") ? true : false) : false; // dat nested ternary
+
+        System.out.println("Retrieving coordinator list...");
+        if(!blockUntilCoordList()) {
+            System.err.println("Operation cancelled!");
+            channel.close();
+            return;
+        }
 
         if(force) {
             System.out.println("NOTE: forcing deprovision operation");
         }
 
-        if(sendDeprovision(coordId, serverId, force)) {
-            System.out.println("Sent deprovision to network");
+        Map<String, List<String>> servers = getServersFromList(coordPattern, serverPattern);
+        if(servers.isEmpty()) {
+            System.err.println("No coordinators/servers match patterns given.");
             channel.close();
+            return;
         }
-        else {
-            System.err.println("Unable to send deprovision to network");
-            channel.close();
+
+        System.out.println("Sending deprovision operations...");
+        for(Map.Entry<String, List<String>> entry : servers.entrySet()) {
+            String coordId = entry.getKey();
+            System.out.println("Coordinator " + coordId + ":");
+            for(String serverId : entry.getValue()) {
+                if(sendDeprovision(coordId, serverId, force)) {
+                    System.out.println("\tSent deprovision of " + serverId);
+                }
+                else {
+                    System.err.println("\tUnable to send deprovision of " + serverId);
+                }
+            }
         }
+
+        System.out.println("Operation completed!");
+        channel.close();
     }
 
     protected void runShutdownCommand(String[] arguments) {
@@ -486,24 +515,49 @@ public class Client extends PlayPen {
         if(arguments.length != 5) {
             printHelpText();
             System.err.println("send <coordinator> <server> <input>");
+            System.err.println("Sends a command to the console of a server.");
+            System.err.println("Coordinator and server accept regex.");
+            System.err.println("For safety, all regex will have ^ prepended and $ appended.");
             channel.close();
             return;
         }
 
         clientMode = ClientMode.SEND_INPUT;
 
-        String coordId = arguments[2];
-        String serverId = arguments[3];
+        Pattern coordPattern = Pattern.compile('^' + arguments[2] + '$');
+        Pattern serverPattern = Pattern.compile('^' + arguments[3] + "$");
         String input = arguments[4] + '\n';
 
-        if(sendInput(coordId, serverId, input)) {
-            System.out.println("Sent input to network");
+        System.out.println("Retrieving coordinator list...");
+        if(!blockUntilCoordList()) {
+            System.err.println("Operation cancelled!");
             channel.close();
+            return;
         }
-        else {
-            System.err.println("Unable to send input to network");
+
+        Map<String, List<String>> servers = getServersFromList(coordPattern, serverPattern);
+        if(servers.isEmpty()) {
+            System.err.println("No coordinators/servers match patterns given.");
             channel.close();
+            return;
         }
+
+        System.out.println("Sending input operations...");
+        for(Map.Entry<String, List<String>> entry : servers.entrySet()) {
+            String coordId = entry.getKey();
+            System.out.println("Coordinator " + coordId + ":");
+            for(String serverId : entry.getValue()) {
+                if(sendInput(coordId, serverId, input)) {
+                    System.out.println("\tSent input to " + serverId);
+                }
+                else {
+                    System.err.println("\tUnable to send input to " + serverId);
+                }
+            }
+        }
+
+        System.out.println("Operation completed!");
+        channel.close();
     }
 
     protected boolean sendSync() {
@@ -560,6 +614,11 @@ public class Client extends PlayPen {
             case LIST:
                 System.out.println(response.toString());
                 channel.close();
+                return true;
+
+            case DEPROVISION:
+            case SEND_INPUT:
+                coordList = response;
                 return true;
         }
 
@@ -756,5 +815,43 @@ public class Client extends PlayPen {
 
         log.info("Sending C_SEND_INPUT to network coordinator");
         return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean blockUntilCoordList() {
+        if(!sendListRequest())
+            return false;
+
+        try {
+            do {
+                Thread.sleep(1000);
+            }
+            while(coordList == null);
+        }
+        catch(InterruptedException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected Map<String, List<String>> getServersFromList(Pattern coordPattern, Pattern serverPattern) {
+        Map<String, List<String>> result = new HashMap<>();
+        for(Coordinator.LocalCoordinator coord : coordList.getCoordinatorsList()) {
+            if(coordPattern.matcher(coord.getUuid()).matches() ||
+                    (coord.hasName() && coordPattern.matcher(coord.getName()).matches())) {
+                List<String> servers = new LinkedList<>();
+                for(Coordinator.Server server : coord.getServersList()) {
+                    if(serverPattern.matcher(server.getUuid()).matches() ||
+                            (server.hasName() && serverPattern.matcher(server.getName()).matches())) {
+                        servers.add(server.getUuid());
+                    }
+                }
+
+                if(!servers.isEmpty())
+                    result.put(coord.getUuid(), servers);
+            }
+        }
+
+        return result;
     }
 }
