@@ -859,15 +859,7 @@ public class Local extends PlayPen {
     }
 
     protected boolean processDetachConsole(Commands.DetachConsole message, TransactionInfo info) {
-        if(!consoles.containsKey(message.getConsoleId())) {
-            log.error("Cannot DETACH_CONSOLE on invalid console id " + message.getConsoleId());
-            return false;
-        }
-
-        log.info("Detaching console " + message.getConsoleId());
-        consoles.remove(message.getConsoleId());
-
-        return true;
+        return detachConsole(message.getConsoleId());
     }
 
     protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
