@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -68,6 +67,8 @@ public class Client extends PlayPen {
     private ClientMode clientMode = ClientMode.NONE;
 
     private Commands.C_CoordinatorListResponse coordList = null;
+
+    private AttachInputListenThread ailThread = null;
 
     private Client() {
         super();
@@ -156,6 +157,9 @@ public class Client extends PlayPen {
             scheduler.shutdownNow();
             scheduler = null;
 
+            if(ailThread != null && ailThread.isAlive())
+                ailThread.stop();
+
             group.shutdownGracefully();
         }
 
@@ -172,6 +176,10 @@ public class Client extends PlayPen {
 
         if(clientMode == ClientMode.ATTACH) {
             sendDetachConsole();
+        }
+
+        if(ailThread != null && ailThread.isAlive()) {
+            ailThread.stop();
         }
 
         if(channel != null && channel.isOpen()) {
@@ -598,6 +606,8 @@ public class Client extends PlayPen {
         }
         else {
             System.out.println("Attaching console...");
+            ailThread = new AttachInputListenThread(coordId, serverId);
+            ailThread.start();
         }
     }
 
@@ -959,5 +969,23 @@ public class Client extends PlayPen {
         }
 
         return result;
+    }
+
+    private static class AttachInputListenThread extends Thread {
+        private String coordId;
+        private String serverId;
+
+        public AttachInputListenThread(String c, String s) {
+            coordId = c;
+            serverId = s;
+        }
+
+        @Override
+        public void run() {
+            while(true) {
+                String input = System.console().readLine() + '\n';
+                Client.get().sendInput(coordId, serverId, input);
+            }
+        }
     }
 }
