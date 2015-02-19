@@ -9,6 +9,7 @@ import net.thechunk.playpen.coordinator.local.Local;
 import net.thechunk.playpen.coordinator.network.Network;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
@@ -16,6 +17,26 @@ import java.nio.file.Paths;
 public class Bootstrap {
     @Getter
     private static File homeDir;
+
+    private static boolean copyFileFromJar(String file) throws IOException, URISyntaxException {
+        File f = Paths.get(homeDir.getPath(), file).toFile();
+        if(!f.exists()) {
+            JarUtils.exportResource(Bootstrap.class, "/" + file, f.getPath());
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean copyFilesFromJar(String[] files) throws IOException, URISyntaxException {
+        boolean didCopy = false;
+        for(String file : files) {
+            if(copyFileFromJar(file))
+                didCopy = true;
+        }
+
+        return didCopy;
+    }
 
     public static void main(String[] args) {
         boolean didCopyResources = false;
@@ -26,47 +47,24 @@ public class Bootstrap {
         catch(URISyntaxException e) {}
 
         try {
-            File f = Paths.get(homeDir.getPath(), "logging.xml").toFile();
-            if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/logging.xml", f.getPath());
-                didCopyResources = true;
-            }
-
-            f = Paths.get(homeDir.getPath(), "keystore.json").toFile();
-            if (!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/keystore.json", f.getPath());
-                didCopyResources = true;
-            }
-
-            f = Paths.get(homeDir.getPath(), "packages.json").toFile();
-            if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/packages.json", f.getPath());
-                didCopyResources = true;
-            }
-
-            f = Paths.get(homeDir.getPath(), "local.json").toFile();
-            if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/local.json", f.getPath());
-                didCopyResources = true;
-            }
-
-            f = Paths.get(homeDir.getPath(), "network.json").toFile();
-            if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/network.json", f.getPath());
-                didCopyResources = true;
-            }
-
-            f = Paths.get(homeDir.getPath(), "playpen.bat").toFile();
-            if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/playpen.bat", f.getPath());
-                didCopyResources = true;
-            }
-
-            f = Paths.get(homeDir.getPath(), "playpen.sh").toFile();
-            if(!f.exists()) {
-                JarUtils.exportResource(Bootstrap.class, "/playpen.sh", f.getPath());
-                didCopyResources = true;
-            }
+            didCopyResources = copyFilesFromJar(new String[]{
+                    "logging-network.xml",
+                    "logging-local.xml",
+                    "logging-cli.xml",
+                    "logging-p3.xml",
+                    "keystore.json",
+                    "packages.json",
+                    "local.json",
+                    "network.json",
+                    "playpen-network.bat",
+                    "playpen-local.bat",
+                    "playpen-cli.bat",
+                    "playpen-p3.bat",
+                    "playpen-network.sh",
+                    "playpen-local.sh",
+                    "playpen-cli.sh",
+                    "playpen-p3.sh"
+            });
 
             if(Paths.get(homeDir.getPath(), "cache", "packages").toFile().mkdirs())
                 didCopyResources = true;

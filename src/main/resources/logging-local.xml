@@ -6,7 +6,7 @@
                 <Pattern>%-5p %c{1}: %m%n</Pattern>
             </PatternLayout>
         </Console>
-        <File name="file" filename="playpen.log">
+        <File name="file" filename="playpen_local.log">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c: %m%n</Pattern>
             </PatternLayout>

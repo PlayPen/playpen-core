@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration>
+    <Appenders>
+        <File name="file" filename="playpen_client.log">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c: %m%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="file" />
+        </Root>
+        <Logger name="org.zeroturnaround.zip.ZipUtil" level="warn">
+        </Logger>
+    </Loggers>
+</Configuration>
