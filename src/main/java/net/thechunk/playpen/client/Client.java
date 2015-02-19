@@ -175,7 +175,7 @@ public class Client extends PlayPen {
         }
 
         if(channel != null && channel.isOpen()) {
-            channel.close().sync();
+            channel.close().syncUninterruptibly();
         }
     }
 
