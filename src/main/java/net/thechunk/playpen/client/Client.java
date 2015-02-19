@@ -17,6 +17,7 @@ import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.protocol.Commands;
+import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
@@ -26,6 +27,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -320,10 +323,11 @@ public class Client extends PlayPen {
     protected void runProvisionCommand(String[] arguments) {
         if(arguments.length != 3 && arguments.length != 4 && arguments.length != 5) {
             printHelpText();
-            System.err.println("provision <package-id> [version] [coordinator]");
+            System.err.println("provision <package-id> [properties...]");
             System.err.println("Provisions a server on the network.");
-            System.err.println("If version is unspecified, 'promoted' will be used.");
-            System.err.println("If coordinator is unspecified, the network will choose a coordinator.");
+            System.err.println("The property 'version' will specify the version of the package (default: promoted)");
+            System.err.println("The property 'coordinator' will specify which coordinator to provision on.");
+            System.err.println("The property 'name' will specify the name of the server.");
             channel.close();
             return;
         }
@@ -331,12 +335,44 @@ public class Client extends PlayPen {
         clientMode = ClientMode.PROVISION;
 
         String id = arguments[2];
-        String version = arguments.length >= 4 ? arguments[3] : "promoted";
-        String coordinator = arguments.length == 5 ? arguments[4] : null;
+        String version = "promoted";
+        String coordinator = null;
+        String serverName = null;
+        Map<String, String> properties = new HashMap<>();
 
-        if(!sendProvision(id, version, coordinator)) {
-            log.error("Unable to send provision to coordinator");
-            System.err.println("Unable to send provision to coordinator");
+        for(int i = 4; i < arguments.length; i += 2) {
+            if(i + 1 >= arguments.length) {
+                System.err.println("Properties must be in the form <key> <value>");
+                channel.close();
+                return;
+            }
+
+            String key = arguments[i];
+            String value = arguments[i+1];
+
+            String lowerKey = key.trim().toLowerCase();
+            switch(lowerKey) {
+                case "version":
+                    version = value;
+                    break;
+
+                case "coordinator":
+                    coordinator = value;
+                    break;
+
+                case "name":
+                    serverName = value;
+                    break;
+
+                default:
+                    properties.put(key, value);
+                    break;
+            }
+        }
+
+        if(!sendProvision(id, version, coordinator, serverName, properties)) {
+            log.error("Unable to send provision to network");
+            System.err.println("Unable to send provision to network");
             channel.close();
             return;
         }
@@ -530,7 +566,7 @@ public class Client extends PlayPen {
         return false;
     }
 
-    protected boolean sendProvision(String id, String version, String coordinator) {
+    protected boolean sendProvision(String id, String version, String coordinator, String serverName, Map<String, String> properties) {
         P3.P3Meta meta = P3.P3Meta.newBuilder()
                 .setId(id)
                 .setVersion(version)
@@ -538,8 +574,17 @@ public class Client extends PlayPen {
 
         Commands.C_Provision.Builder provisionBuilder = Commands.C_Provision.newBuilder()
                 .setP3(meta);
+
         if(coordinator != null) {
             provisionBuilder.setCoordinator(coordinator);
+        }
+
+        if(serverName != null) {
+            provisionBuilder.setServerName(serverName);
+        }
+
+        for(Map.Entry<String, String> prop : properties.entrySet()) {
+            provisionBuilder.addProperties(Coordinator.Property.newBuilder().setName(prop.getKey()).setValue(prop.getValue()).build());
         }
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()

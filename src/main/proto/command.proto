@@ -55,6 +55,8 @@ message C_CoordinatorListResponse {
 message C_Provision {
     required P3Meta p3 = 1;
     optional string coordinator = 2;
+    optional string serverName = 3;
+    repeated Property properties = 4;
 }
 
 message C_ProvisionResponse {

@@ -864,12 +864,17 @@ public class Network extends PlayPen {
 
         log.info("Attempting provision at client's request of " + p3.getId() + " at " + p3.getVersion());
 
+        Map<String, String> properties = new HashMap<>();
+        for(Coordinator.Property prop : request.getPropertiesList()) {
+            properties.put(prop.getName(), prop.getValue());
+        }
+
         ProvisionResult result;
         if(request.hasCoordinator()) {
-            result = provision(p3, null, new HashMap<>(), request.getCoordinator()); // TODO: Property support
+            result = provision(p3, request.hasServerName() ? request.getServerName() : null, properties, request.getCoordinator());
         }
         else {
-            result = provision(p3, null, new HashMap<>()); // TODO: Property support
+            result = provision(p3, request.hasServerName() ? request.getServerName() : null, properties);
         }
 
         if(result != null) {
