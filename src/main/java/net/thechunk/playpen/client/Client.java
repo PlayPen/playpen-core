@@ -115,7 +115,7 @@ public class Client extends PlayPen {
         log.info("Starting client " + uuid);
         EventLoopGroup group = new NioEventLoopGroup();
         try {
-            scheduler = Executors.newScheduledThreadPool(4);
+            scheduler = Executors.newScheduledThreadPool(1);
 
             io.netty.bootstrap.Bootstrap b = new io.netty.bootstrap.Bootstrap();
             b.group(group)
