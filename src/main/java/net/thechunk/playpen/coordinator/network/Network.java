@@ -276,6 +276,9 @@ public class Network extends PlayPen {
 
             case C_CREATE_COORDINATOR:
                 return c_processCreateCoordinator(info, from);
+
+            case C_SEND_INPUT:
+                return c_processSendInput(command.getCSendInput(), info, from);
         }
     }
 
@@ -710,7 +713,7 @@ public class Network extends PlayPen {
     protected boolean sendShutdown(String target) {
         LocalCoordinator coord = getCoordinator(target);
         if(coord == null) {
-            log.error("Cannot send SHUTDOWN on invalid coordinator " + target);
+            log.error("Cannot send SHUTDOWN to invalid coordinator " + target);
             return false;
         }
 
@@ -730,6 +733,43 @@ public class Network extends PlayPen {
         }
 
         log.info("Shutting down coordinator " + target);
+
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
+    protected boolean sendInput(String target, String serverId, String input) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send SEND_INPUT to invalid coordinator " + target);
+            return false;
+        }
+
+        Server server = coord.getServers().getOrDefault(serverId, null);
+        if(server == null) {
+            log.error("Cannot send SEND_INPUT to invalid server " + serverId + " on coordinator " + target);
+            return false;
+        }
+
+        Commands.SendInput protoInput = Commands.SendInput.newBuilder()
+                .setId(serverId)
+                .setInput(input)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.SEND_INPUT)
+                .setSendInput(protoInput)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for SEND_INPUT");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending input to coordinator: " + input);
 
         return TransactionManager.get().send(info.getId(), message, target);
     }
@@ -954,5 +994,10 @@ public class Network extends PlayPen {
         log.info("Sending C_COORDINATOR_CREATED");
 
         return TransactionManager.get().send(info.getId(), message, from);
+    }
+
+    protected boolean c_processSendInput(Commands.C_SendInput protoInput, TransactionInfo info, String from) {
+        log.info("Sending input to " + protoInput.getServerId() + " on coordinator " + protoInput.getCoordinatorId() + " on behalf of client " + from);
+        return sendInput(protoInput.getCoordinatorId(), protoInput.getServerId(), protoInput.getInput());
     }
 }

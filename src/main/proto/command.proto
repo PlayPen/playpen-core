@@ -43,6 +43,11 @@ message ServerShutdown { // local -> network
     required string uuid = 1;
 }
 
+message SendInput {
+    required string id = 1;
+    required string input = 2;
+}
+
 message C_CoordinatorListResponse {
     repeated LocalCoordinator coordinators = 1;
 }
@@ -77,6 +82,12 @@ message C_CoordinatorCreated {
     required string key = 2;
 }
 
+message C_SendInput {
+    required string coordinatorId = 1;
+    required string serverId = 2;
+    required string input = 3;
+}
+
 message BaseCommand {
     enum CommandType {
         // Coordination commands
@@ -88,17 +99,19 @@ message BaseCommand {
         DEPROVISION = 6;
         SERVER_SHUTDOWN = 7;
         SHUTDOWN = 8; // no message body
+        SEND_INPUT = 9;
 
         // Client commands
-        C_GET_COORDINATOR_LIST = 9; // no message body
-        C_COORDINATOR_LIST_RESPONSE = 10;
-        C_PROVISION = 11;
-        C_PROVISION_RESPONSE = 12;
-        C_DEPROVISION = 13;
-        C_SHUTDOWN = 14;
-        C_PROMOTE = 15;
-        C_CREATE_COORDINATOR = 16; // no message body
-        C_COORDINATOR_CREATED = 17;
+        C_GET_COORDINATOR_LIST = 10; // no message body
+        C_COORDINATOR_LIST_RESPONSE = 11;
+        C_PROVISION = 12;
+        C_PROVISION_RESPONSE = 13;
+        C_DEPROVISION = 14;
+        C_SHUTDOWN = 15;
+        C_PROMOTE = 16;
+        C_CREATE_COORDINATOR = 17; // no message body
+        C_COORDINATOR_CREATED = 18;
+        C_SEND_INPUT = 19;
     }
 
     required CommandType type = 1;
@@ -110,12 +123,14 @@ message BaseCommand {
     optional PackageResponse packageResponse = 6;
     optional Deprovision deprovision = 7;
     optional ServerShutdown serverShutdown = 8;
+    optional SendInput sendInput = 9;
 
-    optional C_CoordinatorListResponse c_coordinatorListResponse = 9;
-    optional C_Provision c_provision = 10;
-    optional C_ProvisionResponse c_provisionResponse = 11;
-    optional C_Deprovision c_deprovision = 12;
-    optional C_Shutdown c_shutdown = 13;
-    optional C_Promote c_promote = 14;
-    optional C_CoordinatorCreated c_coordinatorCreated = 15;
+    optional C_CoordinatorListResponse c_coordinatorListResponse = 10;
+    optional C_Provision c_provision = 11;
+    optional C_ProvisionResponse c_provisionResponse = 12;
+    optional C_Deprovision c_deprovision = 13;
+    optional C_Shutdown c_shutdown = 14;
+    optional C_Promote c_promote = 15;
+    optional C_CoordinatorCreated c_coordinatorCreated = 16;
+    optional C_SendInput c_sendInput = 17;
 }

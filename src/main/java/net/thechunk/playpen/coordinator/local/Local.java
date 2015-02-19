@@ -407,6 +407,9 @@ public class Local extends PlayPen {
 
             case SHUTDOWN:
                 return processShutdown(info);
+
+            case SEND_INPUT:
+                return processSendInput(command.getSendInput(), info);
         }
     }
 
@@ -704,6 +707,24 @@ public class Local extends PlayPen {
     protected boolean processShutdown(TransactionInfo info) {
         log.info("SHUTDOWN received, closing everything");
         shutdownCoordinator();
+        return true;
+    }
+
+    protected boolean processSendInput(Commands.SendInput protoInput, TransactionInfo info) {
+        Server server = getServer(protoInput.getId());
+        if(server == null) {
+            log.error("Cannot send input to invalid server " + protoInput.getId());
+            return false;
+        }
+
+        if(server.getProcess() == null || !server.getProcess().isRunning()) {
+            log.warn("Cannot send input to server " + server.getUuid() + " (process not running)");
+            return false;
+        }
+
+        log.info("Sending input to server " + server.getUuid() + ": " + protoInput.getInput());
+        server.getProcess().sendInput(protoInput.getInput());
+
         return true;
     }
 

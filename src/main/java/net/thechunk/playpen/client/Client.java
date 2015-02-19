@@ -66,7 +66,7 @@ public class Client extends PlayPen {
 
     protected void printHelpText() {
         System.err.println("playpen cli <command> [arguments...]");
-        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair");
+        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair, send");
     }
 
     public void run(String[] arguments) {
@@ -286,6 +286,10 @@ public class Client extends PlayPen {
                 runGenerateKeypairCommand(arguments);
                 break;
 
+            case "send":
+                runSendCommand(arguments);
+                break;
+
             default:
                 printHelpText();
                 channel.close();
@@ -438,6 +442,30 @@ public class Client extends PlayPen {
         }
         else {
             System.err.println("Unable to send generation request to network");
+            channel.close();
+        }
+    }
+
+    protected void runSendCommand(String[] arguments) {
+        if(arguments.length != 5) {
+            printHelpText();
+            System.err.println("send <coordinator-id> <server-id> <input>");
+            channel.close();
+            return;
+        }
+
+        clientMode = ClientMode.SEND_INPUT;
+
+        String coordId = arguments[2];
+        String serverId = arguments[3];
+        String input = arguments[4] + '\n';
+
+        if(sendInput(coordId, serverId, input)) {
+            System.out.println("Sent input to network");
+            channel.close();
+        }
+        else {
+            System.err.println("Unable to send input to network");
             channel.close();
         }
     }
@@ -657,5 +685,31 @@ public class Client extends PlayPen {
         }
 
         return false;
+    }
+
+    protected boolean sendInput(String coordId, String serverId, String input) {
+        Commands.C_SendInput protoInput = Commands.C_SendInput.newBuilder()
+                .setCoordinatorId(coordId)
+                .setServerId(serverId)
+                .setInput(input)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_SEND_INPUT)
+                .setCSendInput(protoInput)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build message for send input");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_SEND_INPUT to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
     }
 }

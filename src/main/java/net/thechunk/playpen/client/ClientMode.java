@@ -7,5 +7,6 @@ public enum ClientMode {
     DEPROVISION,
     SHUTDOWN,
     PROMOTE,
-    GENERATE_KEYPAIR
+    GENERATE_KEYPAIR,
+    SEND_INPUT
 }
