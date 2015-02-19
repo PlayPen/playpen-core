@@ -5,5 +5,7 @@ public enum ClientMode {
     LIST,
     PROVISION,
     DEPROVISION,
-    SHUTDOWN
+    SHUTDOWN,
+    PROMOTE,
+    GENERATE_KEYPAIR
 }

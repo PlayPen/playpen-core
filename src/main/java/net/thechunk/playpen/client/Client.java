@@ -65,7 +65,8 @@ public class Client extends PlayPen {
     }
 
     protected void printHelpText() {
-        System.err.println("playpen cli <list/provision/deprovision/shutdown/promote> [arguments...]");
+        System.err.println("playpen cli <command> [arguments...]");
+        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair");
     }
 
     public void run(String[] arguments) {
@@ -240,6 +241,9 @@ public class Client extends PlayPen {
 
             case C_PROVISION_RESPONSE:
                 return processProvisionResponse(command.getCProvisionResponse(), info);
+
+            case C_COORDINATOR_CREATED:
+                return processCoordinatorCreated(command.getCCoordinatorCreated(), info);
         }
     }
 
@@ -276,6 +280,10 @@ public class Client extends PlayPen {
 
             case "promote":
                 runPromoteCommand(arguments);
+                break;
+
+            case "generate-keypair":
+                runGenerateKeypairCommand(arguments);
                 break;
 
             default:
@@ -393,6 +401,8 @@ public class Client extends PlayPen {
             return;
         }
 
+        clientMode = ClientMode.PROMOTE;
+
         String id = arguments[2];
         String version = arguments[3];
         if(version.equals("promoted")) {
@@ -407,6 +417,27 @@ public class Client extends PlayPen {
         }
         else {
             System.err.println("Unable to send promote to network");
+            channel.close();
+        }
+    }
+
+    protected void runGenerateKeypairCommand(String[] arguments) {
+        if(arguments.length != 2) {
+            printHelpText();
+            System.err.println("generate-keypair");
+            System.err.println("Generates a new coordinator keypair");
+            channel.close();
+            return;
+        }
+
+        clientMode = ClientMode.GENERATE_KEYPAIR;
+
+        if(sendCreateCoordinator()) {
+            System.out.println("Requesting generation of new keypair...");
+            // don't close channel, just wait
+        }
+        else {
+            System.err.println("Unable to send generation request to network");
             channel.close();
         }
     }
@@ -465,10 +496,10 @@ public class Client extends PlayPen {
             case LIST:
                 System.out.println(response.toString());
                 channel.close();
-                break;
+                return true;
         }
 
-        return true;
+        return false;
     }
 
     protected boolean sendProvision(String id, String version, String coordinator) {
@@ -515,10 +546,10 @@ public class Client extends PlayPen {
                     System.err.println("Provision operation unsuccessful");
                 }
                 channel.close();
-                break;
+                return true;
         }
 
-        return true;
+        return false;
     }
 
     protected boolean sendDeprovision(String coordId, String serverId, boolean force) {
@@ -593,5 +624,38 @@ public class Client extends PlayPen {
 
         log.info("Sending C_PROMOTE to network coordinator");
         return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean sendCreateCoordinator() {
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_CREATE_COORDINATOR)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.CREATE, command);
+        if(message == null) {
+            log.error("Unable to build message for create coordinator");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_CREATE_COORDINATOR to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean processCoordinatorCreated(Commands.C_CoordinatorCreated response, TransactionInfo info) {
+        switch(clientMode) {
+            case GENERATE_KEYPAIR:
+                log.info("Received C_COORDINATOR_CREATED uuid = " + response.getUuid() + ", key = " + response.getKey());
+                System.out.println("Keypair generation successful:");
+                System.out.println("UUID: " + response.getUuid());
+                System.out.println("Key: " + response.getKey());
+                channel.close();
+                return true;
+        }
+
+        return false;
     }
 }

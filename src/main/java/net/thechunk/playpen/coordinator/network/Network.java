@@ -273,6 +273,9 @@ public class Network extends PlayPen {
 
             case C_PROMOTE:
                 return c_processPromote(command.getCPromote(), info, from);
+
+            case C_CREATE_COORDINATOR:
+                return c_processCreateCoordinator(info, from);
         }
     }
 
@@ -921,5 +924,35 @@ public class Network extends PlayPen {
         }
 
         return packageManager.promote(p3);
+    }
+
+    protected boolean c_processCreateCoordinator(TransactionInfo info, String from) {
+        log.info("Creating coordinator on behalf of client " + from);
+        LocalCoordinator coord = createCoordinator();
+        if(coord == null) {
+            log.error("Unable to create coordinator");
+            return false;
+        }
+
+        Commands.C_CoordinatorCreated response = Commands.C_CoordinatorCreated.newBuilder()
+                .setUuid(coord.getUuid())
+                .setKey(coord.getKey())
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_COORDINATOR_CREATED)
+                .setCCoordinatorCreated(response)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to create message for coordinator created");
+            return false;
+        }
+
+        log.info("Sending C_COORDINATOR_CREATED");
+
+        return TransactionManager.get().send(info.getId(), message, from);
     }
 }
