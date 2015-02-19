@@ -287,12 +287,12 @@ public class Local extends PlayPen {
         log.info("Shutting down coordinator");
         shuttingDown = true;
 
-        if(channel != null && channel.isOpen()) {
-            channel.close();
-        }
-
         for(Server server : servers.values()) {
             shutdownServer(server.getUuid(), false, false);
+        }
+
+        if(channel != null && channel.isOpen()) {
+            channel.close();
         }
     }
 
@@ -669,6 +669,9 @@ public class Local extends PlayPen {
     }
 
     protected boolean sendServerShutdown(String id) {
+        if(shuttingDown)
+            return true;
+
         Server server = getServer(id);
         if(server == null) {
             log.error("Cannot send SERVER_SHUTDOWN with invalid server id " + id);

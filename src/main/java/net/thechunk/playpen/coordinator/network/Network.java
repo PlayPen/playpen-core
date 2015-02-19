@@ -266,7 +266,10 @@ public class Network extends PlayPen {
                 return c_processProvision(command.getCProvision(), info, from);
 
             case C_DEPROVISION:
-                return c_deprovision(command.getCDeprovision(), info, from);
+                return c_processDeprovision(command.getCDeprovision(), info, from);
+
+            case C_SHUTDOWN:
+                return c_processShutdown(command.getCShutdown(), info, from);
         }
     }
 
@@ -884,13 +887,24 @@ public class Network extends PlayPen {
         return TransactionManager.get().send(tid, message, target);
     }
 
-    protected boolean c_deprovision(Commands.C_Deprovision depro, TransactionInfo info, String from) {
+    protected boolean c_processDeprovision(Commands.C_Deprovision depro, TransactionInfo info, String from) {
         log.info("Attempting deprovision of " + depro.getServerId() + " on " + depro.getCoordinatorId() + " on behalf of client " + from);
         if(deprovision(depro.getCoordinatorId(), depro.getServerId(), depro.getForce())) {
             return true;
         }
         else {
             log.error("Unable to deprovision " + depro.getServerId() + " on " + depro.getCoordinatorId() + " on behalf of client " + from);
+            return false;
+        }
+    }
+
+    protected boolean c_processShutdown(Commands.C_Shutdown shutdown, TransactionInfo info, String from) {
+        log.info("Attempting shutdown of coordinator " + shutdown.getUuid() + " on behalf of client " + from);
+        if(shutdownCoordinator(shutdown.getUuid())) {
+            return true;
+        }
+        else {
+            log.error("Unable to shutdown coordinator " + shutdown.getUuid() + " on behalf of client " + from);
             return false;
         }
     }

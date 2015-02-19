@@ -4,5 +4,6 @@ public enum ClientMode {
     NONE,
     LIST,
     PROVISION,
-    SHUTDOWN_SERVER
+    DEPROVISION,
+    SHUTDOWN
 }

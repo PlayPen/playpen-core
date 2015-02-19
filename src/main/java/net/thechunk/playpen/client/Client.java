@@ -65,7 +65,7 @@ public class Client extends PlayPen {
     }
 
     protected void printHelpText() {
-        System.err.println("playpen cli <list/provision/deprovision> [arguments...]");
+        System.err.println("playpen cli <list/provision/deprovision/shutdown> [arguments...]");
     }
 
     public void run(String[] arguments) {
@@ -270,6 +270,10 @@ public class Client extends PlayPen {
                 runDeprovisionCommand(arguments);
                 break;
 
+            case "shutdown":
+                runShutdownCommand(arguments);
+                break;
+
             default:
                 printHelpText();
                 channel.close();
@@ -330,7 +334,7 @@ public class Client extends PlayPen {
             return;
         }
 
-        clientMode = ClientMode.SHUTDOWN_SERVER;
+        clientMode = ClientMode.DEPROVISION;
 
         String coordId = arguments[2];
         String serverId = arguments[3];
@@ -346,6 +350,28 @@ public class Client extends PlayPen {
         }
         else {
             System.err.println("Unable to send deprovision to network");
+            channel.close();
+        }
+    }
+
+    protected void runShutdownCommand(String[] arguments) {
+        if(arguments.length != 3) {
+            printHelpText();
+            System.err.println("shutdown <coordinator-uuid>");
+            channel.close();
+            return;
+        }
+
+        clientMode = ClientMode.SHUTDOWN;
+
+        String coordId = arguments[2];
+
+        if(sendShutdown(coordId)) {
+            System.out.println("Sent shutdown to network");
+            channel.close();
+        }
+        else {
+            System.err.println("Unable to send shutdown to network");
             channel.close();
         }
     }
@@ -461,7 +487,7 @@ public class Client extends PlayPen {
     }
 
     protected boolean sendDeprovision(String coordId, String serverId, boolean force) {
-        Commands.C_Deprovision shutdown = Commands.C_Deprovision.newBuilder()
+        Commands.C_Deprovision deprovision = Commands.C_Deprovision.newBuilder()
                 .setCoordinatorId(coordId)
                 .setServerId(serverId)
                 .setForce(force)
@@ -469,7 +495,7 @@ public class Client extends PlayPen {
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.C_DEPROVISION)
-                .setCDeprovision(shutdown)
+                .setCDeprovision(deprovision)
                 .build();
 
         TransactionInfo info = TransactionManager.get().begin();
@@ -483,6 +509,30 @@ public class Client extends PlayPen {
         }
 
         log.info("Sending C_DEPROVISION to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean sendShutdown(String coordId) {
+        Commands.C_Shutdown shutdown = Commands.C_Shutdown.newBuilder()
+                .setUuid(coordId)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_SHUTDOWN)
+                .setCShutdown(shutdown)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build message for shutdown");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_SHUTDOWN to network coordinator");
         return TransactionManager.get().send(info.getId(), message, null);
     }
 }
