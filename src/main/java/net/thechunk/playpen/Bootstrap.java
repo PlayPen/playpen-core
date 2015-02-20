@@ -2,7 +2,7 @@ package net.thechunk.playpen;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import net.thechunk.playpen.client.Client;
+import net.thechunk.playpen.coordinator.client.Client;
 import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.coordinator.VMShutdownThread;
 import net.thechunk.playpen.coordinator.local.Local;

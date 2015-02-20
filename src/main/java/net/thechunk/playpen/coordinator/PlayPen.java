@@ -28,6 +28,8 @@ public abstract class PlayPen {
 
     public abstract String getServerId();
 
+    public abstract CoordinatorMode getCoordinatorMode();
+
     public abstract PackageManager getPackageManager();
 
     public abstract ScheduledExecutorService getScheduler();

@@ -24,11 +24,8 @@ public class LocalRepositoryResolver implements IPackageResolver {
             return null;
         }
 
-        File[] packageFiles = localRepoDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".p3");
-            }
+        File[] packageFiles = localRepoDir.listFiles((dir, name) -> {
+            return name.endsWith(".p3");
         });
 
         for(File p3File : packageFiles) {

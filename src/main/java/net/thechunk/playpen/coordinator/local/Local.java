@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.Initialization;
+import net.thechunk.playpen.coordinator.CoordinatorMode;
 import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
@@ -342,6 +343,11 @@ public class Local extends PlayPen {
     @Override
     public String getServerId() {
         return coordName;
+    }
+
+    @Override
+    public CoordinatorMode getCoordinatorMode() {
+        return CoordinatorMode.NETWORK;
     }
 
     @Override

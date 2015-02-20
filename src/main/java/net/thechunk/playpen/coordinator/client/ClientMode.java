@@ -1,4 +1,4 @@
-package net.thechunk.playpen.client;
+package net.thechunk.playpen.coordinator.client;
 
 public enum ClientMode {
     NONE,
