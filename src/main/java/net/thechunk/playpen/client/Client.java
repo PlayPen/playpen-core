@@ -329,7 +329,6 @@ public class Client extends PlayPen {
 
     protected void runListCommand(String[] arguments) {
         if(arguments.length != 2) {
-            printHelpText();
             System.err.println("list");
             System.err.println("Retrieves and displays the list of all active coordinators, their configurations, and active servers.");
             channel.close();
@@ -349,7 +348,6 @@ public class Client extends PlayPen {
 
     protected void runProvisionCommand(String[] arguments) {
         if(arguments.length < 3) {
-            printHelpText();
             System.err.println("provision <package-id> [properties...]");
             System.err.println("Provisions a server on the network.");
             System.err.println("The property 'version' will specify the version of the package (default: promoted)");
@@ -409,7 +407,6 @@ public class Client extends PlayPen {
 
     protected void runDeprovisionCommand(String[] arguments) {
         if(arguments.length != 4 && arguments.length != 5) {
-            printHelpText();
             System.err.println("deprovision <coordinator> <server> [force=false]");
             System.err.println("Deprovisions a server from the network. Coordinator and server accept regex.");
             System.err.println("For safety, all regex will have ^ prepended and $ appended.");
@@ -461,7 +458,6 @@ public class Client extends PlayPen {
 
     protected void runShutdownCommand(String[] arguments) {
         if(arguments.length != 3) {
-            printHelpText();
             System.err.println("shutdown <coordinator>");
             System.err.println("Shuts down a coordinator and any related servers.");
             channel.close();
@@ -484,7 +480,6 @@ public class Client extends PlayPen {
 
     protected void runPromoteCommand(String[] arguments) {
         if(arguments.length != 4) {
-            printHelpText();
             System.err.println("promote <package-id> <package-version>");
             System.err.println("Promotes a package.");
             channel.close();
@@ -513,7 +508,6 @@ public class Client extends PlayPen {
 
     protected void runGenerateKeypairCommand(String[] arguments) {
         if(arguments.length != 2) {
-            printHelpText();
             System.err.println("generate-keypair");
             System.err.println("Generates a new coordinator keypair");
             channel.close();
@@ -534,7 +528,6 @@ public class Client extends PlayPen {
 
     protected void runSendCommand(String[] arguments) {
         if(arguments.length != 5) {
-            printHelpText();
             System.err.println("send <coordinator> <server> <input>");
             System.err.println("Sends a command to the console of a server.");
             System.err.println("Coordinator and server accept regex.");
@@ -583,7 +576,6 @@ public class Client extends PlayPen {
 
     protected void runAttachCommand(String[] arguments) {
         if(arguments.length != 4) {
-            printHelpText();
             System.err.println("attach <coordinator> <server>");
             System.err.println("Attaches to the console of the specified server");
             System.err.println("NOTE: Regex is not supported by this command.");
