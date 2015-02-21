@@ -7,9 +7,11 @@ import org.json.JSONObject;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,6 +66,44 @@ public class PluginManager {
                 return false;
             }
 
+            File pluginDir = Paths.get(pluginsDir.getPath(), schema.getId()).toFile();
+            if(!pluginDir.exists()) {
+                pluginDir.mkdir();
+            }
+
+            JSONObject config = null;
+
+            if(ZipUtil.containsEntry(jarFile, "config.json")) {
+                File configFile = Paths.get(pluginDir.getPath(), "config.json").toFile();
+                byte[] configBytes = null;
+                if(!configFile.exists()) {
+                    configBytes = ZipUtil.unpackEntry(jarFile, "config.json");
+                    try {
+                        Files.write(configFile.toPath(), configBytes);
+                    }
+                    catch(IOException e) {
+                        log.error("Unable to copy " + schema.getId() + " config file", e);
+                        return false;
+                    }
+                }
+                else {
+                    try {
+                        configBytes = Files.readAllBytes(configFile.toPath());
+                    }
+                    catch(IOException e) {
+                        log.error("Unable to read " + schema.getId() + " config file", e);
+                        return false;
+                    }
+                }
+                try {
+                    config = new JSONObject(new String(configBytes));
+                }
+                catch(JSONException e) {
+                    log.error("Unable to parse " + schema.getId() + " config file", e);
+                    return false;
+                }
+            }
+
             IPlugin instance = null;
 
             try {
@@ -103,6 +143,7 @@ public class PluginManager {
             }
 
             instance.setSchema(schema);
+            instance.setConfig(config);
 
             plugins.put(schema.getId(), instance);
             log.info("Loaded plugin " + schema.getId());
