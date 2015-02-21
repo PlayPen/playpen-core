@@ -58,7 +58,7 @@ public class PackageManager {
             return false;
         }
 
-        if(p3.getVersion().equals("promoted")) {
+        if(p3.getVersion().equalsIgnoreCase("promoted")) {
             log.error("Cannot promote package of version 'promoted'");
             return false;
         }
