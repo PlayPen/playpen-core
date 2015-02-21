@@ -301,6 +301,9 @@ public class Local extends PlayPen {
         log.info("Shutting down coordinator");
         shuttingDown = true;
 
+        enabled = false;
+        sendSync();
+
         for(Server server : servers.values()) {
             shutdownServer(server.getUuid(), false, false);
         }
