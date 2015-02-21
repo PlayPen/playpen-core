@@ -431,7 +431,7 @@ public class Client extends PlayPen {
 
         Pattern coordPattern = Pattern.compile('^' + arguments[2] + '$');
         Pattern serverPattern = Pattern.compile('^' + arguments[3] + '$');
-        boolean force = arguments.length == 5 ? (arguments[4].trim().toLowerCase().equals("true") ? true : false) : false; // dat nested ternary
+        boolean force = arguments.length == 5 && (arguments[4].trim().toLowerCase().equals("true"));
 
         System.out.println("Retrieving coordinator list...");
         if(!blockUntilCoordList()) {
