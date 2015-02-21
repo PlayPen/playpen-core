@@ -19,7 +19,6 @@ import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.ExecutionType;
 import net.thechunk.playpen.p3.P3Package;
-import net.thechunk.playpen.p3.PackageException;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
 import net.thechunk.playpen.plugin.PluginManager;

@@ -7,7 +7,6 @@ import net.thechunk.playpen.p3.PackageException;
 import net.thechunk.playpen.p3.PackageManager;
 
 import java.io.File;
-import java.io.FilenameFilter;
 
 @Log4j2
 public class LocalRepositoryResolver implements IPackageResolver {

@@ -2,11 +2,8 @@ package net.thechunk.playpen.coordinator.local;
 
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.p3.ExecutionType;
-import net.thechunk.playpen.p3.P3Package;
-import net.thechunk.playpen.p3.PackageException;
 
 import java.io.File;
-import java.nio.file.Paths;
 
 @Log4j2
 public class ServerExecutionThread extends Thread {

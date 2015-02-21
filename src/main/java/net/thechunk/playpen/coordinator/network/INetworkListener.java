@@ -1,10 +1,6 @@
 package net.thechunk.playpen.coordinator.network;
 
-import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.plugin.IEventListener;
-import net.thechunk.playpen.protocol.Protocol;
-
-import java.util.Map;
 
 public interface INetworkListener extends IEventListener<INetworkListener> {
     /**
