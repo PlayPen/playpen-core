@@ -346,6 +346,8 @@ public class Network extends PlayPen {
     public void onVMShutdown() {
         log.info("VM shutting down");
 
+        eventManager.callEvent(INetworkListener::onNetworkShutdown);
+
         scheduler.shutdownNow();
 
         for(LocalCoordinator coord : coordinators.values()) {
@@ -353,6 +355,8 @@ public class Network extends PlayPen {
                 coord.getChannel().close().syncUninterruptibly();
             }
         }
+
+        pluginManager.stopPlugins();
     }
 
     public LocalCoordinator createCoordinator() {
