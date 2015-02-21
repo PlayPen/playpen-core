@@ -4,6 +4,7 @@ package net.thechunk.playpen.coordinator;
 import io.netty.channel.Channel;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.p3.PackageManager;
+import net.thechunk.playpen.plugin.PluginManager;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Protocol;
 
@@ -31,6 +32,8 @@ public abstract class PlayPen {
     public abstract CoordinatorMode getCoordinatorMode();
 
     public abstract PackageManager getPackageManager();
+
+    public abstract PluginManager getPluginManager();
 
     public abstract ScheduledExecutorService getScheduler();
 

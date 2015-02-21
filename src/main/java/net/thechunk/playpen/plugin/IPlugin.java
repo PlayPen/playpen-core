@@ -7,5 +7,5 @@ public interface IPlugin {
 
     boolean onStart();
 
-    boolean onStop();
+    void onStop();
 }

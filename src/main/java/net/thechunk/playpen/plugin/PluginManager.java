@@ -129,4 +129,21 @@ public class PluginManager {
 
         return true;
     }
+
+    public void stopPlugins() {
+        for(IPlugin plugin : plugins.values()) {
+            try {
+                plugin.onStop();
+            }
+            catch(Exception e) {
+                log.warn("Encountered exception while stopping plugin " + plugin.getSchema().getId(), e);
+            }
+        }
+
+        plugins.clear();
+    }
+
+    public IPlugin getPlugin(String id) {
+        return plugins.getOrDefault(id, null);
+    }
 }

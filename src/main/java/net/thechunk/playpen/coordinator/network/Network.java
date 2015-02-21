@@ -19,6 +19,8 @@ import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
+import net.thechunk.playpen.plugin.EventManager;
+import net.thechunk.playpen.plugin.PluginManager;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
@@ -35,11 +37,9 @@ import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -62,10 +62,18 @@ public class Network extends PlayPen {
 
     private Map<String, String> consoles = new ConcurrentHashMap<>();
 
+    private PluginManager pluginManager = null;
+
+    private EventManager<INetworkListener> eventManager = null;
+
     private Network() {
         super();
+
         packageManager = new PackageManager();
         Initialization.packageManager(packageManager);
+
+        eventManager = new EventManager<>();
+        pluginManager = new PluginManager();
     }
 
     public boolean run() {
@@ -124,6 +132,11 @@ public class Network extends PlayPen {
 
         log.info(coordinators.size() + " coordinator keypairs registered");
 
+        if(!pluginManager.loadPlugins()) {
+            log.fatal("Unable to initialize plugin manager");
+            return false;
+        }
+
         log.info("Starting network coordinator");
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -144,6 +157,9 @@ public class Network extends PlayPen {
             }
 
             log.info("Listening on " + ip + " port " + port);
+
+            eventManager.callEvent(INetworkListener::onNetworkStartup);
+
             f.channel().closeFuture().sync();
         }
         catch(InterruptedException e) {
@@ -151,10 +167,14 @@ public class Network extends PlayPen {
             return false;
         }
         finally {
+            eventManager.callEvent(INetworkListener::onNetworkShutdown);
+
             scheduler.shutdownNow();
             scheduler = null;
 
             group.shutdownGracefully();
+
+            pluginManager.stopPlugins();
         }
 
         return true;
@@ -190,6 +210,15 @@ public class Network extends PlayPen {
     @Override
     public ScheduledExecutorService getScheduler() {
         return scheduler;
+    }
+
+    @Override
+    public PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    public EventManager<INetworkListener> getEventManager() {
+        return eventManager;
     }
 
     @Override
@@ -334,6 +363,9 @@ public class Network extends PlayPen {
         log.info("Generated new coordinator keypair " + coord.getUuid());
 
         saveKeystore();
+
+        eventManager.callEvent(l -> l.onCoordinatorCreated(coord));
+
         return coord;
     }
 
@@ -470,6 +502,8 @@ public class Network extends PlayPen {
         log.info("Synchronized " + coord.getUuid() + " with " + coord.getServers().size()
                 + " servers (" + (coord.isEnabled() ? "enabled" : "not enabled") + ")");
         log.debug(coord.getUuid() + " has " + coord.getResources().size() + " resources and " + coord.getAttributes().size() + " attributes");
+
+        eventManager.callEvent(l -> l.onCoordinatorSync(coord));
         
         return true;
     }
@@ -546,6 +580,9 @@ public class Network extends PlayPen {
         ProvisionResult result = new ProvisionResult();
         result.setCoordinator(target);
         result.setServer(server.getUuid());
+
+        eventManager.callEvent(l -> l.onRequestProvision(coord, server));
+
         return result;
     }
 
@@ -572,11 +609,17 @@ public class Network extends PlayPen {
         if(command.getOk()) {
             server.setActive(true);
             log.info("Server " + server.getUuid() + " on " + coord.getUuid() + " has been activated (provision response)");
+
+            eventManager.callEvent(l -> l.onProvisionResponse(coord, server, true));
+
             return true;
         }
         else {
             coord.getServers().remove(server.getUuid());
             log.warn("Server " + server.getUuid() + " on " + coord.getUuid() + " failed to activate (provision response)");
+
+            eventManager.callEvent(l -> l.onProvisionResponse(coord, server, false));
+
             return false;
         }
     }
@@ -716,6 +759,8 @@ public class Network extends PlayPen {
 
         log.info("Deprovisioning " + server.getUuid() + " on coordinator " + target);
 
+        eventManager.callEvent(l -> l.onRequestDeprovision(coord, server));
+
         return TransactionManager.get().send(info.getId(), message, target);
     }
 
@@ -735,6 +780,8 @@ public class Network extends PlayPen {
         server.setActive(false);
         coord.getServers().remove(server.getUuid());
         log.info("Server " + server.getUuid() + " shutdown on " + coord.getUuid());
+
+        eventManager.callEvent(l -> l.onServerShutdown(coord, server));
 
         return true;
     }
@@ -762,6 +809,8 @@ public class Network extends PlayPen {
         }
 
         log.info("Shutting down coordinator " + target);
+
+        eventManager.callEvent(l -> l.onRequestShutdown(coord));
 
         return TransactionManager.get().send(info.getId(), message, coord.getUuid());
     }
