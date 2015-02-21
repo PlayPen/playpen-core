@@ -15,21 +15,27 @@ playpen jar wherever you wish playpen's home directory to be, and run it without
 any arguments. It will create the default configuration files and exit.
 
 It is generally recommended to use the bundled scripts to run playpen instead of
-launching the jar manuall (after initial configuration, "playpen.sh" and
-"playpen.bat" will be generated).
+launching the jar manually. To set this up, simply run
 
-Running playpen is as simple as
-
-    playpen <command>
+    java -jar PlayPen-1.0-SNAPSHOT.jar
+    
+This should copy some scripts and configuration files into the current folder.
 
 To start the network coordinator, run
 
-    playpen network
+    playpen-network
 
 To start a local coordinator, run
 
-    playpen local
+    playpen-local
 
 Packaging tools are found at the "p3" command. Run it to see a list of them:
 
-    playpen p3
+    playpen-p3
+    
+The playpen cli client can be run with:
+
+    playpen-cli
+
+Note that the cli uses the "local.json" configuration file as it represents itself to the
+network as a local coordinator.
