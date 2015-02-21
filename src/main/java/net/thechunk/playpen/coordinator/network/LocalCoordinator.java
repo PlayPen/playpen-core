@@ -35,6 +35,8 @@ public class LocalCoordinator {
         if(name == null) {
             return uuid;
         }
+
+        return name;
     }
 
     public Server getServer(String idOrName) {
