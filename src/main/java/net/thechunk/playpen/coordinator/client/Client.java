@@ -17,6 +17,7 @@ import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.PackageManager;
+import net.thechunk.playpen.plugin.PluginManager;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
@@ -200,6 +201,12 @@ public class Client extends PlayPen {
 
     @Override
     public PackageManager getPackageManager() {
+        return null;
+    }
+
+    @Override
+    public PluginManager getPluginManager() {
+        log.error("PlayPen client does not currently support the plugin system!");
         return null;
     }
 

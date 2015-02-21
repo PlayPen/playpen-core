@@ -22,6 +22,7 @@ import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageException;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.p3.resolver.LocalRepositoryResolver;
+import net.thechunk.playpen.plugin.PluginManager;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
@@ -353,6 +354,12 @@ public class Local extends PlayPen {
     @Override
     public PackageManager getPackageManager() {
         return packageManager;
+    }
+
+    @Override
+    public PluginManager getPluginManager() {
+        log.error("PlayPen local does not currently support the plugin system!");
+        return null;
     }
 
     @Override

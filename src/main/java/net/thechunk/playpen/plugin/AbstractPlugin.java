@@ -1,6 +1,6 @@
 package net.thechunk.playpen.plugin;
 
-public class AbstractPlugin implements IPlugin {
+public abstract class AbstractPlugin implements IPlugin {
     private PluginSchema schema = null;
 
     @Override
@@ -19,7 +19,6 @@ public class AbstractPlugin implements IPlugin {
     }
 
     @Override
-    public boolean onStop() {
-        return true;
+    public void onStop() {
     }
 }
