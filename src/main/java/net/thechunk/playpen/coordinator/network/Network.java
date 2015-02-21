@@ -9,6 +9,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.Initialization;
@@ -56,6 +57,7 @@ public class Network extends PlayPen {
         return (Network)PlayPen.get();
     }
 
+    @Getter
     private Map<String, LocalCoordinator> coordinators = new ConcurrentHashMap<>();
 
     private PackageManager packageManager = null;
