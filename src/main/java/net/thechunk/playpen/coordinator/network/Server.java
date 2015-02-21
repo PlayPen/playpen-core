@@ -17,4 +17,12 @@ public class Server {
     private Map<String, String> properties = new ConcurrentHashMap<>();
 
     private boolean active = false;
+
+    public String getName() {
+        if(name == null) {
+            return uuid;
+        }
+
+        return name;
+    }
 }

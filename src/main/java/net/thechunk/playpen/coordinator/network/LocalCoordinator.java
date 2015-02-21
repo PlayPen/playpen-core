@@ -31,6 +31,12 @@ public class LocalCoordinator {
 
     private boolean enabled = false;
 
+    public String getName() {
+        if(name == null) {
+            return uuid;
+        }
+    }
+
     public Server getServer(String idOrName) {
         if(servers.containsKey(idOrName))
             return servers.get(idOrName);
