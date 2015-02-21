@@ -823,7 +823,7 @@ public class Network extends PlayPen {
         return TransactionManager.get().send(info.getId(), message, coord.getUuid());
     }
 
-    protected boolean sendInput(String target, String serverId, String input) {
+    public boolean sendInput(String target, String serverId, String input) {
         LocalCoordinator coord = getCoordinator(target);
         if(coord == null) {
             log.error("Cannot send SEND_INPUT to invalid coordinator " + target);
