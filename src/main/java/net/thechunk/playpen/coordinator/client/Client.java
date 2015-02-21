@@ -503,7 +503,7 @@ public class Client extends PlayPen {
 
         String id = arguments[2];
         String version = arguments[3];
-        if(version.equals("promoted")) {
+        if(version.equalsIgnoreCase("promoted")) {
             System.err.println("Cannot promote a package of version 'promoted'");
             channel.close();
             return;
