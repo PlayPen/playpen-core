@@ -10,9 +10,13 @@ import java.util.function.Consumer;
 public class EventManager<T extends IEventListener<T>> {
     private List<T> listeners = new CopyOnWriteArrayList<>();
 
-    public void registerListener(T listener) {
+    public boolean registerListener(T listener) {
+        if(listeners.contains(listener))
+            return false;
+
         listeners.add(listener);
         listener.onListenerRegistered(this);
+        return true;
     }
 
     public boolean removeListener(T listener) {
