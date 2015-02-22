@@ -70,6 +70,9 @@ public class Network extends PlayPen {
 
     private EventManager<INetworkListener> eventManager = null;
 
+    @Getter
+    private NioEventLoopGroup eventLoopGroup = null;
+
     private Network() {
         super();
 
@@ -142,12 +145,12 @@ public class Network extends PlayPen {
         }
 
         log.info("Starting network coordinator");
-        EventLoopGroup group = new NioEventLoopGroup();
+        eventLoopGroup = new NioEventLoopGroup();
         try {
             scheduler = Executors.newScheduledThreadPool(4);
 
             ServerBootstrap b = new ServerBootstrap();
-            b.group(group)
+            b.group(eventLoopGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new AuthenticatedMessageInitializer())
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -176,7 +179,7 @@ public class Network extends PlayPen {
             scheduler.shutdownNow();
             scheduler = null;
 
-            group.shutdownGracefully();
+            eventLoopGroup.shutdownGracefully();
 
             pluginManager.stopPlugins();
         }
