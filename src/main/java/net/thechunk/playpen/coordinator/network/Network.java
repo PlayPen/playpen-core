@@ -420,7 +420,7 @@ public class Network extends PlayPen {
         LocalCoordinator best = null;
         double bestNRU = Double.MAX_VALUE;
         for(LocalCoordinator coord : coordinators.values()) {
-            if(!coord.isEnabled() || coord.getChannel() == null || !coord.getChannel().isActive())
+            if(!coord.isEnabled())
                 continue;
 
             double nru = coord.getNormalizedResourceUsage();
@@ -988,7 +988,7 @@ public class Network extends PlayPen {
         }
 
         for(LocalCoordinator coord : coordinators.values()) {
-            if(!coord.isEnabled() || coord.getChannel() == null || !coord.getChannel().isActive())
+            if(!coord.isEnabled())
                 continue;
 
             Coordinator.LocalCoordinator.Builder coordBuilder = Coordinator.LocalCoordinator.newBuilder()
