@@ -139,15 +139,15 @@ public class Network extends PlayPen {
 
         log.info(coordinators.size() + " coordinator keypairs registered");
 
-        if(!pluginManager.loadPlugins()) {
-            log.fatal("Unable to initialize plugin manager");
-            return false;
-        }
-
         log.info("Starting network coordinator");
         eventLoopGroup = new NioEventLoopGroup();
         try {
             scheduler = Executors.newScheduledThreadPool(4);
+
+            if(!pluginManager.loadPlugins()) {
+                log.fatal("Unable to initialize plugin manager");
+                return false;
+            }
 
             ServerBootstrap b = new ServerBootstrap();
             b.group(eventLoopGroup)
