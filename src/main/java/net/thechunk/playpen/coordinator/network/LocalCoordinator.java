@@ -39,6 +39,10 @@ public class LocalCoordinator {
         return name;
     }
 
+    public boolean isEnabled() {
+        return enabled && channel != null && channel.isActive();
+    }
+
     public Server getServer(String idOrName) {
         if(servers.containsKey(idOrName))
             return servers.get(idOrName);
@@ -108,6 +112,7 @@ public class LocalCoordinator {
         server.setP3(p3);
         server.setName(name);
         server.getProperties().putAll(properties);
+        server.setCoordinator(this);
         servers.put(server.getUuid(), server);
         return server;
     }

@@ -497,6 +497,7 @@ public class Network extends PlayPen {
             server.setUuid(cmdServer.getUuid());
             server.setName(cmdServer.hasName() ? cmdServer.getName() : server.getUuid());
             server.setP3(packageManager.resolve(cmdServer.getP3().getId(), cmdServer.getP3().getVersion()));
+            server.setCoordinator(coord);
             if(server.getP3() == null) {
                 log.warn("Unknown P3 " + cmdServer.getP3().getId() + " at " +
                     cmdServer.getP3().getVersion() + " for server " + server.getName());

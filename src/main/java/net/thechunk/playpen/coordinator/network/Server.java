@@ -18,6 +18,8 @@ public class Server {
 
     private boolean active = false;
 
+    private LocalCoordinator coordinator = null;
+
     public String getName() {
         if(name == null) {
             return uuid;
