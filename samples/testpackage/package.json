@@ -23,6 +23,11 @@
   "provision": [
 	{"id": "expand"},
 	{
+	  "id": "asset-package",
+	  "package-id": "asset-package",
+	  "package-version": "1.0"
+	},
+	{
 	  "id": "string-template",
 	  "files": [
 		"test.txt"

@@ -72,6 +72,9 @@ public class Bootstrap {
             if(Paths.get(homeDir.getPath(), "packages").toFile().mkdirs())
                 didCopyResources = true;
 
+            if(Paths.get(homeDir.getPath(), "assets").toFile().mkdirs())
+                didCopyResources = true;
+
             if(Paths.get(homeDir.getPath(), "plugins").toFile().mkdirs())
                 didCopyResources = true;
 

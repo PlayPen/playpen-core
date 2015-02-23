@@ -1,1 +1,3 @@
 Hello, <foo>!
+
+I have an asset package at <asset_path>!

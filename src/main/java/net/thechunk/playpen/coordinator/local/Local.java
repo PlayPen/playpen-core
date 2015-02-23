@@ -110,6 +110,16 @@ public class Local extends PlayPen {
         catch(IOException e) {
             log.warn("Unable to clear package cache", e);
         }
+
+        log.info("Clearing assets");
+        try {
+            File assetsDir = Paths.get(Bootstrap.getHomeDir().toString(), "assets").toFile();
+            FileUtils.deleteDirectory(assetsDir);
+            assetsDir.mkdirs();
+        }
+        catch(IOException e) {
+            log.warn("Unable to clear assets", e);
+        }
     }
 
     public boolean run() {
@@ -493,6 +503,11 @@ public class Local extends PlayPen {
         server.setName(name);
         server.getProperties().putAll(properties);
         server.setLocalPath(destination.toString());
+
+        if(properties.containsKey("frozen") && "true".equalsIgnoreCase(properties.get("frozen"))) {
+            server.setFreezeOnShutdown(true);
+            log.info("Server " + server.getName() + " will be frozen on shutdown (props)");
+        }
 
         if(!packageManager.execute(ExecutionType.PROVISION, p3, destination, server.getProperties(), server)) {
             log.error("Unable to provision server " + uuid + " (package manager failed provision operation)");

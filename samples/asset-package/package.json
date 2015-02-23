@@ -1,0 +1,10 @@
+{
+  "package": {
+    "id": "asset-package",
+    "version": "1.0"
+  },
+
+  "provision": [
+    {"id": "expand"}
+  ]
+}
