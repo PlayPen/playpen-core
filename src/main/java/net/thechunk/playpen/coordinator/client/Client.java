@@ -78,7 +78,7 @@ public class Client extends PlayPen {
 
     protected void printHelpText() {
         System.err.println("playpen cli <command> [arguments...]");
-        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair, send, attach");
+        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair, send, attach, freeze");
     }
 
     public void run(String[] arguments) {
@@ -331,6 +331,10 @@ public class Client extends PlayPen {
 
             case "attach":
                 runAttachCommand(arguments);
+                break;
+
+            case "freeze":
+                runFreezeCommand(arguments);
                 break;
 
             default:
@@ -616,6 +620,53 @@ public class Client extends PlayPen {
         }
     }
 
+    protected void runFreezeCommand(String[] arguments) {
+        if(arguments.length != 4) {
+            System.err.println("freeze <coordinator> <server>");
+            System.err.println("Marks a server to be saved after it shuts down.");
+            System.err.println("Coordinator and server accept regex.");
+            System.err.println("For safety, all regex will have ^ prepended and $ appended.");
+            channel.close();
+            return;
+        }
+
+        clientMode = ClientMode.FREEZE;
+
+        Pattern coordPattern = Pattern.compile('^' + arguments[2] + '$');
+        Pattern serverPattern = Pattern.compile('^' + arguments[3] + "$");
+
+        System.out.println("Retrieving coordinator list...");
+        if(!blockUntilCoordList()) {
+            System.err.println("Operation cancelled!");
+            channel.close();
+            return;
+        }
+
+        Map<String, List<String>> servers = getServersFromList(coordPattern, serverPattern);
+        if(servers.isEmpty()) {
+            System.err.println("No coordinators/servers match patterns given.");
+            channel.close();
+            return;
+        }
+
+        System.out.println("Sending freeze operations...");
+        for(Map.Entry<String, List<String>> entry : servers.entrySet()) {
+            String coordId = entry.getKey();
+            System.out.println("Coordinator " + coordId + ":");
+            for(String serverId : entry.getValue()) {
+                if(sendFreezeServer(coordId, serverId)) {
+                    System.out.println("\tSent freeze to " + serverId);
+                }
+                else {
+                    System.err.println("\tUnable to send freeze to " + serverId);
+                }
+            }
+        }
+
+        System.out.println("Operation completed!");
+        channel.close();
+    }
+
     protected boolean sendSync() {
         Commands.Sync.Builder syncBuilder = Commands.Sync.newBuilder()
                 .setEnabled(false);
@@ -674,6 +725,7 @@ public class Client extends PlayPen {
 
             case DEPROVISION:
             case SEND_INPUT:
+            case FREEZE:
                 coordList = response;
                 return true;
         }
@@ -935,6 +987,31 @@ public class Client extends PlayPen {
         }
 
         log.info("Sending C_DETACH_CONSOLE to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean sendFreezeServer(String coordId, String serverId) {
+        Commands.C_FreezeServer freeze = Commands.C_FreezeServer.newBuilder()
+                .setCoordinatorId(coordId)
+                .setServerId(serverId)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_FREEZE_SERVER)
+                .setCFreezeServer(freeze)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build message for C_FREEZE_SERVER");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending C_FREEZE_SERVER to network coordinator");
         return TransactionManager.get().send(info.getId(), message, null);
     }
 

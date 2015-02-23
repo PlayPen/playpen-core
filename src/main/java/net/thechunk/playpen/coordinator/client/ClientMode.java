@@ -9,5 +9,6 @@ public enum ClientMode {
     PROMOTE,
     GENERATE_KEYPAIR,
     SEND_INPUT,
-    ATTACH
+    ATTACH,
+    FREEZE
 }

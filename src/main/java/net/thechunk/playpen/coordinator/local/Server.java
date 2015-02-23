@@ -20,4 +20,6 @@ public class Server {
     private String localPath;
 
     private XProcess process;
+
+    private boolean freezeOnShutdown = false;
 }

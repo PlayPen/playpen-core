@@ -344,6 +344,9 @@ public class Network extends PlayPen {
 
             case C_DETACH_CONSOLE:
                 return c_processDetachConsole(info, from);
+
+            case C_FREEZE_SERVER:
+                return c_processFreezeServer(command.getCFreezeServer(), info, from);
         }
     }
 
@@ -975,6 +978,43 @@ public class Network extends PlayPen {
         return c_sendDetachConsole(target.getUuid());
     }
 
+    protected boolean sendFreezeServer(String target, String serverId) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send FREEZE_SERVER to invalid target " + target);
+            return false;
+        }
+
+        Server server = coord.getServer(serverId);
+        if(server == null) {
+            log.error("Cannot send FREEZE_SERVER to invalid server " + serverId + " on coordinator " + coord.getName());
+            return false;
+        }
+
+        Commands.FreezeServer freeze = Commands.FreezeServer.newBuilder()
+                .setUuid(serverId)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.FREEZE_SERVER)
+                .setFreezeServer(freeze)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for FREEZE_SERVER");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Freezing server " + serverId + " on " + target);
+
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
     protected boolean c_processGetCoordinatorList(TransactionInfo info, String from) {
         log.info(from + " requested active coordinator list");
         return c_sendCoordinatorListResponse(from, info.getId());
@@ -1300,5 +1340,9 @@ public class Network extends PlayPen {
         }
 
         return true;
+    }
+
+    protected boolean c_processFreezeServer(Commands.C_FreezeServer command, TransactionInfo info, String from) {
+        return sendFreezeServer(command.getCoordinatorId(), command.getServerId());
     }
 }

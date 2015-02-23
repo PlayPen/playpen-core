@@ -78,6 +78,9 @@ public class Bootstrap {
             if(Paths.get(homeDir.getPath(), "servers").toFile().mkdirs())
                 didCopyResources = true;
 
+            if(Paths.get(homeDir.getPath(), "frozen").toFile().mkdirs())
+                didCopyResources = true;
+
             if(Paths.get(homeDir.getPath(), "temp").toFile().mkdirs())
                 didCopyResources = true;
 

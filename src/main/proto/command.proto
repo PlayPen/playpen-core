@@ -62,6 +62,10 @@ message DetachConsole {
     required string consoleId = 1;
 }
 
+message FreezeServer {
+    required string uuid = 1;
+}
+
 message C_CoordinatorListResponse {
     repeated LocalCoordinator coordinators = 1;
 }
@@ -113,6 +117,11 @@ message C_ConsoleMessage {
     required string value = 1;
 }
 
+message C_FreezeServer {
+    required string coordinatorId = 1;
+    required string serverId = 2;
+}
+
 message BaseCommand {
     enum CommandType {
         // Coordination commands
@@ -128,6 +137,7 @@ message BaseCommand {
         ATTACH_CONSOLE = 10;
         CONSOLE_MESSAGE = 11;
         DETACH_CONSOLE = 12;
+        FREEZE_SERVER = 26;
 
         // Client commands
         C_GET_COORDINATOR_LIST = 13; // no message body
@@ -143,6 +153,7 @@ message BaseCommand {
         C_ATTACH_CONSOLE = 23;
         C_CONSOLE_MESSAGE = 24;
         C_DETACH_CONSOLE = 25; // no message body
+        C_FREEZE_SERVER = 27;
     }
 
     required CommandType type = 1;
@@ -158,6 +169,7 @@ message BaseCommand {
     optional AttachConsole attachConsole = 10;
     optional ConsoleMessage consoleMessage = 11;
     optional DetachConsole detachConsole = 12;
+    optional FreezeServer freezeServer = 23;
 
     optional C_CoordinatorListResponse c_coordinatorListResponse = 13;
     optional C_Provision c_provision = 14;
@@ -169,4 +181,5 @@ message BaseCommand {
     optional C_SendInput c_sendInput = 20;
     optional C_AttachConsole c_attachConsole = 21;
     optional C_ConsoleMessage c_consoleMessage = 22;
+    optional C_FreezeServer c_freezeServer = 24;
 }

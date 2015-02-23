@@ -285,6 +285,16 @@ public class Local extends PlayPen {
             log.error("Unable to notify network coordinator of server shutdown");
         }
 
+        if(server.isFreezeOnShutdown()) {
+            log.info("Server " + id + " is freezing...");
+            try {
+                FileUtils.copyDirectory(new File(server.getLocalPath()), Paths.get(Bootstrap.getHomeDir().getPath(), "frozen", server.getUuid()).toFile());
+            }
+            catch(IOException e) {
+                log.error("Unable to freeze server " + id, e);
+            }
+        }
+
         log.info("Deleting server " + id + " from disk");
 
         try {
@@ -444,6 +454,9 @@ public class Local extends PlayPen {
 
             case DETACH_CONSOLE:
                 return processDetachConsole(command.getDetachConsole(), info);
+
+            case FREEZE_SERVER:
+                return processFreezeServer(command.getFreezeServer(), info);
         }
     }
 
@@ -870,6 +883,18 @@ public class Local extends PlayPen {
 
     protected boolean processDetachConsole(Commands.DetachConsole message, TransactionInfo info) {
         return detachConsole(message.getConsoleId());
+    }
+
+    protected boolean processFreezeServer(Commands.FreezeServer message, TransactionInfo info) {
+        Server server = getServer(message.getUuid());
+        if(server == null) {
+            log.error("Cannot freeze unknown server " + message.getUuid());
+            return false;
+        }
+
+        server.setFreezeOnShutdown(true);
+        log.info("Server " + server.getName() + " will have its files frozen on shutdown");
+        return true;
     }
 
     protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
