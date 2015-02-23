@@ -466,6 +466,10 @@ public class Network extends PlayPen {
         return sendShutdown(target);
     }
 
+    public boolean freezeServer(String target, String serverId) {
+        return sendFreezeServer(target, serverId);
+    }
+
     protected boolean processSync(Commands.Sync command, TransactionInfo info, String from) {
         LocalCoordinator coord = getCoordinator(from);
         if(coord == null) {
