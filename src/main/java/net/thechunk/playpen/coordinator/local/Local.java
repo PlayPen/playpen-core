@@ -257,7 +257,7 @@ public class Local extends PlayPen {
         Map<String, Integer> resources = getAvailableResources();
         for(Map.Entry<String, Integer> entry : p3.getResources().entrySet()) {
             if(!resources.containsKey(entry.getKey())) {
-                log.warn("Misisng resource " + entry.getKey() + " for " + p3.getId() + " at " + p3.getVersion());
+                log.warn("Missing resource " + entry.getKey() + " for " + p3.getId() + " at " + p3.getVersion());
                 return false;
             }
 

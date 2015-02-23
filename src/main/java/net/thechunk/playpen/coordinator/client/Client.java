@@ -9,6 +9,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.coordinator.CoordinatorMode;
@@ -159,8 +160,10 @@ public class Client extends PlayPen {
             scheduler.shutdownNow();
             scheduler = null;
 
-            if(ailThread != null && ailThread.isAlive())
-                ailThread.stop();
+            if(ailThread != null && ailThread.isAlive()) {
+                ailThread.setActive(false);
+                ailThread.interrupt();
+            }
 
             group.shutdownGracefully();
         }
@@ -172,16 +175,17 @@ public class Client extends PlayPen {
     public void onVMShutdown() {
         log.info("VM shutting down, stopping all tasks");
 
-        if(scheduler != null && !scheduler.isShutdown()) {
-            scheduler.shutdownNow();
-        }
-
         if(clientMode == ClientMode.ATTACH) {
             sendDetachConsole();
         }
 
+        if(scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdownNow();
+        }
+
         if(ailThread != null && ailThread.isAlive()) {
-            ailThread.stop();
+            ailThread.setActive(false);
+            ailThread.interrupt();
         }
 
         if(channel != null && channel.isOpen()) {
@@ -196,7 +200,7 @@ public class Client extends PlayPen {
 
     @Override
     public CoordinatorMode getCoordinatorMode() {
-        return CoordinatorMode.NETWORK;
+        return CoordinatorMode.CLIENT;
     }
 
     @Override
@@ -1056,6 +1060,9 @@ public class Client extends PlayPen {
     private static class AttachInputListenThread extends Thread {
         private String coordId;
         private String serverId;
+        @Setter
+        @Getter
+        private boolean active = true;
 
         public AttachInputListenThread(String c, String s) {
             coordId = c;
@@ -1064,7 +1071,7 @@ public class Client extends PlayPen {
 
         @Override
         public void run() {
-            while(true) {
+            while(active) {
                 String input = System.console().readLine() + '\n';
                 Client.get().sendInput(coordId, serverId, input);
             }
