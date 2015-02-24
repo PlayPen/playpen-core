@@ -9,6 +9,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
@@ -64,7 +65,7 @@ public class Network extends PlayPen {
 
     private ScheduledExecutorService scheduler = null;
 
-    private Map<String, String> consoles = new ConcurrentHashMap<>();
+    private Map<String, ConsoleInfo> consoles = new ConcurrentHashMap<>();
 
     private PluginManager pluginManager = null;
 
@@ -913,14 +914,14 @@ public class Network extends PlayPen {
     }
 
     protected boolean processConsoleMessage(Commands.ConsoleMessage message, TransactionInfo info, String from) {
-        String targetId = consoles.getOrDefault(message.getConsoleId(), null);
-        if(targetId == null) {
+        ConsoleInfo ci = consoles.getOrDefault(message.getConsoleId(), null);
+        if(ci == null) {
             log.error("CONSOLE_MESSAGE received with invalid console id");
             sendDetachConsole(from, message.getConsoleId());
             return false;
         }
 
-        LocalCoordinator target = getCoordinator(targetId);
+        LocalCoordinator target = getCoordinator(ci.getAttached());
         if(target == null || target.getChannel() == null || !target.getChannel().isActive()) {
             log.warn("CONSOLE_MESSAGE received but attached coordinator isn't valid. Sending detach.");
             sendDetachConsole(from, message.getConsoleId());
@@ -963,13 +964,13 @@ public class Network extends PlayPen {
     }
 
     protected boolean processDetachConsole(Commands.DetachConsole message, TransactionInfo info, String from) {
-        String targetId = consoles.getOrDefault(message.getConsoleId(), null);
-        if(targetId == null) {
+        ConsoleInfo ci = consoles.getOrDefault(message.getConsoleId(), null);
+        if(ci == null) {
             log.error("DETACH_CONSOLE received with invalid console id");
             return false;
         }
 
-        LocalCoordinator target = getCoordinator(targetId);
+        LocalCoordinator target = getCoordinator(ci.getAttached());
         consoles.remove(message.getConsoleId());
 
         log.info("Detaching from console " + message.getConsoleId());
@@ -1270,7 +1271,10 @@ public class Network extends PlayPen {
         while(consoles.containsKey(consoleId))
             consoleId = UUID.randomUUID().toString();
 
-        consoles.put(consoleId, from);
+        ConsoleInfo ci = new ConsoleInfo();
+        ci.setAttached(from);
+        ci.setCoordinator(coord.getUuid());
+        consoles.put(consoleId, ci);
         if(!sendAttachConsole(coord.getUuid(), server.getUuid(), consoleId)) {
             consoles.remove(consoleId);
             c_sendDetachConsole(from);
@@ -1335,11 +1339,11 @@ public class Network extends PlayPen {
 
     protected boolean c_processDetachConsole(TransactionInfo info, String from) {
         log.info("Detaching " + from + " from all consoles");
-        Iterator<Map.Entry<String, String>> itr = consoles.entrySet().iterator();
+        Iterator<Map.Entry<String, ConsoleInfo>> itr = consoles.entrySet().iterator();
         while(itr.hasNext()) {
-            Map.Entry<String, String> entry = itr.next();
+            Map.Entry<String, ConsoleInfo> entry = itr.next();
             if(from.equals(entry.getValue())) {
-                sendDetachConsole(entry.getKey(), entry.getValue());
+                sendDetachConsole(entry.getKey(), entry.getValue().getCoordinator());
                 itr.remove();
             }
         }
@@ -1349,5 +1353,11 @@ public class Network extends PlayPen {
 
     protected boolean c_processFreezeServer(Commands.C_FreezeServer command, TransactionInfo info, String from) {
         return sendFreezeServer(command.getCoordinatorId(), command.getServerId());
+    }
+
+    @Data
+    private static class ConsoleInfo {
+        private String coordinator;
+        private String attached;
     }
 }
