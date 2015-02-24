@@ -1338,9 +1338,10 @@ public class Network extends PlayPen {
         Iterator<Map.Entry<String, String>> itr = consoles.entrySet().iterator();
         while(itr.hasNext()) {
             Map.Entry<String, String> entry = itr.next();
-            if(from.equals(entry.getValue()))
+            if(from.equals(entry.getValue())) {
+                sendDetachConsole(entry.getKey(), entry.getValue());
                 itr.remove();
-
+            }
         }
 
         return true;
