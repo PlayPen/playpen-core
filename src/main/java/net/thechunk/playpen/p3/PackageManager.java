@@ -1,5 +1,6 @@
 package net.thechunk.playpen.p3;
 
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -163,12 +164,16 @@ public class PackageManager {
             p3.setId(JSONUtils.safeGetString(meta, "id"));
             p3.setVersion(JSONUtils.safeGetString(meta, "version"));
 
-            JSONObject parent = JSONUtils.safeGetObject(meta, "parent");
-            if (parent != null) {
-                P3Package p3parent = new P3Package();
-                p3parent.setId(JSONUtils.safeGetString(parent, "id"));
-                p3parent.setVersion(JSONUtils.safeGetString(parent, "version"));
-                p3.setParent(p3parent);
+            JSONArray deps = JSONUtils.safeGetArray(meta, "depends");
+            if (deps != null) {
+                for(int i = 0; i < deps.length(); ++i) {
+                    JSONObject dep = deps.getJSONObject(i);
+                    P3Package depP3 = new P3Package();
+                    p3.setResolved(false);
+                    p3.setId(JSONUtils.safeGetString(dep, "id"));
+                    p3.setVersion(JSONUtils.safeGetString(dep, "version"));
+                    p3.getDependencies().add(depP3);
+                }
             }
 
             JSONObject resources = JSONUtils.safeGetObject(meta, "resources");
@@ -277,95 +282,87 @@ public class PackageManager {
         }
     }
 
-    public boolean execute(ExecutionType type, P3Package p3, File destination, Map<String, String> properties, Object user) {
-        return internalExecute(type, p3, destination, properties, user, new HashSet<P3Package.P3PackageInfo>(), null) != null;
+    public boolean execute(ExecutionType type, P3Package initialP3, File destination, Map<String, String> properties, Object user) {
+        log.info("Executing " + type + " " + initialP3.getId() + " (" + initialP3.getVersion() + ")");
+        PackageContext ctx = new PackageContext();
+        ctx.setUser(user);
+        ctx.setDestination(destination);
+        ctx.setPackageManager(this);
+        ctx.setDependencyChain(resolveDependencyChain(initialP3));
+        if(ctx.getDependencyChain() == null) {
+            log.error("Unable to resolve dependency chain for " + initialP3.getId() + " (" + initialP3.getVersion() + ")");
+            return false;
+        }
+
+        for(P3Package p3 : ctx.getDependencyChain()) {
+            ctx.getResources().putAll(p3.getResources());
+            ctx.getProperties().putAll(p3.getStrings());
+        }
+
+        ctx.getProperties().putAll(properties);
+
+        for(P3Package p3 : ctx.getDependencyChain()) {
+            List<P3Package.PackageStepConfig> steps = null;
+            switch(type)
+            {
+                case PROVISION:
+                    steps = p3.getProvisionSteps();
+                    break;
+
+                case EXECUTE:
+                    steps = p3.getExecutionSteps();
+                    break;
+
+                case SHUTDOWN:
+                    steps = p3.getShutdownSteps();
+                    break;
+            }
+
+            for(P3Package.PackageStepConfig config : steps) {
+                log.info("package step - " + config.getStep().getStepId());
+                if(!config.getStep().runStep(p3, ctx, config.getConfig())) {
+                    log.error("Step failed!");
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-    private P3Package internalExecute(ExecutionType type, P3Package p3, File destination, Map<String, String> properties, Object user,
-                                      Set<P3Package.P3PackageInfo> loaded, P3Package child) {
-        log.info("Executing " + type + " " + p3.getId() + " at " + p3.getVersion());
+    private List<P3Package> resolveDependencyChain(P3Package initialP3)
+    {
+        log.info("Building dependency chain for " + initialP3.getId() + " (" + initialP3.getVersion() + ")");
+        List<P3Package> chain = new LinkedList<>();
+        Queue<P3Package> toResolve = new LinkedList<>();
+        Set<P3Package.P3PackageInfo> resolved = new HashSet<>();
 
-        P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
-        p3info.setId(p3.getId());
-        p3info.setVersion(p3.getVersion());
-        if(loaded.contains(p3info)) {
-            log.error("Circular dependency found with " + p3.getId() + " at " + p3.getVersion());
-            return null;
-        }
+        toResolve.add(initialP3);
+        while(!toResolve.isEmpty()) {
+            P3Package p3 = toResolve.remove();
+            P3Package.P3PackageInfo info = new P3Package.P3PackageInfo();
+            info.setId(p3.getId());
+            info.setVersion(p3.getVersion());
+            if(resolved.contains(info)) {
+                log.error("Multiple dependency found with " + info.getId() + " (" + info.getVersion() + ")");
+                return null; // TODO: Figure out if there's actually a circular dependency
+            }
 
-        loaded.add(p3info);
+            if(!p3.isResolved())
+                p3 = resolve(p3.getId(), p3.getVersion());
 
-        if(destination.exists() && !destination.isDirectory()) {
-            log.error("Unable to execute package (destination is not a directory)");
-            return null;
-        }
-
-        String oldId = p3.getId();
-        String oldVersion = p3.getVersion();
-        if(!p3.isResolved()) {
-            p3 = resolve(p3.getId(), p3.getVersion());
-        }
-
-        if(p3 == null) {
-            log.error("Unable to resolve package " + oldId + " at " + oldVersion);
-            return null;
-        }
-
-        if(child != null) {
-            p3.getResources().putAll(child.getResources());
-            p3.getAttributes().addAll(child.getAttributes());
-            p3.getStrings().putAll(child.getStrings());
-        }
-
-        if(p3 == null || !p3.isResolved()) {
-            log.error("Unable to resolve package " + oldId + " at " + oldVersion);
-            return null;
-        }
-
-        if(p3.getParent() != null) {
-            P3Package parent = internalExecute(type, p3.getParent(), destination, properties, user, loaded, p3);
-            if (parent == null) {
-                log.error("Unable to execute parent package " + p3.getParent().getId() + " at " + p3.getParent().getVersion());
+            if(p3 == null) {
+                log.error("Unable to resolve " + info.getId() + " (" + info.getVersion() + ")");
                 return null;
             }
 
-            p3.setParent(parent);
-
-            p3.getResources().putAll(parent.getResources());
-            p3.getAttributes().addAll(parent.getAttributes());
-            p3.getStrings().putAll(parent.getStrings());
+            chain.add(p3);
+            resolved.add(info);
+            toResolve.addAll(p3.getDependencies());
         }
 
-        PackageContext context = new PackageContext();
-        context.setPackageManager(this);
-        context.setP3(p3);
-        context.setDestination(destination);
-        context.setProperties(properties);
-        context.setUser(user);
+        log.info("Dependency chain resolution complete: " + chain.size() + " packages");
 
-        List<P3Package.PackageStepConfig> steps = null;
-        switch(type) {
-            case PROVISION:
-                steps = p3.getProvisionSteps();
-                break;
-
-            case EXECUTE:
-                steps = p3.getExecutionSteps();
-                break;
-
-            case SHUTDOWN:
-                steps = p3.getShutdownSteps();
-                break;
-        }
-        for(P3Package.PackageStepConfig config : steps) {
-            log.info("package step - " + config.getStep().getStepId());
-            if(!config.getStep().runStep(context, config.getConfig())) {
-                log.error("Step failed!");
-                return null;
-            }
-        }
-
-        log.info("Execution " + type + " of " + p3.getId() + " at " + p3.getVersion() + " finished!");
-        return p3;
+        return Lists.reverse(chain);
     }
 }

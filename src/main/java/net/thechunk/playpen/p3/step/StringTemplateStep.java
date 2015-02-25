@@ -2,6 +2,7 @@ package net.thechunk.playpen.p3.step;
 
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.p3.IPackageStep;
+import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
 import net.thechunk.playpen.utils.STUtils;
@@ -23,7 +24,7 @@ public class StringTemplateStep implements IPackageStep {
     }
 
     @Override
-    public boolean runStep(PackageContext ctx, JSONObject config) {
+    public boolean runStep(P3Package p3, PackageContext ctx, JSONObject config) {
         JSONArray jsonFiles = JSONUtils.safeGetArray(config, "files");
         if(jsonFiles == null) {
             log.error("'files' not defined as an array");
@@ -61,7 +62,7 @@ public class StringTemplateStep implements IPackageStep {
 
             ST template = new ST(fileContents);
 
-            STUtils.buildSTProperties(ctx.getP3(), ctx.getProperties(), template);
+            STUtils.buildSTProperties(p3, ctx, template);
 
             String rendered = template.render();
 

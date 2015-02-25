@@ -3,6 +3,7 @@ package net.thechunk.playpen.p3.step;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.coordinator.local.Server;
 import net.thechunk.playpen.p3.IPackageStep;
+import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
 import net.thechunk.playpen.utils.STUtils;
@@ -17,7 +18,7 @@ public class PipeStep implements IPackageStep {
     }
 
     @Override
-    public boolean runStep(PackageContext ctx, JSONObject config) {
+    public boolean runStep(P3Package p3, PackageContext ctx, JSONObject config) {
         if(!(ctx.getUser() instanceof Server)) {
             log.error("Must be executed on a local coordinator");
             return false;
@@ -46,7 +47,7 @@ public class PipeStep implements IPackageStep {
                 log.info("Running ST on string");
                 ST template = new ST(str);
 
-                STUtils.buildSTProperties(ctx.getP3(), ctx.getProperties(), template);
+                STUtils.buildSTProperties(p3, ctx, template);
 
                 str = template.render();
             }

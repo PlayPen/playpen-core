@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
 import net.thechunk.playpen.coordinator.local.Server;
 import net.thechunk.playpen.p3.IPackageStep;
+import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
 import net.thechunk.playpen.utils.STUtils;
@@ -27,7 +28,7 @@ public class ExecuteStep implements IPackageStep {
     }
 
     @Override
-    public boolean runStep(PackageContext ctx, JSONObject config) {
+    public boolean runStep(P3Package p3, PackageContext ctx, JSONObject config) {
         Server server = null;
         if(ctx.getUser() instanceof Server) {
             server = (Server)ctx.getUser();
@@ -56,7 +57,7 @@ public class ExecuteStep implements IPackageStep {
                 for (int i = 0; i < command.size(); ++i) {
                     ST template = new ST(command.get(i));
 
-                    STUtils.buildSTProperties(ctx.getP3(), ctx.getProperties(), template);
+                    STUtils.buildSTProperties(p3, ctx, template);
 
                     command.set(i, template.render());
                 }

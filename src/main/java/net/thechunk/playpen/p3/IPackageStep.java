@@ -5,5 +5,5 @@ import org.json.JSONObject;
 public interface IPackageStep {
     String getStepId();
 
-    boolean runStep(PackageContext ctx, JSONObject config);
+    boolean runStep(P3Package p3, PackageContext ctx, JSONObject config);
 }

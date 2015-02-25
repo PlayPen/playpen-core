@@ -43,7 +43,7 @@ public class P3Package {
 
     private String version;
 
-    private P3Package parent;
+    private List<P3Package> dependencies = new ArrayList<>();
 
     private Map<String, Integer> resources = new HashMap<>();
 
@@ -64,8 +64,11 @@ public class P3Package {
         if(id == null || id.isEmpty() || version == null || version.isEmpty())
             return false;
 
-        if(parent != null && !parent.validate())
-            return false;
+        for(P3Package p3 : dependencies)
+        {
+            if(!p3.validate())
+                return false;
+        }
 
         return true;
     }

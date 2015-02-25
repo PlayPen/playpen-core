@@ -5,6 +5,6 @@
   },
 
   "provision": [
-    {"id": "expand"}
+    {"id": "expand-assets"}
   ]
 }
