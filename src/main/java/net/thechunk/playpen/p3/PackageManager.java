@@ -169,9 +169,9 @@ public class PackageManager {
                 for(int i = 0; i < deps.length(); ++i) {
                     JSONObject dep = deps.getJSONObject(i);
                     P3Package depP3 = new P3Package();
-                    p3.setResolved(false);
-                    p3.setId(JSONUtils.safeGetString(dep, "id"));
-                    p3.setVersion(JSONUtils.safeGetString(dep, "version"));
+                    depP3.setResolved(false);
+                    depP3.setId(JSONUtils.safeGetString(dep, "id"));
+                    depP3.setVersion(JSONUtils.safeGetString(dep, "version"));
                     p3.getDependencies().add(depP3);
                 }
             }
@@ -252,7 +252,7 @@ public class PackageManager {
             }
 
             if (!p3.validate()) {
-                throw new PackageException("Package validation failed (check id, version, and parent metadata)!");
+                throw new PackageException("Package validation failed (check id, version, and dependency metadata)!");
             }
 
             return p3;

@@ -68,13 +68,13 @@ public class P3Tool {
         System.out.println("Id: " + p3.getId());
         System.out.println("Version: " + p3.getVersion());
 
-        if(p3.getParent() != null) {
-            System.out.println("Parent id: " + p3.getParent().getId());
-            System.out.println("Parent version: " + p3.getParent().getVersion());
-            System.out.println("-- Note: Validation does not resolve parent packages");
+        if(p3.getDependencies().size() == 0) {
+            System.out.println("Dependencies: none");
         }
         else {
-            System.out.println("Parent: None");
+            for(P3Package dep : p3.getDependencies()) {
+                System.out.println("Dependency: " + dep.getId() + " at " + dep.getVersion());
+            }
         }
 
         if(p3.getResources().size() == 0) {
