@@ -58,7 +58,7 @@ public class ExecuteStep implements IPackageStep {
 
                     STUtils.buildSTProperties(ctx.getP3(), ctx.getProperties(), template);
 
-                    command.add(i, template.render());
+                    command.set(i, template.render());
                 }
             }
         }
