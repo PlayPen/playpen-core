@@ -42,7 +42,7 @@ public class PipeStep implements IPackageStep {
 
         if(config.has("template")) {
             boolean useTemplate = config.getBoolean("template");
-            if(!useTemplate) {
+            if(useTemplate) {
                 log.info("Running ST on string");
                 ST template = new ST(str);
 

@@ -51,7 +51,7 @@ public class ExecuteStep implements IPackageStep {
 
         if(config.has("template")) {
             boolean useTemplate = config.getBoolean("template");
-            if(!useTemplate) {
+            if(useTemplate) {
                 log.info("Running ST on command");
                 for (int i = 0; i < command.size(); ++i) {
                     ST template = new ST(command.get(i));
