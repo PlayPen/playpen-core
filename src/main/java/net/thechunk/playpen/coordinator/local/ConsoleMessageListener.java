@@ -32,6 +32,10 @@ public class ConsoleMessageListener implements IProcessListener {
     }
 
     @Override
+    public void onProcessInput(XProcess proc, String in) {
+    }
+
+    @Override
     public void onProcessEnd(XProcess proc) {
         Local.get().detachConsole(consoleId);
     }
