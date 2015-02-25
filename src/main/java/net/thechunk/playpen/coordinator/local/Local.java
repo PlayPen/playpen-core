@@ -85,6 +85,8 @@ public class Local extends PlayPen {
 
     private Map<String, ConsoleMessageListener> consoles = new ConcurrentHashMap<>();
 
+    private Map<P3Package.P3PackageInfo, CountDownLatch> downloadMap = new ConcurrentHashMap<>();
+
     private Local() {
         super();
         packageManager = new PackageManager();
@@ -747,6 +749,14 @@ public class Local extends PlayPen {
             return false;
         }
 
+        P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
+        p3info.setId(response.getData().getMeta().getId());
+        p3info.setVersion(response.getData().getMeta().getVersion());
+        CountDownLatch latch = downloadMap.getOrDefault(p3info, null);
+        if(latch != null) {
+            latch.countDown();
+        }
+
         return true;
     }
 
@@ -948,35 +958,41 @@ public class Local extends PlayPen {
         public P3Package resolvePackage(PackageManager pm, String id, String version) {
             log.info("Attempting package download for " + id + " at " + version);
 
-            TransactionInfo info = TransactionManager.get().begin();
+            P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
+            p3info.setId(id);
+            p3info.setVersion(version);
 
-            if (!Local.get().sendPackageRequest(info.getId(), id, version)) {
-                log.error("Unable to send package request for " + id + " at " + version + "");
-                return null;
+            CountDownLatch latch = Local.get().downloadMap.getOrDefault(p3info, null);
+
+            if(latch == null) {
+                TransactionInfo info = TransactionManager.get().begin();
+
+                if (!Local.get().sendPackageRequest(info.getId(), id, version)) {
+                    log.error("Unable to send package request for " + id + " at " + version + "");
+                    return null;
+                }
+
+                latch = new CountDownLatch(1);
+                Local.get().downloadMap.put(p3info, latch);
             }
 
             log.info("Waiting up to 60 seconds for package download");
 
-            // Waiting is hacky, fix later
-            P3Package p3 = null;
             try {
-                for(int i = 0; i < 12; ++i) {
-                    Thread.sleep(1000L * 5L);
-                    p3 = super.resolvePackage(pm, id, version);
-                    if(p3 != null)
-                        break;
-
-                    if(info.isDone())
-                        break;
-                }
+                latch.await(60, TimeUnit.SECONDS);
             }
             catch(InterruptedException e) {
                 log.error("Interrupted while waiting for package download");
                 return null;
             }
+            finally {
+                Local.get().downloadMap.remove(p3info);
+            }
+
+            P3Package p3 = super.resolvePackage(pm, id, version);
 
             if(p3 == null) {
-                log.error("Unable to download package " + id + " at " + version);
+                log.error("Unable to download package " + id + " (" + version + ")");
                 return null;
             }
 
