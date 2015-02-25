@@ -22,6 +22,11 @@ public class ExpandAssetsStep implements IPackageStep {
     @Override
     public boolean runStep(P3Package p3, PackageContext ctx, JSONObject config) {
         File path = Paths.get(Bootstrap.getHomeDir().getPath(), "assets", p3.getId(), p3.getVersion()).toFile();
+        if(path.exists() && path.isDirectory()) {
+            log.info("Not expanding asset package (already exists)");
+            return true;
+        }
+
         log.info("Expanding asset package to " + path.getPath());
         try {
             ZipUtil.unpack(new File(p3.getLocalPath()), path);
