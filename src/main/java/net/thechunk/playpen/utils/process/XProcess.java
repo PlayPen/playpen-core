@@ -35,6 +35,10 @@ public class XProcess {
         } catch (IOException e) {
             log.error("Error while writing to input stream", e);
         }
+
+        for(IProcessListener listener : listeners) {
+            listener.onProcessInput(this, in);
+        }
     }
 
     public boolean run() {

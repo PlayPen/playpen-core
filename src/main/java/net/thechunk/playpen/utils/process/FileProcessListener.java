@@ -32,7 +32,16 @@ public class FileProcessListener implements IProcessListener {
     @Override
     public void onProcessOutput(XProcess proc, String out) {
         try {
-            writer.write(out + "\r\n");
+            writer.write(out + "\n");
+            writer.flush();
+        }
+        catch(IOException e) {}
+    }
+
+    @Override
+    public void onProcessInput(XProcess proc, String in) {
+        try {
+            writer.write(in);
             writer.flush();
         }
         catch(IOException e) {}
