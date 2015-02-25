@@ -298,7 +298,11 @@ public class Local extends PlayPen {
         if(server.isFreezeOnShutdown()) {
             log.info("Server " + id + " is freezing...");
             try {
-                FileUtils.copyDirectory(new File(server.getLocalPath()), Paths.get(Bootstrap.getHomeDir().getPath(), "frozen", server.getUuid()).toFile());
+                File dest = Paths.get(Bootstrap.getHomeDir().getPath(), "frozen", server.getUuid()).toFile();
+                FileUtils.copyDirectory(new File(server.getLocalPath()), dest);
+
+                FileUtils.copyFile(Paths.get(Bootstrap.getHomeDir().getPath(), "server-logs", server.getUuid() + ".log").toFile(),
+                        Paths.get(dest.getPath(), "playpen_server.log").toFile());
             }
             catch(IOException e) {
                 log.error("Unable to freeze server " + id, e);

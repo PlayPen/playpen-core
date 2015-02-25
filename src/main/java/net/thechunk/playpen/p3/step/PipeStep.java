@@ -5,7 +5,9 @@ import net.thechunk.playpen.coordinator.local.Server;
 import net.thechunk.playpen.p3.IPackageStep;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
+import net.thechunk.playpen.utils.STUtils;
 import org.json.JSONObject;
+import org.stringtemplate.v4.ST;
 
 @Log4j2
 public class PipeStep implements IPackageStep {
@@ -36,6 +38,18 @@ public class PipeStep implements IPackageStep {
         if(str == null) {
             log.error("'string' is not defined as a string in config");
             return false;
+        }
+
+        if(config.has("template")) {
+            boolean useTemplate = config.getBoolean("template");
+            if(!useTemplate) {
+                log.info("Running ST on string");
+                ST template = new ST(str);
+
+                STUtils.buildSTProperties(ctx.getP3(), ctx.getProperties(), template);
+
+                str = template.render();
+            }
         }
 
         log.info("Piping string to process");

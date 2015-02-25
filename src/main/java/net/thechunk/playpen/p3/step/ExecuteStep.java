@@ -6,15 +6,17 @@ import net.thechunk.playpen.coordinator.local.Server;
 import net.thechunk.playpen.p3.IPackageStep;
 import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
+import net.thechunk.playpen.utils.STUtils;
 import net.thechunk.playpen.utils.process.FileProcessListener;
 import net.thechunk.playpen.utils.process.XProcess;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stringtemplate.v4.ST;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -31,7 +33,7 @@ public class ExecuteStep implements IPackageStep {
             server = (Server)ctx.getUser();
         }
 
-        List<String> command = new LinkedList<>();
+        List<String> command = new ArrayList<>();
         try {
             command.add(config.getString("command"));
 
@@ -45,6 +47,20 @@ public class ExecuteStep implements IPackageStep {
         catch(JSONException e) {
             log.error("Configuration error", e);
             return false;
+        }
+
+        if(config.has("template")) {
+            boolean useTemplate = config.getBoolean("template");
+            if(!useTemplate) {
+                log.info("Running ST on command");
+                for (int i = 0; i < command.size(); ++i) {
+                    ST template = new ST(command.get(i));
+
+                    STUtils.buildSTProperties(ctx.getP3(), ctx.getProperties(), template);
+
+                    command.add(i, template.render());
+                }
+            }
         }
 
         log.info("Running command " + command.get(0));
