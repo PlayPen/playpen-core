@@ -22,9 +22,10 @@ public class AuthUtils {
             throw new AssertionError(e);
         }
 
-        String mpk = message + key;
+        String mpk = new String(message) + key;
+        digest.update(mpk.getBytes());
 
-        return Hex.encodeHexString(digest.digest(mpk.getBytes()));
+        return Hex.encodeHexString(digest.digest());
     }
 
     public static boolean validateHash(String hash, String key, String message) {
