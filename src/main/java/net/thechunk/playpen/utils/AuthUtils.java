@@ -17,7 +17,7 @@ public class AuthUtils {
         MessageDigest digest;
 
         try {
-            digest = MessageDigest.getInstance("MD5");
+            digest = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException e) {
             throw new AssertionError(e);
         }
