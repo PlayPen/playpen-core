@@ -3,6 +3,8 @@ package net.thechunk.playpen.utils;
 import net.thechunk.playpen.protocol.Protocol;
 import org.apache.commons.codec.binary.Hex;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,8 +24,17 @@ public class AuthUtils {
             throw new AssertionError(e);
         }
 
-        String mpk = new String(message) + key;
-        digest.update(mpk.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            out.write(message);
+            out.write(key.getBytes());
+        }
+        catch(IOException e) {
+            throw new AssertionError(e);
+        }
+
+        digest.reset();
+        digest.update(out.toByteArray());
 
         return Hex.encodeHexString(digest.digest());
     }

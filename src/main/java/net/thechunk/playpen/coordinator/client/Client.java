@@ -231,11 +231,11 @@ public class Client extends PlayPen {
             return false;
         }
 
-        byte[] messageBytes = message.toByteArray();
+        ByteString messageBytes = message.toByteString();
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(uuid)
-                .setHash(AuthUtils.createHash(key, messageBytes))
-                .setPayload(ByteString.copyFrom(messageBytes))
+                .setHash(AuthUtils.createHash(key, messageBytes.toByteArray()))
+                .setPayload(messageBytes)
                 .build();
 
         if(!auth.isInitialized()) {
