@@ -6,6 +6,8 @@ import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.List;
 
 @Log4j2
 public class InMemoryCacheResolver implements IPackageResolver {
@@ -27,5 +29,10 @@ public class InMemoryCacheResolver implements IPackageResolver {
         }
 
         return p3;
+    }
+
+    @Override
+    public Collection<P3Package.P3PackageInfo> getPackageList(PackageManager pm) {
+        return null;
     }
 }

@@ -144,6 +144,18 @@ public class PackageManager {
         return null;
     }
 
+    public Set<P3Package.P3PackageInfo> getPackageList() {
+        Set<P3Package.P3PackageInfo> packages = new HashSet<>();
+        for(IPackageResolver resolver : resolvers) {
+            Collection<P3Package.P3PackageInfo> resolverPackages = resolver.getPackageList(this);
+            if(resolverPackages != null) {
+                packages.addAll(resolverPackages);
+            }
+        }
+
+        return packages;
+    }
+
     public P3Package readSchema(String schema) throws PackageException {
         try {
             return readSchema(new JSONObject(schema));

@@ -5,6 +5,8 @@ import net.thechunk.playpen.p3.IPackageResolver;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 
+import java.util.Collection;
+
 @Log4j2
 public class PromotedResolver implements IPackageResolver {
     @Override
@@ -31,5 +33,10 @@ public class PromotedResolver implements IPackageResolver {
         }
 
         return p3;
+    }
+
+    @Override
+    public Collection<P3Package.P3PackageInfo> getPackageList(PackageManager pm) {
+        return null;
     }
 }
