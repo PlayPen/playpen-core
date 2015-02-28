@@ -272,7 +272,8 @@ public class Network extends PlayPen {
         }
 
         if(!AuthUtils.validateHash(auth, local.getKey())) {
-            log.error("Invalid hash on message from " + auth.getUuid());
+            log.error("Invalid hash on message from " + auth.getUuid() + ", got " + auth.getHash() + " (expected "
+                    + AuthUtils.createHash(local.getKey(), auth.getPayload().toByteArray()));
             log.error("Closing connection from " + from + " due to bad hash");
             from.close();
             return false;
