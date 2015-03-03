@@ -130,8 +130,8 @@ public class P3Tool {
     }
 
     private static void pack(String[] args) {
-        if(args.length != 3) {
-            System.err.println("playpen p3 pack <directory>");
+        if(args.length != 3 && args.length != 4) {
+            System.err.println("playpen p3 pack <directory> [destination]");
             return;
         }
 
@@ -174,8 +174,14 @@ public class P3Tool {
             return;
         }
 
+        String destDir = ".";
+        if(args.length == 4)
+        {
+            destDir = args[3];
+        }
+
         String resultFileName = p3.getId() + "_" + p3.getVersion() + ".p3";
-        File resultFile = new File(resultFileName);
+        File resultFile = Paths.get(destDir, resultFileName).toFile();
         if(resultFile.exists())
         {
             if(!resultFile.delete()) {
