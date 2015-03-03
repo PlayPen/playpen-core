@@ -46,54 +46,55 @@ public class Bootstrap {
         }
         catch(URISyntaxException e) {}
 
-        try {
-            didCopyResources = copyFilesFromJar(new String[]{
-                    "logging-network.xml",
-                    "logging-local.xml",
-                    "logging-cli.xml",
-                    "logging-p3.xml",
-                    "keystore.json",
-                    "packages.json",
-                    "local.json",
-                    "network.json",
-                    "playpen-network.bat",
-                    "playpen-local.bat",
-                    "playpen-cli.bat",
-                    "playpen-p3.bat",
-                    "playpen-network.sh",
-                    "playpen-local.sh",
-                    "playpen-cli.sh",
-                    "playpen-p3.sh"
-            });
+        if(!"true".equalsIgnoreCase(System.getenv("PLAYPEN_NO_SETUP"))) {
+            try {
+                didCopyResources = copyFilesFromJar(new String[]{
+                        "logging-network.xml",
+                        "logging-local.xml",
+                        "logging-cli.xml",
+                        "logging-p3.xml",
+                        "keystore.json",
+                        "packages.json",
+                        "local.json",
+                        "network.json",
+                        "playpen-network.bat",
+                        "playpen-local.bat",
+                        "playpen-cli.bat",
+                        "playpen-p3.bat",
+                        "playpen-network.sh",
+                        "playpen-local.sh",
+                        "playpen-cli.sh",
+                        "playpen-p3.sh"
+                });
 
-            if(Paths.get(homeDir.getPath(), "cache", "packages").toFile().mkdirs())
-                didCopyResources = true;
+                if (Paths.get(homeDir.getPath(), "cache", "packages").toFile().mkdirs())
+                    didCopyResources = true;
 
-            if(Paths.get(homeDir.getPath(), "packages").toFile().mkdirs())
-                didCopyResources = true;
+                if (Paths.get(homeDir.getPath(), "packages").toFile().mkdirs())
+                    didCopyResources = true;
 
-            if(Paths.get(homeDir.getPath(), "assets").toFile().mkdirs())
-                didCopyResources = true;
+                if (Paths.get(homeDir.getPath(), "assets").toFile().mkdirs())
+                    didCopyResources = true;
 
-            if(Paths.get(homeDir.getPath(), "plugins").toFile().mkdirs())
-                didCopyResources = true;
+                if (Paths.get(homeDir.getPath(), "plugins").toFile().mkdirs())
+                    didCopyResources = true;
 
-            if(Paths.get(homeDir.getPath(), "servers").toFile().mkdirs())
-                didCopyResources = true;
+                if (Paths.get(homeDir.getPath(), "servers").toFile().mkdirs())
+                    didCopyResources = true;
 
-            if(Paths.get(homeDir.getPath(), "frozen").toFile().mkdirs())
-                didCopyResources = true;
+                if (Paths.get(homeDir.getPath(), "frozen").toFile().mkdirs())
+                    didCopyResources = true;
 
-            if(Paths.get(homeDir.getPath(), "temp").toFile().mkdirs())
-                didCopyResources = true;
+                if (Paths.get(homeDir.getPath(), "temp").toFile().mkdirs())
+                    didCopyResources = true;
 
-            if(Paths.get(homeDir.getPath(), "server-logs").toFile().mkdirs())
-                didCopyResources = true;
-        }
-        catch(Exception e) {
-            System.err.println("Unable to copy default resources");
-            e.printStackTrace(System.err);
-            return;
+                if (Paths.get(homeDir.getPath(), "server-logs").toFile().mkdirs())
+                    didCopyResources = true;
+            } catch (Exception e) {
+                System.err.println("Unable to copy default resources");
+                e.printStackTrace(System.err);
+                return;
+            }
         }
 
         if(didCopyResources) {
