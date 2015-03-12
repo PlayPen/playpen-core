@@ -248,6 +248,9 @@ public class Network extends PlayPen {
         }
 
         ByteString messageBytes = message.toByteString();
+        byte[] encBytes = AuthUtils.encrypt(messageBytes.toByteArray(), coord.getKey());
+        messageBytes = ByteString.copyFrom(encBytes);
+
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(coord.getUuid())
                 .setHash(AuthUtils.createHash(coord.getKey(), messageBytes.toByteArray()))
@@ -279,16 +282,20 @@ public class Network extends PlayPen {
             return false;
         }
 
-        local.setChannel(from);
+        ByteString payload = auth.getPayload();
+        byte[] payloadBytes = AuthUtils.decrypt(payload.toByteArray(), local.getKey());
+        payload = ByteString.copyFrom(payloadBytes);
 
         Protocol.Transaction transaction = null;
         try {
-            transaction = Protocol.Transaction.parseFrom(auth.getPayload());
+            transaction = Protocol.Transaction.parseFrom(payload);
         }
         catch(InvalidProtocolBufferException e) {
             log.error("Unable to read transaction from message", e);
             return false;
         }
+
+        local.setChannel(from);
 
         TransactionManager.get().receive(transaction, local.getUuid());
         return true;
