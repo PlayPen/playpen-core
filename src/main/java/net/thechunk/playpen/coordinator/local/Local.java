@@ -122,6 +122,16 @@ public class Local extends PlayPen {
         catch(IOException e) {
             log.warn("Unable to clear assets", e);
         }
+
+        log.info("Clearing temporary files");
+        try {
+            File tempDir = Paths.get(Bootstrap.getHomeDir().toString(), "temp").toFile();
+            FileUtils.deleteDirectory(tempDir);
+            tempDir.mkdirs();
+        }
+        catch(IOException e) {
+            log.warn("Unable to clear temporary files", e);
+        }
     }
 
     public boolean run() {
