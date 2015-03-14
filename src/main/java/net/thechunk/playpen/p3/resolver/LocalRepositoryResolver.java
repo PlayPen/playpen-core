@@ -83,6 +83,6 @@ public class LocalRepositoryResolver implements IPackageResolver {
             packages.add(info);
         }
 
-        return null;
+        return packages;
     }
 }
