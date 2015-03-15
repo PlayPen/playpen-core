@@ -967,7 +967,7 @@ public class Local extends PlayPen {
 
     @Log4j2
     private static class PackageDownloadResolver extends LocalRepositoryResolver {
-        private Object downloadLock = new Object();
+        private final Object downloadLock = new Object();
 
         public PackageDownloadResolver() {
             super(Paths.get(Bootstrap.getHomeDir().getPath(), "cache", "packages").toFile());
