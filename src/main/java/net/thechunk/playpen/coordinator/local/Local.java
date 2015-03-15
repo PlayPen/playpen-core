@@ -967,6 +967,8 @@ public class Local extends PlayPen {
 
     @Log4j2
     private static class PackageDownloadResolver extends LocalRepositoryResolver {
+        private Object downloadLock = new Object();
+
         public PackageDownloadResolver() {
             super(Paths.get(Bootstrap.getHomeDir().getPath(), "cache", "packages").toFile());
         }
@@ -979,18 +981,21 @@ public class Local extends PlayPen {
             p3info.setId(id);
             p3info.setVersion(version);
 
-            CountDownLatch latch = Local.get().downloadMap.getOrDefault(p3info, null);
+            CountDownLatch latch = null;
+            synchronized(downloadLock) {
+                latch = Local.get().downloadMap.getOrDefault(p3info, null);
 
-            if(latch == null) {
-                TransactionInfo info = TransactionManager.get().begin();
+                if (latch == null) {
+                    TransactionInfo info = TransactionManager.get().begin();
 
-                if (!Local.get().sendPackageRequest(info.getId(), id, version)) {
-                    log.error("Unable to send package request for " + id + " at " + version + "");
-                    return null;
+                    if (!Local.get().sendPackageRequest(info.getId(), id, version)) {
+                        log.error("Unable to send package request for " + id + " at " + version + "");
+                        return null;
+                    }
+
+                    latch = new CountDownLatch(1);
+                    Local.get().downloadMap.put(p3info, latch);
                 }
-
-                latch = new CountDownLatch(1);
-                Local.get().downloadMap.put(p3info, latch);
             }
 
             log.info("Waiting up to 60 seconds for package download");
