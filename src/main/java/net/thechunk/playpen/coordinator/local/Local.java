@@ -208,8 +208,8 @@ public class Local extends PlayPen {
 
             sync();
 
-            log.info("Scheduling SYNC for every 2 minutes");
-            scheduler.scheduleAtFixedRate(() -> Local.get().sync(), 2, 2, TimeUnit.MINUTES);
+            log.info("Scheduling SYNC for every 90 seconds");
+            scheduler.scheduleAtFixedRate(() -> Local.get().sync(), 90, 90, TimeUnit.SECONDS);
 
             f.channel().closeFuture().sync();
         }
