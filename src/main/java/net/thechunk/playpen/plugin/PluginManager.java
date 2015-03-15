@@ -1,5 +1,6 @@
 package net.thechunk.playpen.plugin;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Log4j2
 public class PluginManager {
+    @Getter
     private Map<String, IPlugin> plugins = new ConcurrentHashMap<>();
 
     public boolean loadPlugins() {
