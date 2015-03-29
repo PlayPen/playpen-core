@@ -32,7 +32,9 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -356,6 +358,9 @@ public class Network extends PlayPen {
 
             case C_FREEZE_SERVER:
                 return c_processFreezeServer(command.getCFreezeServer(), info, from);
+
+            case C_UPLOAD_PACKAGE:
+                return c_processUploadPackage(command.getCUploadPackage(), info, from);
         }
     }
 
@@ -1028,6 +1033,35 @@ public class Network extends PlayPen {
         return TransactionManager.get().send(info.getId(), message, target);
     }
 
+    protected boolean sendExpireCache(P3Package.P3PackageInfo p3info, String target) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send EXPIRE_CACHE to invalid target " + target);
+            return false;
+        }
+
+        Commands.ExpireCache expire = Commands.ExpireCache.newBuilder()
+                .setP3(P3.P3Meta.newBuilder().setId(p3info.getId()).setVersion(p3info.getVersion()))
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.EXPIRE_CACHE)
+                .setExpireCache(expire)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for EXPIRE_CACHE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
     protected boolean c_processGetCoordinatorList(TransactionInfo info, String from) {
         log.info(from + " requested active coordinator list");
         return c_sendCoordinatorListResponse(from, info.getId());
@@ -1361,6 +1395,65 @@ public class Network extends PlayPen {
 
     protected boolean c_processFreezeServer(Commands.C_FreezeServer command, TransactionInfo info, String from) {
         return sendFreezeServer(command.getCoordinatorId(), command.getServerId());
+    }
+
+    protected boolean c_processUploadPackage(Commands.C_UploadPackage command, TransactionInfo info, String from) {
+        File tmpDest = Paths.get(
+                Bootstrap.getHomeDir().getPath(),
+                "temp",
+                UUID.randomUUID() + ".p3").toFile();
+        File trueDest = Paths.get(
+                Bootstrap.getHomeDir().getPath(),
+                "packages",
+                command.getData().getMeta().getId() + "_" + command.getData().getMeta().getVersion() + ".p3").toFile();
+
+        if(tmpDest.exists()) {
+            log.error("Cannot write package to existing file " + tmpDest);
+            return false;
+        }
+
+        log.info("Writing received package " + command.getData().getMeta().getId() + " at " + command.getData().getMeta().getVersion() + " to temp");
+
+        try (FileOutputStream output = new FileOutputStream(tmpDest)) {
+            IOUtils.write(command.getData().getData().toByteArray(), output);
+        }
+        catch(IOException e) {
+            log.error("Unable to write package to " + tmpDest, e);
+            return false;
+        }
+
+        if(trueDest.exists()) {
+            if(!trueDest.delete())
+            {
+                log.error("Unable to remove old version of package at " + trueDest);
+                return false;
+            }
+        }
+
+        log.info("Moving package " + command.getData().getMeta().getId() +  " at " + command.getData().getMeta().getVersion() + " to repository");
+
+        try {
+            Files.move(tmpDest.toPath(), trueDest.toPath());
+        }
+        catch(IOException e) {
+            log.error("Cannot move package to " + trueDest, e);
+            return false;
+        }
+
+        P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
+        p3info.setId(command.getData().getMeta().getId());
+        p3info.setVersion(command.getData().getMeta().getVersion());
+
+        log.info("Expiring cache for package " + p3info.getId() + " (" + p3info.getVersion() + ")");
+        getPackageManager().getPackageCache().remove(p3info);
+
+        for(LocalCoordinator coord : coordinators.values()) {
+            if(coord.isEnabled()) {
+                sendExpireCache(p3info, coord.getUuid());
+            }
+        }
+
+        return true;
     }
 
     @Data

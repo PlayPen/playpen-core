@@ -66,6 +66,10 @@ message FreezeServer {
     required string uuid = 1;
 }
 
+message ExpireCache {
+    required P3Meta p3 = 1;
+}
+
 message C_CoordinatorListResponse {
     repeated LocalCoordinator coordinators = 1;
 }
@@ -122,6 +126,10 @@ message C_FreezeServer {
     required string serverId = 2;
 }
 
+message C_UploadPackage {
+    required PackageData data = 1;
+}
+
 message BaseCommand {
     enum CommandType {
         // Coordination commands
@@ -138,6 +146,7 @@ message BaseCommand {
         CONSOLE_MESSAGE = 11;
         DETACH_CONSOLE = 12;
         FREEZE_SERVER = 26;
+        EXPIRE_CACHE = 29;
 
         // Client commands
         C_GET_COORDINATOR_LIST = 13; // no message body
@@ -154,6 +163,7 @@ message BaseCommand {
         C_CONSOLE_MESSAGE = 24;
         C_DETACH_CONSOLE = 25; // no message body
         C_FREEZE_SERVER = 27;
+        C_UPLOAD_PACKAGE = 28;
     }
 
     required CommandType type = 1;
@@ -170,6 +180,7 @@ message BaseCommand {
     optional ConsoleMessage consoleMessage = 11;
     optional DetachConsole detachConsole = 12;
     optional FreezeServer freezeServer = 23;
+    optional ExpireCache expireCache = 26;
 
     optional C_CoordinatorListResponse c_coordinatorListResponse = 13;
     optional C_Provision c_provision = 14;
@@ -182,4 +193,5 @@ message BaseCommand {
     optional C_AttachConsole c_attachConsole = 21;
     optional C_ConsoleMessage c_consoleMessage = 22;
     optional C_FreezeServer c_freezeServer = 24;
+    optional C_UploadPackage c_uploadPackage = 25;
 }

@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -490,6 +491,9 @@ public class Local extends PlayPen {
 
             case FREEZE_SERVER:
                 return processFreezeServer(command.getFreezeServer(), info);
+
+            case EXPIRE_CACHE:
+                return processExpireCache(command.getExpireCache(), info);
         }
     }
 
@@ -940,6 +944,23 @@ public class Local extends PlayPen {
 
         server.setFreezeOnShutdown(true);
         log.info("Server " + server.getName() + " will have its files frozen on shutdown");
+        return true;
+    }
+
+    protected boolean processExpireCache(Commands.ExpireCache message, TransactionInfo info) {
+        P3Package p3 = getPackageManager().resolve(message.getP3().getId(), message.getP3().getVersion(), false);
+        if(p3 == null)
+            return true;
+
+        P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
+        p3info.setId(p3.getId());
+        p3info.setVersion(p3.getVersion());
+
+        log.info("Expiring cache for " + p3.getId() + " (" + p3.getVersion() + ")");
+        File file = new File(p3.getLocalPath());
+        file.delete();
+        getPackageManager().getPackageCache().remove(p3info);
+
         return true;
     }
 
