@@ -80,6 +80,8 @@ public class Client extends PlayPen {
 
     private CountDownLatch latch = null;
 
+    private int acks = 0;
+
     private Client() {
         super();
     }
@@ -498,7 +500,7 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(count);
+        latch = new CountDownLatch(count - acks);
         try {
             latch.await();
         }
@@ -527,7 +529,7 @@ public class Client extends PlayPen {
             return;
         }
 
-        latch = new CountDownLatch(1);
+        latch = new CountDownLatch(1 - acks);
         try {
             latch.await();
         }
@@ -562,7 +564,7 @@ public class Client extends PlayPen {
             return;
         }
 
-        latch = new CountDownLatch(1);
+        latch = new CountDownLatch(1 - acks);
         try {
             latch.await();
         }
@@ -637,7 +639,7 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(count);
+        latch = new CountDownLatch(count - acks);
         try {
             latch.await();
         }
@@ -720,7 +722,7 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(count);
+        latch = new CountDownLatch(count - acks);
         try {
             latch.await();
         }
@@ -774,7 +776,7 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(1);
+        latch = new CountDownLatch(1 - acks);
         try {
             latch.await();
         }
@@ -1169,6 +1171,7 @@ public class Client extends PlayPen {
         System.out.println("ACK: " + ack.getResult());
         log.info("ACK: " + ack.getResult());
 
+        acks++;
         if(latch == null)
             return false;
 
