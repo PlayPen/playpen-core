@@ -948,6 +948,8 @@ public class Local extends PlayPen {
     }
 
     protected boolean processExpireCache(Commands.ExpireCache message, TransactionInfo info) {
+        log.info("Expiring cache for " + message.getP3().getId() + " (" + message.getP3().getVersion() + ")");
+
         P3Package p3 = getPackageManager().resolve(message.getP3().getId(), message.getP3().getVersion(), false);
         if(p3 == null)
             return true;
@@ -956,7 +958,6 @@ public class Local extends PlayPen {
         p3info.setId(p3.getId());
         p3info.setVersion(p3.getVersion());
 
-        log.info("Expiring cache for " + p3.getId() + " (" + p3.getVersion() + ")");
         File file = new File(p3.getLocalPath());
         file.delete();
         getPackageManager().getPackageCache().remove(p3info);
