@@ -1229,9 +1229,11 @@ public class Network extends PlayPen {
     protected boolean c_processDeprovision(Commands.C_Deprovision depro, TransactionInfo info, String from) {
         log.info("Attempting deprovision of " + depro.getServerId() + " on " + depro.getCoordinatorId() + " on behalf of client " + from);
         if(deprovision(depro.getCoordinatorId(), depro.getServerId(), depro.getForce())) {
+            c_sendAck("Deprovision request of " + depro.getServerId() + " successful", from);
             return true;
         }
         else {
+            c_sendAck("Deprovision request of " + depro.getServerId() + " unsucessful", from);
             log.error("Unable to deprovision " + depro.getServerId() + " on " + depro.getCoordinatorId() + " on behalf of client " + from);
             return false;
         }
@@ -1240,9 +1242,11 @@ public class Network extends PlayPen {
     protected boolean c_processShutdown(Commands.C_Shutdown shutdown, TransactionInfo info, String from) {
         log.info("Attempting shutdown of coordinator " + shutdown.getUuid() + " on behalf of client " + from);
         if(shutdownCoordinator(shutdown.getUuid())) {
+            c_sendAck("Shutdown request for " + shutdown.getUuid() + " successful", from);
             return true;
         }
         else {
+            c_sendAck("Shutdown request for " + shutdown.getUuid() + " unsuccessful", from);
             log.error("Unable to shutdown coordinator " + shutdown.getUuid() + " on behalf of client " + from);
             return false;
         }
@@ -1252,11 +1256,19 @@ public class Network extends PlayPen {
         log.info("Attemping promotion of package " + promote.getP3().getId() + " at " + promote.getP3().getVersion() + " on behalf of client " + from);
         P3Package p3 = packageManager.resolve(promote.getP3().getId(), promote.getP3().getVersion());
         if(p3 == null) {
+            c_sendAck("Unable to resolve package " + promote.getP3().getId() + " (" + promote.getP3().getVersion() + ") for promotion", from);
             log.error("Unable to resolve package " + promote.getP3().getId() + " at " + promote.getP3().getVersion() + " for promotion");
             return false;
         }
 
-        return packageManager.promote(p3);
+        if(packageManager.promote(p3)) {
+            c_sendAck("Promoted " + p3.getId() + " (" + p3.getVersion() + ")", from);
+            return true;
+        }
+        else {
+            c_sendAck("Unable to promote " + p3.getId() + " (" + p3.getVersion() + ")", from);
+            return false;
+        }
     }
 
     protected boolean c_processCreateCoordinator(TransactionInfo info, String from) {
@@ -1291,7 +1303,14 @@ public class Network extends PlayPen {
 
     protected boolean c_processSendInput(Commands.C_SendInput protoInput, TransactionInfo info, String from) {
         log.info("Sending input to " + protoInput.getServerId() + " on coordinator " + protoInput.getCoordinatorId() + " on behalf of client " + from);
-        return sendInput(protoInput.getCoordinatorId(), protoInput.getServerId(), protoInput.getInput());
+        if(sendInput(protoInput.getCoordinatorId(), protoInput.getServerId(), protoInput.getInput())) {
+            c_sendAck("Sent input to " + protoInput.getServerId(), from);
+            return true;
+        }
+        else {
+            c_sendAck("Unable to send input to " + protoInput.getServerId(), from);
+            return false;
+        }
     }
 
     protected boolean c_processAttachConsole(Commands.C_AttachConsole message, TransactionInfo info, String from) {
@@ -1394,7 +1413,14 @@ public class Network extends PlayPen {
     }
 
     protected boolean c_processFreezeServer(Commands.C_FreezeServer command, TransactionInfo info, String from) {
-        return sendFreezeServer(command.getCoordinatorId(), command.getServerId());
+        if(sendFreezeServer(command.getCoordinatorId(), command.getServerId())) {
+            c_sendAck("Froze server " + command.getServerId(), from);
+            return true;
+        }
+        else {
+            c_sendAck("Unable to freeze server " + command.getServerId(), from);
+            return false;
+        }
     }
 
     protected boolean c_processUploadPackage(Commands.C_UploadPackage command, TransactionInfo info, String from) {
@@ -1409,6 +1435,7 @@ public class Network extends PlayPen {
 
         if(tmpDest.exists()) {
             log.error("Cannot write package to existing file " + tmpDest);
+            c_sendAck("Cannot write package to existing file " + tmpDest, from);
             return false;
         }
 
@@ -1419,6 +1446,7 @@ public class Network extends PlayPen {
         }
         catch(IOException e) {
             log.error("Unable to write package to " + tmpDest, e);
+            c_sendAck("Unable to write package to " + tmpDest, from);
             return false;
         }
 
@@ -1426,6 +1454,7 @@ public class Network extends PlayPen {
             if(!trueDest.delete())
             {
                 log.error("Unable to remove old version of package at " + trueDest);
+                c_sendAck("Unable to remove old version of package at " + trueDest, from);
                 return false;
             }
         }
@@ -1437,6 +1466,7 @@ public class Network extends PlayPen {
         }
         catch(IOException e) {
             log.error("Cannot move package to " + trueDest, e);
+            c_sendAck("Cannot move package to " + trueDest, from);
             return false;
         }
 
@@ -1453,7 +1483,38 @@ public class Network extends PlayPen {
             }
         }
 
+        c_sendAck("Successfully received package", from);
+
         return true;
+    }
+
+    protected boolean c_sendAck(String result, String target) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send C_ACK to invalid coordinator " + target);
+            return false;
+        }
+
+        Commands.C_Ack ack = Commands.C_Ack.newBuilder()
+                .setResult(result)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_ACK)
+                .setCAck(ack)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to create transaction for C_ACK");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
     }
 
     @Data

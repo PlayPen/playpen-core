@@ -130,6 +130,10 @@ message C_UploadPackage {
     required PackageData data = 1;
 }
 
+message C_Ack {
+    optional string result = 1;
+}
+
 message BaseCommand {
     enum CommandType {
         // Coordination commands
@@ -164,6 +168,7 @@ message BaseCommand {
         C_DETACH_CONSOLE = 25; // no message body
         C_FREEZE_SERVER = 27;
         C_UPLOAD_PACKAGE = 28;
+        C_ACK = 30;
     }
 
     required CommandType type = 1;
@@ -194,4 +199,5 @@ message BaseCommand {
     optional C_ConsoleMessage c_consoleMessage = 22;
     optional C_FreezeServer c_freezeServer = 24;
     optional C_UploadPackage c_uploadPackage = 25;
+    optional C_Ack c_ack = 27;
 }

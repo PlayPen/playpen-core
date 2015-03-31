@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Pattern;
@@ -76,6 +77,8 @@ public class Client extends PlayPen {
     private Commands.C_CoordinatorListResponse coordList = null;
 
     private AttachInputListenThread ailThread = null;
+
+    private CountDownLatch latch = null;
 
     private Client() {
         super();
@@ -173,7 +176,7 @@ public class Client extends PlayPen {
             group.shutdownGracefully();
         }
 
-        return;
+        System.exit(0);
     }
 
     @Override
@@ -300,6 +303,9 @@ public class Client extends PlayPen {
 
             case C_DETACH_CONSOLE:
                 return processDetachConsole(info);
+
+            case C_ACK:
+                return processAck(command.getCAck(), info);
         }
     }
 
@@ -476,12 +482,14 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Sending deprovision operations...");
+        int count = 0;
         for(Map.Entry<String, List<String>> entry : servers.entrySet()) {
             String coordId = entry.getKey();
             System.out.println("Coordinator " + coordId + ":");
             for(String serverId : entry.getValue()) {
                 if(sendDeprovision(coordId, serverId, force)) {
                     System.out.println("\tSent deprovision of " + serverId);
+                    count++;
                 }
                 else {
                     System.err.println("\tUnable to send deprovision of " + serverId);
@@ -489,7 +497,12 @@ public class Client extends PlayPen {
             }
         }
 
-        System.out.println("Operation completed, waiting for channel close...");
+        System.out.println("Operation completed, waiting for ack...");
+        latch = new CountDownLatch(count);
+        try {
+            latch.await();
+        }
+        catch(InterruptedException e) {}
         channel.close();
     }
 
@@ -506,13 +519,20 @@ public class Client extends PlayPen {
         String coordId = arguments[2];
 
         if(sendShutdown(coordId)) {
-            System.out.println("Sent shutdown to network, waiting for channel close...");
-            channel.close();
+            System.out.println("Sent shutdown to network, waiting for ack...");
         }
         else {
             System.err.println("Unable to send shutdown to network");
             channel.close();
+            return;
         }
+
+        latch = new CountDownLatch(1);
+        try {
+            latch.await();
+        }
+        catch(InterruptedException e) {}
+        channel.close();
     }
 
     protected void runPromoteCommand(String[] arguments) {
@@ -534,13 +554,20 @@ public class Client extends PlayPen {
         }
 
         if(sendPromote(id, version)) {
-            System.out.println("Sent promote to network, waiting for channel close...");
-            channel.close();
+            System.out.println("Sent promote to network, waiting for ack...");
         }
         else {
             System.err.println("Unable to send promote to network");
             channel.close();
+            return;
         }
+
+        latch = new CountDownLatch(1);
+        try {
+            latch.await();
+        }
+        catch(InterruptedException e) {}
+        channel.close();
     }
 
     protected void runGenerateKeypairCommand(String[] arguments) {
@@ -594,12 +621,14 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Sending input operations...");
+        int count = 0;
         for(Map.Entry<String, List<String>> entry : servers.entrySet()) {
             String coordId = entry.getKey();
             System.out.println("Coordinator " + coordId + ":");
             for(String serverId : entry.getValue()) {
                 if(sendInput(coordId, serverId, input)) {
                     System.out.println("\tSent input to " + serverId);
+                    count++;
                 }
                 else {
                     System.err.println("\tUnable to send input to " + serverId);
@@ -607,7 +636,12 @@ public class Client extends PlayPen {
             }
         }
 
-        System.out.println("Operation completed, waiting for channel close...");
+        System.out.println("Operation completed, waiting for ack...");
+        latch = new CountDownLatch(count);
+        try {
+            latch.await();
+        }
+        catch(InterruptedException e) {}
         channel.close();
     }
 
@@ -670,12 +704,14 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Sending freeze operations...");
+        int count = 0;
         for(Map.Entry<String, List<String>> entry : servers.entrySet()) {
             String coordId = entry.getKey();
             System.out.println("Coordinator " + coordId + ":");
             for(String serverId : entry.getValue()) {
                 if(sendFreezeServer(coordId, serverId)) {
                     System.out.println("\tSent freeze to " + serverId);
+                    count++;
                 }
                 else {
                     System.err.println("\tUnable to send freeze to " + serverId);
@@ -683,7 +719,12 @@ public class Client extends PlayPen {
             }
         }
 
-        System.out.println("Operation complete, waiting for channel close...");
+        System.out.println("Operation completed, waiting for ack...");
+        latch = new CountDownLatch(count);
+        try {
+            latch.await();
+        }
+        catch(InterruptedException e) {}
         channel.close();
     }
 
@@ -732,9 +773,10 @@ public class Client extends PlayPen {
             return;
         }
 
-        System.out.println("Operation completed, waiting for channel close...");
+        System.out.println("Operation completed, waiting for ack...");
+        latch = new CountDownLatch(1);
         try {
-            Thread.sleep(1000); // need to fix this... closing the channel too fast doesn't leave time for the message to send.
+            latch.await();
         }
         catch(InterruptedException e) {}
         channel.close();
@@ -1121,6 +1163,17 @@ public class Client extends PlayPen {
         }
 
         return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean processAck(Commands.C_Ack ack, TransactionInfo info) {
+        System.out.println("ACK: " + ack.getResult());
+        log.info("ACK: " + ack.getResult());
+
+        if(latch == null)
+            return false;
+
+        latch.countDown();
+        return true;
     }
 
     protected boolean blockUntilCoordList() {
