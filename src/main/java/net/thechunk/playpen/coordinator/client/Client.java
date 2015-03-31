@@ -12,11 +12,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.thechunk.playpen.Bootstrap;
+import net.thechunk.playpen.Initialization;
 import net.thechunk.playpen.coordinator.CoordinatorMode;
 import net.thechunk.playpen.coordinator.PlayPen;
 import net.thechunk.playpen.networking.TransactionInfo;
 import net.thechunk.playpen.networking.TransactionManager;
 import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
+import net.thechunk.playpen.p3.P3Package;
+import net.thechunk.playpen.p3.PackageException;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.plugin.PluginManager;
 import net.thechunk.playpen.protocol.Commands;
@@ -26,6 +29,7 @@ import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
@@ -79,7 +83,8 @@ public class Client extends PlayPen {
 
     protected void printHelpText() {
         System.err.println("playpen cli <command> [arguments...]");
-        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair, send, attach, freeze");
+        System.err.println("Commands: list, provision, deprovision, shutdown, promote, generate-keypair, send, attach, " +
+                "freeze, upload");
     }
 
     public void run(String[] arguments) {
@@ -348,6 +353,10 @@ public class Client extends PlayPen {
                 runFreezeCommand(arguments);
                 break;
 
+            case "upload":
+                runUploadCommand(arguments);
+                break;
+
             default:
                 printHelpText();
                 channel.close();
@@ -480,7 +489,7 @@ public class Client extends PlayPen {
             }
         }
 
-        System.out.println("Operation completed!");
+        System.out.println("Operation completed, waiting for channel close...");
         channel.close();
     }
 
@@ -497,7 +506,7 @@ public class Client extends PlayPen {
         String coordId = arguments[2];
 
         if(sendShutdown(coordId)) {
-            System.out.println("Sent shutdown to network");
+            System.out.println("Sent shutdown to network, waiting for channel close...");
             channel.close();
         }
         else {
@@ -525,7 +534,7 @@ public class Client extends PlayPen {
         }
 
         if(sendPromote(id, version)) {
-            System.out.println("Sent promote to network");
+            System.out.println("Sent promote to network, waiting for channel close...");
             channel.close();
         }
         else {
@@ -598,7 +607,7 @@ public class Client extends PlayPen {
             }
         }
 
-        System.out.println("Operation completed!");
+        System.out.println("Operation completed, waiting for channel close...");
         channel.close();
     }
 
@@ -674,7 +683,60 @@ public class Client extends PlayPen {
             }
         }
 
-        System.out.println("Operation completed!");
+        System.out.println("Operation complete, waiting for channel close...");
+        channel.close();
+    }
+
+    protected void runUploadCommand(String[] arguments) {
+        if(arguments.length != 3) {
+            System.err.println("upload <package-path>");
+            System.err.println("Upload a package to the network, expiring the cache if needed.");
+            channel.close();
+            return;
+        }
+
+        clientMode = ClientMode.UPLOAD;
+
+        String pathStr = arguments[2];
+        File p3File = new File(pathStr);
+        if(!p3File.exists()) {
+            System.err.println("Unknown file \"" + pathStr + "\"");
+            channel.close();
+            return;
+        }
+
+        PackageManager packageManager = new PackageManager();
+        Initialization.packageManager(packageManager);
+
+        P3Package p3;
+        try {
+            p3 = packageManager.readPackage(p3File);
+        }
+        catch(PackageException e) {
+            System.err.println("Unable to read package:");
+            e.printStackTrace(System.err);
+            channel.close();
+            return;
+        }
+
+        if(p3 == null) {
+            System.err.println("Unable to read package");
+            channel.close();
+            return;
+        }
+
+        System.out.println("Sending package " + p3.getId() + " (" + p3.getVersion() + ") to network...");
+        if(!sendPackage(p3)) {
+            System.err.println("Unable to send package!");
+            channel.close();
+            return;
+        }
+
+        System.out.println("Operation completed, waiting for channel close...");
+        try {
+            Thread.sleep(1000); // need to fix this... closing the channel too fast doesn't leave time for the message to send.
+        }
+        catch(InterruptedException e) {}
         channel.close();
     }
 
@@ -1023,6 +1085,41 @@ public class Client extends PlayPen {
         }
 
         log.info("Sending C_FREEZE_SERVER to network coordinator");
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean sendPackage(P3Package p3)
+    {
+        byte[] bytes;
+        try {
+            bytes = Files.readAllBytes(Paths.get(p3.getLocalPath()));
+        }
+        catch(IOException e) {
+            log.fatal("Unable to read configuration file", e);
+            return false;
+        }
+
+        Commands.C_UploadPackage upload = Commands.C_UploadPackage.newBuilder()
+                .setData(P3.PackageData.newBuilder()
+                            .setMeta(P3.P3Meta.newBuilder().setId(p3.getId()).setVersion(p3.getVersion()))
+                            .setData(ByteString.copyFrom(bytes)))
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_UPLOAD_PACKAGE)
+                .setCUploadPackage(upload)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to build message for C_UPLOAD_PACKAGE");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
         return TransactionManager.get().send(info.getId(), message, null);
     }
 

@@ -10,5 +10,6 @@ public enum ClientMode {
     GENERATE_KEYPAIR,
     SEND_INPUT,
     ATTACH,
-    FREEZE
+    FREEZE,
+    UPLOAD
 }
