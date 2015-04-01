@@ -22,6 +22,7 @@ import net.thechunk.playpen.networking.netty.AuthenticatedMessageInitializer;
 import net.thechunk.playpen.p3.P3Package;
 import net.thechunk.playpen.p3.PackageManager;
 import net.thechunk.playpen.plugin.EventManager;
+import net.thechunk.playpen.plugin.IPlugin;
 import net.thechunk.playpen.plugin.PluginManager;
 import net.thechunk.playpen.protocol.Commands;
 import net.thechunk.playpen.protocol.Coordinator;
@@ -482,6 +483,10 @@ public class Network extends PlayPen {
 
     public boolean freezeServer(String target, String serverId) {
         return sendFreezeServer(target, serverId);
+    }
+
+    public void pluginMessage(IPlugin plugin, String id, Object... args) {
+        eventManager.callEvent(l -> l.onPluginMessage(plugin, id, args));
     }
 
     protected boolean processSync(Commands.Sync command, TransactionInfo info, String from) {

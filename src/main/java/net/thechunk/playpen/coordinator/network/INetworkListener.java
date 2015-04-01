@@ -1,6 +1,7 @@
 package net.thechunk.playpen.coordinator.network;
 
 import net.thechunk.playpen.plugin.IEventListener;
+import net.thechunk.playpen.plugin.IPlugin;
 
 public interface INetworkListener extends IEventListener<INetworkListener> {
     /**
@@ -59,4 +60,11 @@ public interface INetworkListener extends IEventListener<INetworkListener> {
      * @param coordinator
      */
     void onRequestShutdown(LocalCoordinator coordinator);
+
+    /**
+     * Called when a plugin broadcasts a message to other plugins
+     * @param id
+     * @param args
+     */
+    void onPluginMessage(IPlugin plugin, String id, Object... args);
 }
