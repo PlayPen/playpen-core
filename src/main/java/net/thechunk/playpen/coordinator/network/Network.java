@@ -29,6 +29,7 @@ import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
+import net.thechunk.playpen.utils.JSONUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -129,6 +130,7 @@ public class Network extends PlayPen {
 
                 LocalCoordinator coord = new LocalCoordinator();
                 coord.setEnabled(false);
+                coord.setName(JSONUtils.safeGetString(obj, "name"));
                 coord.setUuid(obj.getString("uuid"));
                 coord.setKey(obj.getString("key"));
                 coordinators.put(coord.getUuid(), coord);
@@ -407,6 +409,9 @@ public class Network extends PlayPen {
             JSONArray coords = new JSONArray();
             for(LocalCoordinator coord : coordinators.values()) {
                 JSONObject obj = new JSONObject();
+                if(coord.getName() != null)
+                    obj.put("name", coord.getName());
+                
                 obj.put("uuid", coord.getUuid());
                 obj.put("key", coord.getKey());
 
