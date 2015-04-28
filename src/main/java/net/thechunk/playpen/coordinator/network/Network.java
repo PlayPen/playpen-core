@@ -29,7 +29,6 @@ import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
-import net.thechunk.playpen.utils.JSONUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,6 +75,9 @@ public class Network extends PlayPen {
     private EventManager<INetworkListener> eventManager = null;
 
     @Getter
+    private Map<String, String> globalStrings = new HashMap<>();
+
+    @Getter
     private NioEventLoopGroup eventLoopGroup = null;
 
     private Network() {
@@ -107,6 +109,11 @@ public class Network extends PlayPen {
             String ipStr = config.getString("ip");
             ip = InetAddress.getByName(ipStr);
             port = config.getInt("port");
+            JSONObject strings = config.getJSONObject("strings");
+            for(String key : strings.keySet()) {
+                String value = strings.getString(key);
+                globalStrings.put(key, value);
+            }
         }
         catch(Exception e) {
             log.fatal("Unable to read configuration file.", e);
@@ -130,7 +137,6 @@ public class Network extends PlayPen {
 
                 LocalCoordinator coord = new LocalCoordinator();
                 coord.setEnabled(false);
-                coord.setName(JSONUtils.safeGetString(obj, "name"));
                 coord.setUuid(obj.getString("uuid"));
                 coord.setKey(obj.getString("key"));
                 coordinators.put(coord.getUuid(), coord);
@@ -409,9 +415,6 @@ public class Network extends PlayPen {
             JSONArray coords = new JSONArray();
             for(LocalCoordinator coord : coordinators.values()) {
                 JSONObject obj = new JSONObject();
-                if(coord.getName() != null)
-                    obj.put("name", coord.getName());
-                
                 obj.put("uuid", coord.getUuid());
                 obj.put("key", coord.getKey());
 
@@ -574,6 +577,18 @@ public class Network extends PlayPen {
             return null;
         }
 
+        Map<String, String> fullProps = new HashMap<>();
+        if(properties != null) {
+            fullProps.putAll(properties);
+        }
+
+        for(Map.Entry<String, String> entry : globalStrings.entrySet()) {
+            if(fullProps.containsKey(entry.getKey()))
+                continue;
+
+            fullProps.put(entry.getKey(), entry.getValue());
+        }
+
         P3.P3Meta meta = P3.P3Meta.newBuilder()
                 .setId(p3.getId())
                 .setVersion(p3.getVersion())
@@ -585,15 +600,13 @@ public class Network extends PlayPen {
         if(name != null)
             serverBuilder.setName(name);
 
-        if(properties != null) {
-            for(Map.Entry<String, String> entry : properties.entrySet()) {
-                Coordinator.Property prop = Coordinator.Property.newBuilder()
-                        .setName(entry.getKey())
-                        .setValue(entry.getValue())
-                        .build();
+        for(Map.Entry<String, String> entry : fullProps.entrySet()) {
+            Coordinator.Property prop = Coordinator.Property.newBuilder()
+                    .setName(entry.getKey())
+                    .setValue(entry.getValue())
+                    .build();
 
-                serverBuilder.addProperties(prop);
-            }
+            serverBuilder.addProperties(prop);
         }
 
         Commands.Provision provision = Commands.Provision.newBuilder()
