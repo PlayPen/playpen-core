@@ -1168,7 +1168,11 @@ public class Client extends PlayPen {
     }
 
     protected boolean processAck(Commands.C_Ack ack, TransactionInfo info) {
+        if(clientMode == ClientMode.ATTACH)
+            return true;
+
         System.out.println("ACK: " + ack.getResult());
+
         log.info("ACK: " + ack.getResult());
 
         acks++;
