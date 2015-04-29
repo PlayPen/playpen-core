@@ -1506,7 +1506,7 @@ public class Network extends PlayPen {
             }
         }
 
-        c_sendAck("Successfully received package", from);
+        c_sendAck("Successfully received package " + p3info.getId() + " (" + p3info.getVersion() + ")", from);
 
         return true;
     }

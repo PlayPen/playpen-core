@@ -731,56 +731,63 @@ public class Client extends PlayPen {
     }
 
     protected void runUploadCommand(String[] arguments) {
-        if(arguments.length != 3) {
-            System.err.println("upload <package-path>");
-            System.err.println("Upload a package to the network, expiring the cache if needed.");
+        if(arguments.length < 3) {
+            System.err.println("upload <package-path...>");
+            System.err.println("Upload packages to the network, expiring the cache if needed.");
             channel.close();
             return;
         }
 
         clientMode = ClientMode.UPLOAD;
 
-        String pathStr = arguments[2];
-        File p3File = new File(pathStr);
-        if(!p3File.exists()) {
-            System.err.println("Unknown file \"" + pathStr + "\"");
-            channel.close();
-            return;
+        int count = 0;
+        for(int argN = 2; argN < arguments.length; ++argN) {
+            String pathStr = arguments[argN];
+            System.out.println("Attempting upload of " + pathStr);
+            File p3File = new File(pathStr);
+            if (!p3File.exists()) {
+                System.err.println("Unknown file \"" + pathStr + "\"");
+                continue;
+            }
+
+            PackageManager packageManager = new PackageManager();
+            Initialization.packageManager(packageManager);
+
+            P3Package p3;
+            try {
+                p3 = packageManager.readPackage(p3File);
+            } catch (PackageException e) {
+                System.err.println("Unable to read package:");
+                e.printStackTrace(System.err);
+                continue;
+            }
+
+            if (p3 == null) {
+                System.err.println("Unable to read package");
+                continue;
+            }
+
+            System.out.println("Sending package " + p3.getId() + " (" + p3.getVersion() + ") to network...");
+            if (!sendPackage(p3)) {
+                System.err.println("Unable to send package!");
+                continue;
+            }
+
+            count++;
         }
 
-        PackageManager packageManager = new PackageManager();
-        Initialization.packageManager(packageManager);
-
-        P3Package p3;
-        try {
-            p3 = packageManager.readPackage(p3File);
-        }
-        catch(PackageException e) {
-            System.err.println("Unable to read package:");
-            e.printStackTrace(System.err);
-            channel.close();
-            return;
-        }
-
-        if(p3 == null) {
-            System.err.println("Unable to read package");
-            channel.close();
-            return;
-        }
-
-        System.out.println("Sending package " + p3.getId() + " (" + p3.getVersion() + ") to network...");
-        if(!sendPackage(p3)) {
-            System.err.println("Unable to send package!");
+        if(count == 0) {
+            System.err.println("No successful uploads!");
             channel.close();
             return;
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(1 - acks);
+        latch = new CountDownLatch(count - acks);
         try {
             latch.await();
+        } catch (InterruptedException e) {
         }
-        catch(InterruptedException e) {}
         channel.close();
     }
 
