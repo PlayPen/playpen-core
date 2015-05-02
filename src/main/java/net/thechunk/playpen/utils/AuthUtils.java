@@ -1,8 +1,9 @@
 package net.thechunk.playpen.utils;
 
+import com.google.protobuf.ByteString;
 import net.thechunk.playpen.protocol.Protocol;
 import org.apache.commons.codec.binary.Hex;
-import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
+import org.jasypt.util.binary.BasicBinaryEncryptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,25 +13,21 @@ import java.security.NoSuchAlgorithmException;
 
 public class AuthUtils {
 
-    private static StandardPBEByteEncryptor getEncryptor(String key)
-    {
-        // Many of jasypt's defaults are truly scary. This makes things less scarier but I still have no confidence in it.
-        StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();
-        encryptor.setPassword(key);
-        encryptor.setKeyObtentionIterations(1500);
-        encryptor.setAlgorithm("PBEwithSHA1AndRC4_128");
-        return encryptor;
+    public static String createHash(String key, String message) {
+        return createHash(key, message.getBytes(StandardCharsets.UTF_8));
     }
 
     public static byte[] encrypt(byte[] bytes, String key)
     {
-        StandardPBEByteEncryptor encryptor = getEncryptor(key);
+        BasicBinaryEncryptor encryptor = new BasicBinaryEncryptor();
+        encryptor.setPassword(key);
         return encryptor.encrypt(bytes);
     }
 
     public static byte[] decrypt(byte[] bytes, String key)
     {
-        StandardPBEByteEncryptor encryptor = getEncryptor(key);
+        BasicBinaryEncryptor encryptor = new BasicBinaryEncryptor();
+        encryptor.setPassword(key);
         return encryptor.decrypt(bytes);
     }
 
