@@ -444,13 +444,13 @@ public class Network extends PlayPen {
      */
     public LocalCoordinator selectCoordinator(P3Package p3) {
         LocalCoordinator best = null;
-        double bestNRU = Double.MAX_VALUE;
+        double bestNRU = Double.MIN_VALUE;
         for(LocalCoordinator coord : coordinators.values()) {
             if(!coord.isEnabled())
                 continue;
 
             double nru = coord.getNormalizedResourceUsage();
-            if(nru < bestNRU && coord.canProvisionPackage(p3)) {
+            if(nru > bestNRU && coord.canProvisionPackage(p3)) {
                 best = coord;
                 bestNRU = nru;
             }
