@@ -36,6 +36,7 @@
 .idea/
 
 /staging
+/live
 
 # Protobuf package
 /src/main/java/net/thechunk/playpen/protocol
