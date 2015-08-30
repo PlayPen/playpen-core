@@ -513,8 +513,10 @@ public class Network extends PlayPen {
 
         if(command.hasName()) {
             coord.setName(command.getName());
-            if (coord.getKeyName().isEmpty())
+            if (coord.getKeyName().isEmpty()) {
                 coord.setKeyName(coord.getName());
+                saveKeystore();
+            }
         }
         else {
             coord.setName(coord.getUuid());
