@@ -101,6 +101,10 @@ message C_Promote {
     required P3Meta p3 = 1;
 }
 
+message C_CreateCoordinator {
+    optional string keyName = 1;
+}
+
 message C_CoordinatorCreated {
     required string uuid = 1;
     required string key = 2;
@@ -193,6 +197,7 @@ message BaseCommand {
     optional C_Deprovision c_deprovision = 16;
     optional C_Shutdown c_shutdown = 17;
     optional C_Promote c_promote = 18;
+    optional C_CreateCoordinator c_createCoordinator = 28;
     optional C_CoordinatorCreated c_coordinatorCreated = 19;
     optional C_SendInput c_sendInput = 20;
     optional C_AttachConsole c_attachConsole = 21;

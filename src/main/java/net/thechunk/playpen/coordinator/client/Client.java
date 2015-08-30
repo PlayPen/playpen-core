@@ -573,8 +573,8 @@ public class Client extends PlayPen {
     }
 
     protected void runGenerateKeypairCommand(String[] arguments) {
-        if(arguments.length != 2) {
-            System.err.println("generate-keypair");
+        if(arguments.length != 2 && arguments.length != 3) {
+            System.err.println("generate-keypair [keyname]");
             System.err.println("Generates a new coordinator keypair");
             channel.close();
             return;
@@ -582,7 +582,7 @@ public class Client extends PlayPen {
 
         clientMode = ClientMode.GENERATE_KEYPAIR;
 
-        if(sendCreateCoordinator()) {
+        if(sendCreateCoordinator(arguments.length == 3 ? arguments[2] : null)) {
             System.out.println("Requesting generation of new keypair...");
             // don't close channel, just wait
         }
@@ -990,9 +990,14 @@ public class Client extends PlayPen {
         return TransactionManager.get().send(info.getId(), message, null);
     }
 
-    protected boolean sendCreateCoordinator() {
+    protected boolean sendCreateCoordinator(String keyName) {
+        Commands.C_CreateCoordinator.Builder create = Commands.C_CreateCoordinator.newBuilder();
+        if (keyName != null)
+            create.setKeyName(keyName);
+
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.C_CREATE_COORDINATOR)
+                .setCCreateCoordinator(create.build())
                 .build();
 
         TransactionInfo info = TransactionManager.get().begin();

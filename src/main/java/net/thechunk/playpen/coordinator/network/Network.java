@@ -139,6 +139,9 @@ public class Network extends PlayPen {
                 coord.setEnabled(false);
                 coord.setUuid(obj.getString("uuid"));
                 coord.setKey(obj.getString("key"));
+                if (obj.has("key-name"))
+                    coord.setKeyName(obj.getString("key-name"));
+
                 coordinators.put(coord.getUuid(), coord);
 
                 log.info("Loaded coordinator keypair " + coord.getUuid());
@@ -354,7 +357,7 @@ public class Network extends PlayPen {
                 return c_processPromote(command.getCPromote(), info, from);
 
             case C_CREATE_COORDINATOR:
-                return c_processCreateCoordinator(info, from);
+                return c_processCreateCoordinator(command.getCCreateCoordinator(), info, from);
 
             case C_SEND_INPUT:
                 return c_processSendInput(command.getCSendInput(), info, from);
@@ -417,6 +420,7 @@ public class Network extends PlayPen {
                 JSONObject obj = new JSONObject();
                 obj.put("uuid", coord.getUuid());
                 obj.put("key", coord.getKey());
+                obj.put("key-name", coord.getKeyName());
 
                 coords.put(obj);
             }
@@ -509,6 +513,8 @@ public class Network extends PlayPen {
 
         if(command.hasName()) {
             coord.setName(command.getName());
+            if (coord.getKeyName().isEmpty())
+                coord.setKeyName(coord.getName());
         }
         else {
             coord.setName(coord.getUuid());
@@ -1294,13 +1300,16 @@ public class Network extends PlayPen {
         }
     }
 
-    protected boolean c_processCreateCoordinator(TransactionInfo info, String from) {
+    protected boolean c_processCreateCoordinator(Commands.C_CreateCoordinator create, TransactionInfo info, String from) {
         log.info("Creating coordinator on behalf of client " + from);
         LocalCoordinator coord = createCoordinator();
         if(coord == null) {
             log.error("Unable to create coordinator");
             return false;
         }
+
+        if (create.hasKeyName())
+            coord.setKeyName(create.getKeyName());
 
         Commands.C_CoordinatorCreated response = Commands.C_CoordinatorCreated.newBuilder()
                 .setUuid(coord.getUuid())

@@ -21,6 +21,8 @@ public class LocalCoordinator {
 
     private String name;
 
+    private String keyName = "";
+
     private Map<String, Integer> resources = new ConcurrentHashMap<>();
 
     private Set<String> attributes = new ConcurrentSkipListSet<>();
