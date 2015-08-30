@@ -363,6 +363,7 @@ public class Local extends PlayPen {
         Server server = getServer(id);
         if(force) {
             if(server.getProcess() != null && server.getProcess().isRunning()) {
+
                 server.getProcess().stop();
             }
         }

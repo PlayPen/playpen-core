@@ -3,6 +3,7 @@ package net.thechunk.playpen.utils.process;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -83,7 +84,19 @@ public class XProcess {
     }
 
     public void stop() {
-        process.destroy();
+        if (System.getProperty("os.name").toLowerCase().contains("win"))
+            process.destroy();
+        else {
+            try {
+                Field f = process.getClass().getDeclaredField("pid");
+                f.setAccessible(true);
+                int pid = (Integer)f.get(process);
+                Runtime.getRuntime().exec("kill -9 " + String.valueOf(pid));
+            } catch (NoSuchFieldException | IllegalAccessException | IOException e) {
+                log.warn("Unable to use reflection for PID, using normal stop");
+                process.destroy();
+            }
+        }
     }
 
     protected void receiveOutput(String out) {
