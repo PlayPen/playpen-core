@@ -409,7 +409,7 @@ public class Network extends PlayPen {
         return coord;
     }
 
-    public void saveKeystore() {
+    public synchronized void saveKeystore() {
         log.info("Saving keystore...");
         try {
             Path path = Paths.get(Bootstrap.getHomeDir().getPath(), "keystore.json");
@@ -420,7 +420,9 @@ public class Network extends PlayPen {
                 JSONObject obj = new JSONObject();
                 obj.put("uuid", coord.getUuid());
                 obj.put("key", coord.getKey());
-                obj.put("key-name", coord.getKeyName());
+
+                if (!coord.getKeyName().isEmpty())
+                    obj.put("key-name", coord.getKeyName());
 
                 coords.put(obj);
             }
@@ -432,10 +434,7 @@ public class Network extends PlayPen {
                 IOUtils.write(json, output);
             }
         }
-        catch(JSONException e) {
-            log.error("Unable to save keystore", e);
-        }
-        catch(IOException e) {
+        catch(JSONException | IOException e) {
             log.error("Unable to save keystore", e);
         }
 
