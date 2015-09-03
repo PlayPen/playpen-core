@@ -1,6 +1,5 @@
 package net.thechunk.playpen.utils;
 
-import com.google.protobuf.ByteString;
 import net.thechunk.playpen.protocol.Protocol;
 import org.apache.commons.codec.binary.Hex;
 import org.jasypt.util.binary.BasicBinaryEncryptor;
