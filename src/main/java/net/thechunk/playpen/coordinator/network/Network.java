@@ -42,10 +42,7 @@ import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -531,6 +528,8 @@ public class Network extends PlayPen {
             coord.getAttributes().add(attr);
         }
 
+        Map<String, Server> oldServers = new HashMap<>(coord.getServers());
+
         coord.getServers().clear();
         for(Coordinator.Server cmdServer : command.getServersList()) {
             Server server = new Server();
@@ -549,6 +548,14 @@ public class Network extends PlayPen {
             }
 
             coord.getServers().put(server.getUuid(), server);
+        }
+
+        for (Server oldServer : oldServers.values()) {
+            if (!coord.getServers().containsKey(oldServer.getUuid())) {
+                oldServer.setActive(false);
+                log.info("Reconciled server shutdown for " + oldServer.getUuid() + "  on " + coord.getUuid());
+                eventManager.callEvent(l -> l.onServerShutdown(coord, oldServer));
+            }
         }
 
         coord.setEnabled(command.getEnabled());
