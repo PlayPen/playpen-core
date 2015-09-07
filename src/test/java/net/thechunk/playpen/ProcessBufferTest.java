@@ -1,5 +1,6 @@
 package net.thechunk.playpen;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.thechunk.playpen.utils.process.ProcessBuffer;
 import org.junit.Assert;
@@ -9,39 +10,44 @@ import java.nio.CharBuffer;
 import java.util.List;
 
 public class ProcessBufferTest {
+    private static final String LINE_SEPERATOR = System.lineSeparator();
+
+    private static String fullBuffer(List<String> strings) {
+        return String.join(LINE_SEPERATOR, strings) + LINE_SEPERATOR;
+    }
+
     @Test
     public void verifyFunctionality() {
         TestBuffer buffer = new TestBuffer(Lists.newArrayList("Test"));
-        buffer.append(CharBuffer.wrap("Test\n"));
+        buffer.append(CharBuffer.wrap(fullBuffer(ImmutableList.of("Test"))));
 
         sanityCheck(buffer);
     }
 
     @Test
     public void verifyMultipleLines() {
-        TestBuffer buffer = new TestBuffer(Lists.newArrayList("Test", "Testing2", "Potato"));
-        buffer.append(CharBuffer.wrap("Test\nTesting2\nPotato\n"));
+        List<String> strings = Lists.newArrayList("Test", "Testing2", "Potato");
+        TestBuffer buffer = new TestBuffer(strings);
+        buffer.append(CharBuffer.wrap(fullBuffer(strings)));
 
         sanityCheck(buffer);
     }
 
     @Test
     public void verifyIncompleteLine() {
-        TestBuffer buffer = new TestBuffer(Lists.newArrayList("Test", "Testing2"));
-        buffer.append(CharBuffer.wrap("Test\nTesting2\nPotato"));
+        List<String> strings = Lists.newArrayList("Test", "Testing2");
+        TestBuffer buffer = new TestBuffer(strings);
+        buffer.append(CharBuffer.wrap(fullBuffer(strings) + "Potato"));
 
         sanityCheck(buffer);
     }
 
     @Test
     public void verifyLaterCompletedLine() {
-        TestBuffer buffer = new TestBuffer(Lists.newArrayList("Test", "Testing2"));
-        buffer.append(CharBuffer.wrap("Test\nTesting2\nPotato"));
-        sanityCheck(buffer);
-
-        buffer.expected = Lists.newArrayList("Potato");
-        buffer.origSize = 1;
-        buffer.append(CharBuffer.wrap("\n"));
+        List<String> strings = Lists.newArrayList("Test", "Testing2", "Potato");
+        TestBuffer buffer = new TestBuffer(strings);
+        buffer.append(CharBuffer.wrap(String.join(LINE_SEPERATOR, strings)));
+        buffer.append(CharBuffer.wrap(LINE_SEPERATOR));
         sanityCheck(buffer);
     }
 
