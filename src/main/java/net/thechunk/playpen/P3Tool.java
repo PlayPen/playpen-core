@@ -204,8 +204,8 @@ public class P3Tool {
     }
 
     private static void provision(String[] args) {
-        if(args.length != 4) {
-            System.err.println("playpen p3 provision <package> <directory>");
+        if(args.length < 4) {
+            System.err.println("playpen p3 provision <package> <directory> [properties...]");
             return;
         }
 
@@ -237,7 +237,22 @@ public class P3Tool {
             return;
         }
 
-        if(!pm.execute(ExecutionType.PROVISION, p3, destination, new HashMap<String, String>(), null)) {
+        Map<String, String> properties = new HashMap<>();
+
+        if (args.length > 4) {
+            for (int i = 4; i < args.length; i += 2) {
+                String key = args[i];
+
+                if (i + 1 > args.length) {
+                    System.err.println(key + " does not have a value. Make sure a value isn't missing.");
+                    return;
+                }
+
+                properties.put(key, args[i + 1]);
+            }
+        }
+
+        if(!pm.execute(ExecutionType.PROVISION, p3, destination, properties, null)) {
             System.err.println("Unable to provision package");
             return;
         }
