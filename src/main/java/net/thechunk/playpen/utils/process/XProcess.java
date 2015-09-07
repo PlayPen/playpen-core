@@ -86,13 +86,17 @@ public class XProcess extends NuAbstractCharsetHandler {
         buffer.position(buffer.limit());
     }
 
+    @Override
+    public void onExit(int exitCode) {
+        super.onExit(exitCode);
+    }
+
     protected void receiveOutput(String out) {
         for(IProcessListener listener : listeners) {
             listener.onProcessOutput(this, out);
         }
     }
 
-    @Log4j2
     private class OutputBuffer extends ProcessBuffer {
         @Override
         protected void onOutput(String output) {

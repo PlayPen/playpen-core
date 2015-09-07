@@ -11,10 +11,13 @@ public abstract class ProcessBuffer {
         buffer.get(all);
         this.buffer.append(all);
 
-        int newlineIdx = this.buffer.indexOf("\n");
-        if (newlineIdx != -1) {
-            onOutput(this.buffer.substring(0, newlineIdx + 1));
-            this.buffer.delete(0, newlineIdx + 1);
+        int lastNewlineIdx = this.buffer.lastIndexOf("\n");
+        if (lastNewlineIdx != -1) {
+            String[] fullLines = this.buffer.substring(0, lastNewlineIdx + 1).split("\n");
+            for (String fullLine : fullLines) {
+                onOutput(fullLine);
+            }
+            this.buffer.delete(0, lastNewlineIdx + 1);
         }
     }
 
