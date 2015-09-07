@@ -35,6 +35,7 @@ public class XProcess extends NuAbstractCharsetHandler {
 
     public void removeListener(IProcessListener listener) {
         listeners.remove(listener);
+        listener.onProcessDetach(this);
     }
 
     public void sendInput(String in) {
@@ -55,10 +56,6 @@ public class XProcess extends NuAbstractCharsetHandler {
             process.waitFor(0, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.error("Interrupted while waiting for command to finish", e);
-        }
-
-        for(IProcessListener listener : listeners) {
-            listener.onProcessEnd(this);
         }
 
         return true;
@@ -88,7 +85,9 @@ public class XProcess extends NuAbstractCharsetHandler {
 
     @Override
     public void onExit(int exitCode) {
-        super.onExit(exitCode);
+        for (IProcessListener listener : listeners) {
+            listener.onProcessEnd(this);
+        }
     }
 
     protected void receiveOutput(String out) {
