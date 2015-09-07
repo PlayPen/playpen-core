@@ -21,11 +21,13 @@ public class XProcess extends NuAbstractCharsetHandler {
     private List<IProcessListener> listeners = new CopyOnWriteArrayList<>();
     private OutputBuffer stdinBuffer = new OutputBuffer();
     private OutputBuffer stderrBuffer = new OutputBuffer();
+    private boolean wait;
 
-    public XProcess(List<String> command, String workingDir) {
+    public XProcess(List<String> command, String workingDir, boolean wait) {
         super(StandardCharsets.UTF_8);
         this.command = command;
         this.workingDir = workingDir;
+        this.wait = wait;
     }
 
     public void addListener(IProcessListener listener) {
@@ -52,10 +54,12 @@ public class XProcess extends NuAbstractCharsetHandler {
         builder.setProcessListener(this);
         process = builder.start();
 
-        try {
-            process.waitFor(0, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            log.error("Interrupted while waiting for command to finish", e);
+        if (wait) {
+            try {
+                process.waitFor(0, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                log.info("Interrupted while waiting for process to complete", e);
+            }
         }
 
         return true;
