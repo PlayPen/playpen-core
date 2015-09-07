@@ -84,19 +84,7 @@ public class XProcess {
     }
 
     public void stop() {
-        if (System.getProperty("os.name").toLowerCase().contains("win"))
-            process.destroy();
-        else {
-            try {
-                Field f = process.getClass().getDeclaredField("pid");
-                f.setAccessible(true);
-                int pid = (Integer)f.get(process);
-                Runtime.getRuntime().exec("kill -9 " + String.valueOf(pid));
-            } catch (NoSuchFieldException | IllegalAccessException | IOException e) {
-                log.warn("Unable to use reflection for PID, using normal stop");
-                process.destroy();
-            }
-        }
+        process.destroyForcibly();
     }
 
     protected void receiveOutput(String out) {
