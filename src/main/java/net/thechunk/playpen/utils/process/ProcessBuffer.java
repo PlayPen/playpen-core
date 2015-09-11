@@ -13,32 +13,53 @@ import java.util.concurrent.locks.ReentrantLock;
  * This class is thread-safe (the buffer is protected by a lock).
  */
 public abstract class ProcessBuffer {
-    private final StringBuilder buffer = new StringBuilder(1024);
-    private static final String LINE_SEPERATOR = System.lineSeparator();
+    private final StringBuilder rumpBuffer = new StringBuilder(128);
+    private volatile boolean rumpBufferHasContents = false;
     private final Lock lock = new ReentrantLock();
 
     public void append(CharBuffer buffer) {
         // Okay, I'll admit it: this thing is literally a Rube Goldberg machine. But it works well enough!
-        char[] all = new char[buffer.remaining()];
-        buffer.get(all);
+        StringBuilder found = new StringBuilder();
 
-        List<String> lines = Collections.emptyList();
-
-        lock.lock();
-        try {
-            this.buffer.append(all);
-
-            int lastNewlineIdx = this.buffer.lastIndexOf(LINE_SEPERATOR);
-            if (lastNewlineIdx != -1) {
-                int stop = lastNewlineIdx + LINE_SEPERATOR.length();
-                lines = Arrays.asList(this.buffer.substring(0, stop).split(LINE_SEPERATOR));
-                this.buffer.delete(0, stop);
+        if (rumpBufferHasContents) {
+            lock.lock();
+            try {
+                found.append(rumpBuffer);
+                rumpBuffer.delete(0, rumpBuffer.length());
+                rumpBufferHasContents = false;
+            } finally {
+                lock.unlock();
             }
-        } finally {
-            lock.unlock();
         }
 
-        lines.stream().filter(line -> !line.isEmpty()).forEach(this::onOutput);
+        for (int i = 0; i < buffer.remaining(); i++) {
+            char c = buffer.get(i);
+            if (c == '\r') {
+                // When it looks like a hammer, there must be a sickle too.
+                continue;
+            }
+            if (c == '\n') {
+                if (found.length() == 0)
+                    continue;
+                onOutput(found.toString());
+                found.delete(0, found.length());
+            } else {
+                found.append(c);
+            }
+        }
+
+        // Consume the buffer.
+        buffer.position(buffer.remaining());
+
+        if (found.length() != 0) {
+            lock.lock();
+            try {
+                this.rumpBuffer.append(found);
+                rumpBufferHasContents = true;
+            } finally {
+                lock.unlock();
+            }
+        }
     }
 
     protected abstract void onOutput(String output);
