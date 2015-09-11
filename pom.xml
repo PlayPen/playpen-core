@@ -142,7 +142,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>nuprocess</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

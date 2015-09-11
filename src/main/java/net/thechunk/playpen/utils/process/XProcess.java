@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -19,8 +20,7 @@ public class XProcess extends NuAbstractCharsetHandler {
     private String workingDir;
     private NuProcess process = null;
     private List<IProcessListener> listeners = new CopyOnWriteArrayList<>();
-    private OutputBuffer stdinBuffer = new OutputBuffer();
-    private OutputBuffer stderrBuffer = new OutputBuffer();
+    private OutputBuffer outputBuffer = new OutputBuffer();
     private boolean wait;
 
     public XProcess(List<String> command, String workingDir, boolean wait) {
@@ -51,6 +51,7 @@ public class XProcess extends NuAbstractCharsetHandler {
 
     public boolean run() {
         NuProcessBuilder builder = new NuProcessBuilder(command);
+        builder.setCwd(Paths.get(workingDir));
         builder.setProcessListener(this);
         process = builder.start();
 
@@ -75,16 +76,12 @@ public class XProcess extends NuAbstractCharsetHandler {
 
     @Override
     protected void onStdoutChars(CharBuffer buffer, boolean closed, CoderResult coderResult) {
-        stdinBuffer.append(buffer);
-        // Just in case, consume the buffer too.
-        buffer.position(buffer.limit());
+        outputBuffer.append(buffer);
     }
 
     @Override
     protected void onStderrChars(CharBuffer buffer, boolean closed, CoderResult coderResult) {
-        stderrBuffer.append(buffer);
-        // Just in case, consume the buffer too.
-        buffer.position(buffer.limit());
+        onStdoutChars(buffer, closed, coderResult);
     }
 
     @Override
