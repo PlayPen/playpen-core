@@ -9,6 +9,7 @@ import net.thechunk.playpen.p3.PackageContext;
 import net.thechunk.playpen.utils.JSONUtils;
 import net.thechunk.playpen.utils.STUtils;
 import net.thechunk.playpen.utils.process.FileProcessListener;
+import net.thechunk.playpen.utils.process.ShutdownProcessListener;
 import net.thechunk.playpen.utils.process.XProcess;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +67,7 @@ public class ExecuteStep implements IPackageStep {
 
         log.info("Running command " + command.get(0));
 
-        XProcess proc = new XProcess(command, ctx.getDestination().toString());
+        XProcess proc = new XProcess(command, ctx.getDestination().toString(), server == null);
 
         if(server != null) {
             log.info("Registering process with server " + server.getUuid());
@@ -78,6 +79,8 @@ public class ExecuteStep implements IPackageStep {
             catch(IOException e) {
                 log.warn("Unable to create log for server, no logging of console output will be done");
             }
+
+            proc.addListener(new ShutdownProcessListener(server));
         }
 
         if(!proc.run()) {

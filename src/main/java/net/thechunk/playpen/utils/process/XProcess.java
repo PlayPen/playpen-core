@@ -1,23 +1,33 @@
 package net.thechunk.playpen.utils.process;
 
+import com.zaxxer.nuprocess.NuProcess;
+import com.zaxxer.nuprocess.NuProcessBuilder;
+import com.zaxxer.nuprocess.codec.NuAbstractCharsetHandler;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.*;
-import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CoderResult;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
-public class XProcess {
+public class XProcess extends NuAbstractCharsetHandler {
     private List<String> command;
     private String workingDir;
-    private Process process = null;
+    private NuProcess process = null;
     private List<IProcessListener> listeners = new CopyOnWriteArrayList<>();
-    private BufferedWriter inputWriter = null;
+    private OutputBuffer outputBuffer = new OutputBuffer();
+    private boolean wait;
 
-    public XProcess(List<String> command, String workingDir) {
+    public XProcess(List<String> command, String workingDir, boolean wait) {
+        super(StandardCharsets.UTF_8);
         this.command = command;
         this.workingDir = workingDir;
+        this.wait = wait;
     }
 
     public void addListener(IProcessListener listener) {
@@ -27,15 +37,12 @@ public class XProcess {
 
     public void removeListener(IProcessListener listener) {
         listeners.remove(listener);
+        listener.onProcessDetach(this);
     }
 
     public void sendInput(String in) {
-        try {
-            inputWriter.write(in);
-            inputWriter.flush();
-        } catch (IOException e) {
-            log.error("Error while writing to input stream", e);
-        }
+        byte[] inAsBytes = in.getBytes(StandardCharsets.UTF_8);
+        process.writeStdin(ByteBuffer.wrap(inAsBytes));
 
         for(IProcessListener listener : listeners) {
             listener.onProcessInput(this, in);
@@ -43,36 +50,16 @@ public class XProcess {
     }
 
     public boolean run() {
-        try {
-            process = new ProcessBuilder(command)
-                    .directory(new File(workingDir))
-                    .start();
-        } catch (IOException e) {
-            log.error("Unable to start process", e);
-            return false;
-        }
+        NuProcessBuilder builder = new NuProcessBuilder(command);
+        builder.setCwd(Paths.get(workingDir));
+        builder.setProcessListener(this);
+        process = builder.start();
 
-        StreamThread outThread = new StreamThread(this, process.getInputStream());
-        StreamThread errThread = new StreamThread(this, process.getErrorStream());
-        outThread.start();
-        errThread.start();
-
-        try (OutputStreamWriter osw = new OutputStreamWriter(process.getOutputStream());
-            BufferedWriter writer = new BufferedWriter(osw)) {
-            inputWriter = writer;
-            process.waitFor();
-        }
-        catch(IOException e) {
-            log.error("Exception while waiting for process", e);
-        }
-        catch(InterruptedException e) {
-            log.error("Interrupted while waiting for process", e);
-        }
-        finally {
-            inputWriter = null;
-
-            for(IProcessListener listener : listeners) {
-                listener.onProcessEnd(this);
+        if (wait) {
+            try {
+                process.waitFor(0, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                log.info("Interrupted while waiting for process to complete", e);
             }
         }
 
@@ -80,11 +67,28 @@ public class XProcess {
     }
 
     public boolean isRunning() {
-        return process.isAlive();
+        return process.isRunning();
     }
 
     public void stop() {
-        process.destroyForcibly();
+        process.destroy(true);
+    }
+
+    @Override
+    protected void onStdoutChars(CharBuffer buffer, boolean closed, CoderResult coderResult) {
+        outputBuffer.append(buffer);
+    }
+
+    @Override
+    protected void onStderrChars(CharBuffer buffer, boolean closed, CoderResult coderResult) {
+        onStdoutChars(buffer, closed, coderResult);
+    }
+
+    @Override
+    public void onExit(int exitCode) {
+        for (IProcessListener listener : listeners) {
+            listener.onProcessEnd(this);
+        }
     }
 
     protected void receiveOutput(String out) {
@@ -93,28 +97,10 @@ public class XProcess {
         }
     }
 
-    @Log4j2
-    private static class StreamThread extends Thread {
-        private InputStream is = null;
-        private XProcess proc = null;
-
-        public StreamThread(XProcess proc, InputStream is) {
-            this.is = is;
-            this.proc = proc;
-        }
-
+    private class OutputBuffer extends ProcessBuffer {
         @Override
-        public void run() {
-            try(InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader reader = new BufferedReader(isr)) {
-                String line = null;
-                while((line = reader.readLine()) != null) {
-                    proc.receiveOutput(line);
-                }
-            }
-            catch(IOException e) {
-                log.error("Error while reading input stream", e);
-            }
+        protected void onOutput(String output) {
+            receiveOutput(output);
         }
     }
 }

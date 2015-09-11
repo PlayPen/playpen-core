@@ -561,8 +561,15 @@ public class Local extends PlayPen {
         servers.put(server.getUuid(), server);
 
         log.info("Provisioned server " + uuid + ", executing!");
-        new ServerExecutionThread(server).start();
-        return true;
+
+        if(packageManager.execute(ExecutionType.EXECUTE, server.getP3(), new File(server.getLocalPath()), server.getProperties(), server)) {
+            log.info("Server " + server.getUuid() + " execution completed successfully");
+            return true;
+        }
+        else {
+            log.error("Server " + server.getUuid() + " execution did not complete successfully");
+            return false;
+        }
     }
 
     public boolean detachConsole(String consoleId) {
