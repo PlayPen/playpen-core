@@ -383,7 +383,7 @@ public class Network extends PlayPen {
         scheduler.shutdownNow();
 
         for(LocalCoordinator coord : coordinators.values()) {
-            if(coord.getChannel() != null && coord.getChannel().isOpen()) {
+            if(coord.getChannel() != null) {
                 coord.getChannel().close().syncUninterruptibly();
             }
         }

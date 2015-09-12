@@ -33,21 +33,18 @@ public abstract class APIClient extends PlayPen {
     @Getter
     private Channel channel = null;
 
-    @Getter
-    private EventLoopGroup eventLoopGroup = null;
-
     protected APIClient() {
         super();
     }
 
     public boolean start() {
         log.info("Starting client " + getUUID());
-        eventLoopGroup = new NioEventLoopGroup();
+        EventLoopGroup group = new NioEventLoopGroup();
         try {
             scheduler = Executors.newScheduledThreadPool(1);
 
             Bootstrap b = new Bootstrap();
-            b.group(eventLoopGroup)
+            b.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new AuthenticatedMessageInitializer());
@@ -71,12 +68,13 @@ public abstract class APIClient extends PlayPen {
     }
 
     public void stop() {
-        channel.close().syncUninterruptibly();
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdownNow();
+        }
 
-        scheduler.shutdownNow();
-        scheduler = null;
-
-        eventLoopGroup.shutdownGracefully();
+        if (channel != null) {
+            channel.close().syncUninterruptibly();
+        }
     }
 
     @Override
@@ -87,7 +85,7 @@ public abstract class APIClient extends PlayPen {
             scheduler.shutdownNow();
         }
 
-        if (channel != null && channel.isOpen()) {
+        if (channel != null) {
             channel.close().syncUninterruptibly();
         }
     }
