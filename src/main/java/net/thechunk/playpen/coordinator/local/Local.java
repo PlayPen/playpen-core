@@ -27,6 +27,7 @@ import net.thechunk.playpen.protocol.Coordinator;
 import net.thechunk.playpen.protocol.P3;
 import net.thechunk.playpen.protocol.Protocol;
 import net.thechunk.playpen.utils.AuthUtils;
+import net.thechunk.playpen.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -74,6 +75,9 @@ public class Local extends PlayPen {
 
     @Getter
     private Set<String> attributes = new ConcurrentSkipListSet<>();
+
+    @Getter
+    private Map<String, String> localStrings = new ConcurrentHashMap<>();
 
     @Getter
     private boolean enabled = true;
@@ -138,6 +142,7 @@ public class Local extends PlayPen {
         enabled = true;
         resources.clear();
         attributes.clear();
+        localStrings.clear();
 
         log.info("Reading local configuration");
         String configStr;
@@ -168,6 +173,11 @@ public class Local extends PlayPen {
             JSONArray attr = config.getJSONArray("attributes");
             for(int i = 0; i < attr.length(); ++i) {
                 attributes.add(attr.getString(i));
+            }
+
+            JSONObject strings = JSONUtils.safeGetObject(config, "strings");
+            for (String key : strings.keySet()) {
+                localStrings.put(key, strings.getString(key));
             }
         }
         catch(Exception e) {
@@ -239,7 +249,7 @@ public class Local extends PlayPen {
             shutdownServer(server.getUuid(), true, false);
         }
 
-        if(channel != null && channel.isOpen()) {
+        if(channel != null) {
             channel.close().syncUninterruptibly();
         }
     }
@@ -530,6 +540,8 @@ public class Local extends PlayPen {
         server.setName(name);
         server.getProperties().putAll(properties);
         server.setLocalPath(destination.toString());
+
+        server.getProperties().putAll(localStrings);
 
         if(properties.containsKey("frozen") && "true".equalsIgnoreCase(properties.get("frozen"))) {
             server.setFreezeOnShutdown(true);

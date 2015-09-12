@@ -121,8 +121,18 @@ message C_AttachConsole {
     required string serverId = 2;
 }
 
+message C_ConsoleAttached {
+    required string consoleId = 1;
+}
+
 message C_ConsoleMessage {
     required string value = 1;
+    required string consoleId = 2;
+}
+
+message C_ConsoleDetached {
+    required string consoleId = 1;
+    required bool useServerId = 2 [default = false];
 }
 
 message C_FreezeServer {
@@ -168,8 +178,10 @@ message BaseCommand {
         C_COORDINATOR_CREATED = 21;
         C_SEND_INPUT = 22;
         C_ATTACH_CONSOLE = 23;
+        C_CONSOLE_ATTACHED = 31;
         C_CONSOLE_MESSAGE = 24;
-        C_DETACH_CONSOLE = 25; // no message body
+        C_CONSOLE_DETACHED = 32;
+        C_DETACH_CONSOLE = 25;
         C_FREEZE_SERVER = 27;
         C_UPLOAD_PACKAGE = 28;
         C_ACK = 30;
@@ -201,7 +213,9 @@ message BaseCommand {
     optional C_CoordinatorCreated c_coordinatorCreated = 19;
     optional C_SendInput c_sendInput = 20;
     optional C_AttachConsole c_attachConsole = 21;
+    optional C_ConsoleAttached c_consoleAttached = 29;
     optional C_ConsoleMessage c_consoleMessage = 22;
+    optional C_ConsoleDetached c_consoleDetached = 30;
     optional C_FreezeServer c_freezeServer = 24;
     optional C_UploadPackage c_uploadPackage = 25;
     optional C_Ack c_ack = 27;

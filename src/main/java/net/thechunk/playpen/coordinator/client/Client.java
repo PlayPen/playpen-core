@@ -198,7 +198,7 @@ public class Client extends PlayPen {
             ailThread.interrupt();
         }
 
-        if(channel != null && channel.isOpen()) {
+        if(channel != null) {
             channel.close().syncUninterruptibly();
         }
     }

@@ -6,5 +6,6 @@
   "coord-ip": "127.0.0.1",
   "coord-port": 25501,
   "resources": {},
-  "attributes": []
+  "attributes": [],
+  "strings": {}
 }
