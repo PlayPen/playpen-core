@@ -10,14 +10,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class FileProcessListener implements IProcessListener {
-    private Writer writer = null;
+    private BufferedWriter writer = null;
     private final ExecutorService service;
 
     public FileProcessListener(File file) throws IOException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // quick, will probably change later
         Date date = new Date();
 
-        writer = new OutputStreamWriter(Files.newOutputStream(file.toPath(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE));
+        writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
         service = Executors.newSingleThreadExecutor();
         writer.write("-- FileProcessListener SESSION STARTED " + dateFormat.format(date) + "\r\n");
         writer.flush();
@@ -38,6 +38,7 @@ public class FileProcessListener implements IProcessListener {
                 try {
                     writer.write(out);
                     writer.write(System.lineSeparator());
+                    writer.flush();
                 } catch (IOException e) {
                 }
             });
@@ -51,6 +52,7 @@ public class FileProcessListener implements IProcessListener {
                 try {
                     writer.write(in);
                     writer.write(System.lineSeparator());
+                    writer.flush();
                 } catch (IOException e) {
                 }
             });
