@@ -1492,9 +1492,9 @@ public class Network extends PlayPen {
                     itr.remove();
                 }
             }
-
-            return true;
         }
+
+        return true;
     }
 
     protected boolean c_processFreezeServer(Commands.C_FreezeServer command, TransactionInfo info, String from) {
