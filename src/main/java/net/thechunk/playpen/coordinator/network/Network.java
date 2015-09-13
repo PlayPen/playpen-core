@@ -1378,12 +1378,15 @@ public class Network extends PlayPen {
             return false;
         }
 
+        log.info("Attempting to attach console on " + server.getName() + " for " + from);
+
         ConsoleInfo ci = new ConsoleInfo();
         ci.setAttached(from);
         ci.setCoordinator(coord.getUuid());
         consoles.put(consoleId, ci);
         if(!sendAttachConsole(coord.getUuid(), server.getUuid(), consoleId)) {
             consoles.remove(consoleId);
+            log.warn("Unable to attach!");
             c_sendDetachConsole(from, consoleId, false);
             return false;
         }
