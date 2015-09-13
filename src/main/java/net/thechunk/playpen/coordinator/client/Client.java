@@ -661,6 +661,9 @@ public class Client extends PlayPen {
         String coordId = arguments[2];
         String serverId = arguments[3];
 
+        // hacky fix to prevent double-printing messages
+        sendDetachConsole();
+
         if(!sendAttachConsole(coordId, serverId)) {
             System.err.println("Unable to send attach command. Exiting.");
             channel.close();
@@ -1065,7 +1068,7 @@ public class Client extends PlayPen {
         TransactionInfo info = TransactionManager.get().begin();
 
         Protocol.Transaction message = TransactionManager.get()
-                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+                .build(info.getId(), Protocol.Transaction.Mode.CREATE, command);
         if(message == null) {
             log.error("Unable to build message for C_ATTACH_CONSOLE");
             TransactionManager.get().cancel(info.getId());
@@ -1098,8 +1101,12 @@ public class Client extends PlayPen {
     }
 
     protected boolean sendDetachConsole() {
+        Commands.C_DetachConsole detach = Commands.C_DetachConsole.newBuilder()
+                .build();
+
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.C_DETACH_CONSOLE)
+                .setCDetachConsole(detach)
                 .build();
 
         TransactionInfo info = TransactionManager.get().begin();

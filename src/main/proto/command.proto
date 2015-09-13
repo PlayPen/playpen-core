@@ -135,6 +135,10 @@ message C_ConsoleDetached {
     required bool useServerId = 2 [default = false];
 }
 
+message C_DetachConsole {
+    optional string consoleId = 1;
+}
+
 message C_FreezeServer {
     required string coordinatorId = 1;
     required string serverId = 2;
@@ -216,6 +220,7 @@ message BaseCommand {
     optional C_ConsoleAttached c_consoleAttached = 29;
     optional C_ConsoleMessage c_consoleMessage = 22;
     optional C_ConsoleDetached c_consoleDetached = 30;
+    optional C_DetachConsole c_detachConsole = 31;
     optional C_FreezeServer c_freezeServer = 24;
     optional C_UploadPackage c_uploadPackage = 25;
     optional C_Ack c_ack = 27;

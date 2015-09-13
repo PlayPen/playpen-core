@@ -364,7 +364,7 @@ public class Network extends PlayPen {
                 return c_processAttachConsole(command.getCAttachConsole(), info, from);
 
             case C_DETACH_CONSOLE:
-                return c_processDetachConsole(info, from);
+                return c_processDetachConsole(command.getCDetachConsole(), info, from);
 
             case C_FREEZE_SERVER:
                 return c_processFreezeServer(command.getCFreezeServer(), info, from);
@@ -980,7 +980,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        return c_sendConsoleMessage(target.getUuid(), message.getValue());
+        return c_sendConsoleMessage(target.getUuid(), message.getValue(), message.getConsoleId());
     }
 
     protected boolean sendDetachConsole(String target, String consoleId) {
@@ -1418,7 +1418,7 @@ public class Network extends PlayPen {
         return TransactionManager.get().send(info.getId(), message, coord.getUuid());
     }
 
-    protected boolean c_sendConsoleMessage(String target, String consoleMessage) {
+    protected boolean c_sendConsoleMessage(String target, String consoleMessage, String consoleId) {
         LocalCoordinator coord = getCoordinator(target);
         if(coord == null) {
             log.error("Cannot send C_CONSOLE_MESSAGE to invalid coordinator " + target);
@@ -1427,6 +1427,7 @@ public class Network extends PlayPen {
 
         Commands.C_ConsoleMessage cm = Commands.C_ConsoleMessage.newBuilder()
                 .setValue(consoleMessage)
+                .setConsoleId(consoleId)
                 .build();
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
@@ -1472,18 +1473,28 @@ public class Network extends PlayPen {
         return TransactionManager.get().send(info.getId(), message, coord.getUuid());
     }
 
-    protected boolean c_processDetachConsole(TransactionInfo info, String from) {
-        log.info("Detaching " + from + " from all consoles");
-        Iterator<Map.Entry<String, ConsoleInfo>> itr = consoles.entrySet().iterator();
-        while(itr.hasNext()) {
-            Map.Entry<String, ConsoleInfo> entry = itr.next();
-            if(from.equals(entry.getValue())) {
-                sendDetachConsole(entry.getKey(), entry.getValue().getCoordinator());
-                itr.remove();
+    protected boolean c_processDetachConsole(Commands.C_DetachConsole command, TransactionInfo info, String from) {
+        if (command.hasConsoleId()) {
+            log.info("Detaching " + from + " from console " + command.getConsoleId());
+            if (consoles.containsKey(command.getConsoleId())) {
+                ConsoleInfo ci = consoles.get(command.getConsoleId());
+                sendDetachConsole(command.getConsoleId(), ci.getCoordinator());
+                consoles.remove(command.getConsoleId());
             }
         }
+        else {
+            log.info("Detaching " + from + " from all consoles");
+            Iterator<Map.Entry<String, ConsoleInfo>> itr = consoles.entrySet().iterator();
+            while (itr.hasNext()) {
+                Map.Entry<String, ConsoleInfo> entry = itr.next();
+                if (from.equals(entry.getValue())) {
+                    sendDetachConsole(entry.getKey(), entry.getValue().getCoordinator());
+                    itr.remove();
+                }
+            }
 
-        return true;
+            return true;
+        }
     }
 
     protected boolean c_processFreezeServer(Commands.C_FreezeServer command, TransactionInfo info, String from) {
