@@ -1481,7 +1481,7 @@ public class Network extends PlayPen {
             log.info("Detaching " + from + " from console " + command.getConsoleId());
             if (consoles.containsKey(command.getConsoleId())) {
                 ConsoleInfo ci = consoles.get(command.getConsoleId());
-                sendDetachConsole(command.getConsoleId(), ci.getCoordinator());
+                sendDetachConsole(ci.getCoordinator(), command.getConsoleId());
                 consoles.remove(command.getConsoleId());
             }
         }
@@ -1491,7 +1491,7 @@ public class Network extends PlayPen {
             while (itr.hasNext()) {
                 Map.Entry<String, ConsoleInfo> entry = itr.next();
                 if (from.equals(entry.getValue())) {
-                    sendDetachConsole(entry.getKey(), entry.getValue().getCoordinator());
+                    sendDetachConsole(entry.getValue().getCoordinator(), entry.getKey());
                     itr.remove();
                 }
             }
