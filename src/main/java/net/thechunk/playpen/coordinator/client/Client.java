@@ -661,9 +661,6 @@ public class Client extends PlayPen {
         String coordId = arguments[2];
         String serverId = arguments[3];
 
-        // hacky fix to prevent double-printing messages
-        sendDetachConsole();
-
         if(!sendAttachConsole(coordId, serverId)) {
             System.err.println("Unable to send attach command. Exiting.");
             channel.close();
