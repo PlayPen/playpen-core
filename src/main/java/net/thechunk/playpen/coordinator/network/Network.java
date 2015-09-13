@@ -1373,7 +1373,7 @@ public class Network extends PlayPen {
         while(consoles.containsKey(consoleId))
             consoleId = UUID.randomUUID().toString();
 
-        if (!c_sendConsoleAttached(coord.getUuid(), consoleId, info)) {
+        if (!c_sendConsoleAttached(from, consoleId, info)) {
             consoles.remove(consoleId);
             return false;
         }
