@@ -7,6 +7,7 @@ import net.thechunk.playpen.coordinator.VMShutdownThread;
 import net.thechunk.playpen.coordinator.client.Client;
 import net.thechunk.playpen.coordinator.local.Local;
 import net.thechunk.playpen.coordinator.network.Network;
+import net.thechunk.playpen.utils.JarUtils;
 
 import java.io.File;
 import java.io.IOException;

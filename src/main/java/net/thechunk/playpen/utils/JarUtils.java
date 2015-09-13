@@ -1,4 +1,4 @@
-package net.thechunk.playpen;
+package net.thechunk.playpen.utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
