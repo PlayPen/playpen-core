@@ -39,10 +39,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
 
 @Log4j2
@@ -891,6 +888,12 @@ public class Local extends PlayPen {
         log.info("Attaching console " + message.getConsoleId() + " to server " + server.getUuid());
         ConsoleMessageListener listener = new ConsoleMessageListener(message.getConsoleId());
         consoles.put(message.getConsoleId(), listener);
+
+        Queue<String> lastLines = server.getProcess().getLastLines();
+        for (String line : lastLines) {
+            sendConsoleMessage(message.getConsoleId(), line);
+        }
+
         server.getProcess().addListener(listener);
 
         return true;

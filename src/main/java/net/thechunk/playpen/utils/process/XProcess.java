@@ -3,6 +3,7 @@ package net.thechunk.playpen.utils.process;
 import com.zaxxer.nuprocess.NuProcess;
 import com.zaxxer.nuprocess.NuProcessBuilder;
 import com.zaxxer.nuprocess.codec.NuAbstractCharsetHandler;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.nio.ByteBuffer;
@@ -11,17 +12,23 @@ import java.nio.charset.CoderResult;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class XProcess extends NuAbstractCharsetHandler {
+    public static final int MAX_LINE_STORAGE = 25;
+
     private List<String> command;
     private String workingDir;
     private NuProcess process = null;
     private List<IProcessListener> listeners = new CopyOnWriteArrayList<>();
     private OutputBuffer outputBuffer = new OutputBuffer();
     private boolean wait;
+
+    @Getter
+    private ConcurrentLinkedQueue<String> lastLines = new ConcurrentLinkedQueue<>();
 
     public XProcess(List<String> command, String workingDir, boolean wait) {
         super(StandardCharsets.UTF_8);
@@ -95,6 +102,10 @@ public class XProcess extends NuAbstractCharsetHandler {
         for(IProcessListener listener : listeners) {
             listener.onProcessOutput(this, out);
         }
+
+        lastLines.add(out);
+        if (lastLines.size() > MAX_LINE_STORAGE)
+            lastLines.remove();
     }
 
     private class OutputBuffer extends ProcessBuffer {
