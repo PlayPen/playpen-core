@@ -388,6 +388,9 @@ public class Network extends PlayPen {
 
             case C_UPLOAD_PACKAGE:
                 return c_processUploadPackage(command.getCUploadPackage(), info, from);
+
+            case C_REQUEST_PACKAGE_LIST:
+                return c_processRequestPackageList(info, from);
         }
     }
 
@@ -1620,6 +1623,39 @@ public class Network extends PlayPen {
         }
 
         return TransactionManager.get().send(info.getId(), message, coord.getUuid());
+    }
+
+    protected boolean c_processRequestPackageList(TransactionInfo info, String from) {
+        log.info(from + " requested package list");
+        return c_sendCoordinatorListResponse(from, info.getId());
+    }
+
+    protected boolean c_sendPackageList(String target, String tid) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Unable to send C_COORDINATOR_LIST_RESPONSE with invalid transaction " + tid);
+            return false;
+        }
+
+        Set<P3Package.P3PackageInfo> p3list = getPackageManager().getPackageList();
+        Commands.C_PackageList.Builder packageList = Commands.C_PackageList.newBuilder();
+        p3list.forEach(p3 -> packageList.addPackages(P3.P3Meta.newBuilder().setId(p3.getId()).setVersion(p3.getVersion())));
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_PACKAGE_LIST)
+                .setCPackageList(packageList.build())
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(tid, Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for package list response");
+            return false;
+        }
+
+        log.info("Sending package list to " + target);
+
+        return TransactionManager.get().send(tid, message, target);
     }
 
     @Data

@@ -152,6 +152,10 @@ message C_Ack {
     optional string result = 1;
 }
 
+message C_PackageList {
+    repeated P3Meta packages = 1;
+}
+
 message BaseCommand {
     enum CommandType {
         // Coordination commands
@@ -189,6 +193,8 @@ message BaseCommand {
         C_FREEZE_SERVER = 27;
         C_UPLOAD_PACKAGE = 28;
         C_ACK = 30;
+        C_REQUEST_PACKAGE_LIST = 33; // no message body
+        C_PACKAGE_LIST = 34;
     }
 
     required CommandType type = 1;
@@ -224,4 +230,5 @@ message BaseCommand {
     optional C_FreezeServer c_freezeServer = 24;
     optional C_UploadPackage c_uploadPackage = 25;
     optional C_Ack c_ack = 27;
+    optional C_PackageList c_packageList = 32;
 }
