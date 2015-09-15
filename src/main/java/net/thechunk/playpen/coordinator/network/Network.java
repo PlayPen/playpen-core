@@ -5,6 +5,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -40,10 +41,7 @@ import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -294,6 +292,12 @@ public class Network extends PlayPen {
             return false;
         }
 
+        if (local.getChannel() != from && local.getChannel() != null && local.getChannel().isOpen()) {
+            from.close();
+            log.error("Multiple connections from coordinator " + local.getName());
+            return false;
+        }
+
         ByteString payload = auth.getPayload();
         byte[] payloadBytes = AuthUtils.decrypt(payload.toByteArray(), local.getKey());
         payload = ByteString.copyFrom(payloadBytes);
@@ -305,6 +309,19 @@ public class Network extends PlayPen {
         catch(InvalidProtocolBufferException e) {
             log.error("Unable to read transaction from message", e);
             return false;
+        }
+
+        if (local.getChannel() == from) {
+            from.closeFuture().addListener(channelFuture -> {
+                Iterator<Map.Entry<String, ConsoleInfo>> itr = consoles.entrySet().iterator();
+                while (itr.hasNext()) {
+                    Map.Entry<String, ConsoleInfo> entry = itr.next();
+                    if (Objects.equals(entry.getValue().getAttached(), local.getUuid())) {
+                        sendDetachConsole(entry.getValue().getCoordinator(), entry.getKey());
+                        itr.remove();
+                    }
+                }
+            });
         }
 
         local.setChannel(from);
