@@ -1627,7 +1627,7 @@ public class Network extends PlayPen {
 
     protected boolean c_processRequestPackageList(TransactionInfo info, String from) {
         log.info(from + " requested package list");
-        return c_sendCoordinatorListResponse(from, info.getId());
+        return c_sendPackageList(from, info.getId());
     }
 
     protected boolean c_sendPackageList(String target, String tid) {
