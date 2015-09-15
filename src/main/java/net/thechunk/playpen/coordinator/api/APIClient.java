@@ -211,6 +211,9 @@ public abstract class APIClient extends PlayPen {
 
             case C_ACK:
                 return processAck(command.getCAck(), info);
+
+            case C_PACKAGE_LIST:
+                return processPackageList(command.getCPackageList(), info);
         }
     }
 
@@ -221,4 +224,5 @@ public abstract class APIClient extends PlayPen {
     public abstract boolean processConsoleAttached(Commands.C_ConsoleAttached message, TransactionInfo info);
     public abstract boolean processListResponse(Commands.C_CoordinatorListResponse message, TransactionInfo info);
     public abstract boolean processAck(Commands.C_Ack message, TransactionInfo info);
+    public abstract boolean processPackageList(Commands.C_PackageList message, TransactionInfo info);
 }
