@@ -173,8 +173,10 @@ public class Local extends PlayPen {
             }
 
             JSONObject strings = JSONUtils.safeGetObject(config, "strings");
-            for (String key : strings.keySet()) {
-                localStrings.put(key, strings.getString(key));
+            if (strings != null) {
+                for (String key : strings.keySet()) {
+                    localStrings.put(key, strings.getString(key));
+                }
             }
         }
         catch(Exception e) {
