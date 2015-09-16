@@ -259,11 +259,12 @@ public class Network extends PlayPen {
 
         ByteString messageBytes = message.toByteString();
         byte[] encBytes = AuthUtils.encrypt(messageBytes.toByteArray(), coord.getKey());
+        String hash = AuthUtils.createHash(coord.getKey(), encBytes);
         messageBytes = ByteString.copyFrom(encBytes);
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(coord.getUuid())
-                .setHash(AuthUtils.createHash(coord.getKey(), messageBytes.toByteArray()))
+                .setHash(hash)
                 .setPayload(messageBytes)
                 .build();
 

@@ -428,12 +428,13 @@ public class Local extends PlayPen {
         }
 
         ByteString messageBytes = message.toByteString();
-        byte[] encBytes = AuthUtils.encrypt(messageBytes.toByteArray(), key);
+        byte[] encBytes = AuthUtils.encrypt(messageBytes.toByteArray(), getKey());
+        String hash = AuthUtils.createHash(getKey(), encBytes);
         messageBytes = ByteString.copyFrom(encBytes);
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
-                .setUuid(uuid)
-                .setHash(AuthUtils.createHash(key, messageBytes.toByteArray()))
+                .setUuid(getUuid())
+                .setHash(hash)
                 .setPayload(messageBytes)
                 .build();
 

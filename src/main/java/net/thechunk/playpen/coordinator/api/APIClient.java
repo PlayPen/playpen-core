@@ -144,11 +144,12 @@ public abstract class APIClient extends PlayPen {
 
         ByteString messageBytes = message.toByteString();
         byte[] encBytes = AuthUtils.encrypt(messageBytes.toByteArray(), getKey());
+        String hash = AuthUtils.createHash(getKey(), encBytes);
         messageBytes = ByteString.copyFrom(encBytes);
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(getUUID())
-                .setHash(AuthUtils.createHash(getKey(), messageBytes.toByteArray()))
+                .setHash(hash)
                 .setPayload(messageBytes)
                 .build();
 
