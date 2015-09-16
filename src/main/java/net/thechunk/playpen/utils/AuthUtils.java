@@ -4,17 +4,11 @@ import net.thechunk.playpen.protocol.Protocol;
 import org.apache.commons.codec.binary.Hex;
 import org.jasypt.util.binary.BasicBinaryEncryptor;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class AuthUtils {
-
-    public static String createHash(String key, String message) {
-        return createHash(key, message.getBytes(StandardCharsets.UTF_8));
-    }
 
     public static byte[] encrypt(byte[] bytes, String key)
     {
@@ -39,17 +33,8 @@ public class AuthUtils {
             throw new AssertionError(e);
         }
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            out.write(message);
-            out.write(key.getBytes());
-        }
-        catch(IOException e) {
-            throw new AssertionError(e);
-        }
-
-        digest.reset();
-        digest.update(out.toByteArray());
+        digest.update(message);
+        digest.update(key.getBytes(StandardCharsets.UTF_8));
 
         return Hex.encodeHexString(digest.digest());
     }
