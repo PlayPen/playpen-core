@@ -5,7 +5,7 @@ option java_outer_classname = "P3";
 message P3Meta {
     required string id = 1;
     required string version = 2;
-    optional bool promoted = 3; // only used in client communication at the moment
+    optional bool promoted = 3 [default = false]; // only used in client communication at the moment
 }
 
 message PackageData {
