@@ -293,11 +293,11 @@ public class Network extends PlayPen {
             return false;
         }
 
-        if (local.getChannel() != from && local.getChannel() != null && local.getChannel().isOpen()) {
+        /*if (local.getChannel() != from && local.getChannel() != null && local.getChannel().isOpen()) {
             from.close();
             log.error("Multiple connections from coordinator " + local.getName());
             return false;
-        }
+        }*/
 
         ByteString payload = auth.getPayload();
         byte[] payloadBytes = AuthUtils.decrypt(payload.toByteArray(), local.getKey());
