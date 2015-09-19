@@ -1640,7 +1640,12 @@ public class Network extends PlayPen {
 
         Set<P3Package.P3PackageInfo> p3list = getPackageManager().getPackageList();
         Commands.C_PackageList.Builder packageList = Commands.C_PackageList.newBuilder();
-        p3list.forEach(p3 -> packageList.addPackages(P3.P3Meta.newBuilder().setId(p3.getId()).setVersion(p3.getVersion())));
+        p3list.forEach(p3 -> packageList.addPackages(
+                P3.P3Meta.newBuilder()
+                        .setId(p3.getId())
+                        .setVersion(p3.getVersion())
+                        .setPromoted(packageManager.isPromotedVersion(p3.getId(), p3.getVersion()))
+        ));
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
                 .setType(Commands.BaseCommand.CommandType.C_PACKAGE_LIST)
