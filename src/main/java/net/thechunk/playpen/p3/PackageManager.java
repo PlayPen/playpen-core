@@ -53,6 +53,10 @@ public class PackageManager {
         return promoted.getOrDefault(id, null);
     }
 
+    public boolean isPromotedVersion(String id, String version) {
+        return Objects.equals(version, getPromotedVersion(id));
+    }
+
     public synchronized boolean promote(P3Package p3) {
         if(!p3.isResolved()) {
             log.error("Cannot promote unresolved package " + p3.getId() + " at " + p3.getVersion());
