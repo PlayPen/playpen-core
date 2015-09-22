@@ -109,10 +109,8 @@ public class PluginManager {
             IPlugin instance = null;
 
             try {
-                URLClassLoader loader = new URLClassLoader(
-                        new URL[]{jarFile.toURI().toURL()},
-                        this.getClass().getClassLoader()
-                );
+                PluginClassLoader loader = new PluginClassLoader(
+                        new URL[]{jarFile.toURI().toURL()});
 
                 Class mainClass = Class.forName(schema.getMain(), true, loader);
                 if(!IPlugin.class.isAssignableFrom(mainClass)) {
