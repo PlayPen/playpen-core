@@ -56,8 +56,42 @@ playpen jars.
 Plugins are currently only supported for the network coordinator. Local coordinator support will come soon, but until
 then it is impossible to add custom package execution steps.
 
+## Servers/Services
+
+A service (or server) is a single instance of a running package (see below). When a service runs on a local coordinator,
+it is given a unique working directory based on a UUID assigned by the network. Good practice dictates that any work
+with the filesystem should ideally be done in this directory in order to not interrupt other services, but in cases
+where that isn't possible it's fine to access other files on a coordinator provided you know what you are doing.
+
 ## Packages
 
 PlayPen uses a package system known as _P3_ to send files across the network. The network coordinator acts as a package
 repository which all local coordinators can pull from. All services run by playpen must be contained in a package.
-Common components shared between services can be split off into their own package using P3's dependency system.
+Common components shared between services can be split off into their own package using P3's dependency system. Local
+coordinators cache packages locally so that they do not have to be continuously sent over the network.
+
+There are three main types of packages: script packages, standard packages, and asset packages. PlayPen doesn't
+technically makea distinction between the types of packages, but it's good to think of each package as being one of
+these.
+
+### Script packages
+
+A script package contains no files except the package metadata (package.json). As such, the package should not have an
+"expand" provision step (see below). Script packages will generally just run some commands via the package metadata
+file.
+
+### Standard Packages
+
+Standard packages contain a set of files that are extracted from the package into the service's working directory. These
+packages will use an "expand" provision step to expand/extract the package files into the appropriate directory. They
+will then generally run a set of commands during the execute step in order to start the service.
+
+### Asset Packages
+
+Asset packages contain files that should be extracted into a location where multiple services can access them. They
+should be used for things like storing common map data for a game when you know the files will never be modified. That
+way you only have to extract them a single time for each local coordinator, and all services will have access to those
+files.
+
+Asset packages use the "expand-assets" provision step almost exclusively. They generally should not be provisioned
+directly, and should instead be listed as a dependency.
