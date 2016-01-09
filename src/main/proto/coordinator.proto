@@ -1,4 +1,4 @@
-package net.thechunk.playpen.protocol;
+package io.playpen.core.protocol;
 
 option java_outer_classname = "Coordinator";
 

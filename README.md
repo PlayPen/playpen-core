@@ -1,6 +1,13 @@
-# PlayPen
+# PlayPen Core
 
-PlayPen is a server management and load balancing system.
+PlayPen is a generic cross-platform server management and load balancing framework. PlayPen is designed primarily for
+ephemeral services, ones that do not need to store any permanent data and can be shut down or spun up at will.
+
+By itself, playpen does not do anything and must receive commands from somewhere whether that be the command line
+client, [PVI](https://github.com/PlayPen/PVI), another client, or a plugin.
+
+PlayPen was originally developed to automatically balance minecraft game servers at [The Chunk](https://thechunk.net),
+but can be used to deploy and manage any kind of self-contained service.
 
 ## Protobuf Compilation
 
@@ -39,3 +46,18 @@ The playpen cli client can be run with:
 
 Note that the cli uses the "local.json" configuration file as it represents itself to the
 network as a local coordinator.
+
+**Warning: You cannot run multiple instances of playpen from the same installation!** If you need to run multiple
+instances of playpen (for example, a network coordinator and a local coordinator), use two separate directories and
+playpen jars.
+
+## Plugins
+
+Plugins are currently only supported for the network coordinator. Local coordinator support will come soon, but until
+then it is impossible to add custom package execution steps.
+
+## Packages
+
+PlayPen uses a package system known as _P3_ to send files across the network. The network coordinator acts as a package
+repository which all local coordinators can pull from. All services run by playpen must be contained in a package.
+Common components shared between services can be split off into their own package using P3's dependency system.
