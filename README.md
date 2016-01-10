@@ -95,3 +95,7 @@ files.
 
 Asset packages use the "expand-assets" provision step almost exclusively. They generally should not be provisioned
 directly, and should instead be listed as a dependency.
+
+## Support
+
+For consultation and support, please contact me [here](mailto:sam@redxdev.com).
