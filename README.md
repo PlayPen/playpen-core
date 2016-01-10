@@ -96,6 +96,10 @@ files.
 Asset packages use the "expand-assets" provision step almost exclusively. They generally should not be provisioned
 directly, and should instead be listed as a dependency.
 
+## Reliability
+
+Local coordinators should be able to run for months on end without being restarted (bar needing to update to a newer version). The network coordinator can be restarted without affecting the operation of the network (aside from losing the ability to control the network for the time that the network coordinator is down).
+
 ## Support
 
 For consultation and support, please contact me [here](mailto:sam@redxdev.com).
