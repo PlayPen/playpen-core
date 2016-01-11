@@ -11,7 +11,7 @@ but can be used to deploy and manage any kind of self-contained service.
 
 ## Protobuf Compilation
 
-You must have the protoc compiler installed in order to compile the coordination
+You must have the [protoc compiler](https://developers.google.com/protocol-buffers/docs/downloads) installed in order to compile the coordination
 protocol. Run build_protocol.bat or build_protocol.sh from the project's root
 directory.
 
