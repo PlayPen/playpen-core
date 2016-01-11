@@ -100,9 +100,23 @@ directly, and should instead be listed as a dependency.
 
 Local coordinators should be able to run for months on end without being restarted (bar needing to update to a newer version). The network coordinator can be restarted without affecting the operation of the network (aside from losing the ability to control the network for the time that the network coordinator is down).
 
+PlayPen is designed with reliability in mind. Here are some neat features relating to reliability:
+
+* The network coordinator is only required to control local coordinators. Local coordinators can operate in a "holding pattern" without a connection to the network.
+* The network coordinator can be restarted safely for any reason at any time. This ties into the idea that local coordinators don't need to be connected all the time to do their work (though that is ideal).
+* It is easy to change where the network coordinator is located. Current implementation simply needs you to change each local coordinator's config file and shut down the old network coordinator. Local coordinators will automatically reload their config after being disconnected.
+* The state of the network is figured out on the fly; there is no database for services since they are generally ephemeral. The network coordinator figures out what goes where without any extra help.
+
 ## Warning
 
 PlayPen is not an out of the box solution for server management. Even at The Chunk we had a huge custom stack that actually allowed us to make use of PlayPen. We had a plugin in PlayPen that would send the IP and port of every server to redis, then a plugin on bungeecord that read in the list of servers from redis. Finally we had a component on our hub server (which was not managed by PlayPen as it had to always exist in the same location -- not ephemeral) which also read the list of servers from redis in order to display available servers to players.
+
+## Contributing
+
+Feel free to send pull requests! If you want a change made in PlayPen, just remember the following:
+
+* PlayPen is designed to be generic. Anything built to run specific services should be placed in their own plugins, not in playpen-core.
+* Changes should have little to no impact on reliability.
 
 ## Support
 
