@@ -263,6 +263,7 @@ public class Network extends PlayPen {
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(coord.getUuid())
+                .setVersion(Bootstrap.getProtocolVersion())
                 .setHash(hash)
                 .setPayload(messageBytes)
                 .build();

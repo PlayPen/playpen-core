@@ -248,6 +248,7 @@ public class Client extends PlayPen {
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(getUuid())
+                .setVersion(Bootstrap.getProtocolVersion())
                 .setHash(hash)
                 .setPayload(messageBytes)
                 .build();
