@@ -775,6 +775,20 @@ public class Local extends PlayPen {
             return false;
         }
 
+        // checksum
+        String checksum = null;
+        try {
+            checksum = AuthUtils.createPackageChecksum(tmpDest.toString());
+        } catch (IOException e) {
+            log.error("Unable to generate checksum from downloaded package at " + tmpDest, e);
+            return false;
+        }
+
+        if (!checksum.equals(response.getData().getChecksum())) {
+            log.error("Checksum mismatch! Expected: " + response.getData().getChecksum() + ", got: " + checksum);
+            return false;
+        }
+
         if(trueDest.exists()) {
             log.error("Cannot move package to existing file " + trueDest);
             return false;

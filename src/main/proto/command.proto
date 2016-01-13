@@ -34,6 +34,15 @@ message PackageResponse {
     optional PackageData data = 2;
 }
 
+message PackageChecksumRequest {
+    required P3Meta p3 = 1;
+}
+
+message PackageChecksumResponse {
+    required bool ok = 1;
+    optional string checksum = 2;
+}
+
 message Deprovision {
     required string uuid = 1;
     required bool force = 2 [default=false]; // if true, local should terminate the process without using shutdown steps
@@ -173,6 +182,8 @@ message BaseCommand {
         DETACH_CONSOLE = 12;
         FREEZE_SERVER = 26;
         EXPIRE_CACHE = 29;
+        PACKAGE_CHECKSUM_REQUEST = 35;
+        PACKAGE_CHECKSUM_RESPONSE = 36;
 
         // Client commands
         C_GET_COORDINATOR_LIST = 13; // no message body
@@ -212,6 +223,8 @@ message BaseCommand {
     optional DetachConsole detachConsole = 12;
     optional FreezeServer freezeServer = 23;
     optional ExpireCache expireCache = 26;
+    optional PackageChecksumRequest checksumRequest = 33;
+    optional PackageChecksumResponse checksumResponse = 34;
 
     optional C_CoordinatorListResponse c_coordinatorListResponse = 13;
     optional C_Provision c_provision = 14;

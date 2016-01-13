@@ -16,6 +16,7 @@ import io.playpen.core.networking.TransactionInfo;
 import io.playpen.core.networking.TransactionManager;
 import io.playpen.core.networking.netty.AuthenticatedMessageInitializer;
 import io.playpen.core.p3.P3Package;
+import io.playpen.core.p3.PackageException;
 import io.playpen.core.p3.PackageManager;
 import io.playpen.core.plugin.EventManager;
 import io.playpen.core.plugin.IPlugin;
@@ -29,6 +30,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -779,6 +781,14 @@ public class Network extends PlayPen {
                 .setVersion(p3.getVersion())
                 .build();
 
+        try {
+            p3.calculateChecksum();
+        }
+        catch (PackageException e) {
+            log.log(Level.ERROR, "Unable to calculate package checksum", e);
+            return false;
+        }
+
         byte[] packageBytes = null;
         try {
             packageBytes = Files.readAllBytes(Paths.get(p3.getLocalPath()));
@@ -790,6 +800,7 @@ public class Network extends PlayPen {
 
         P3.PackageData data = P3.PackageData.newBuilder()
                 .setMeta(meta)
+                .setChecksum(p3.getChecksum())
                 .setData(ByteString.copyFrom(packageBytes))
                 .build();
 
@@ -811,6 +822,7 @@ public class Network extends PlayPen {
         }
 
         log.info("Sending package " + p3.getId() + " at " + p3.getVersion() + " to " + target);
+        log.info("Checksum: " + p3.getChecksum());
 
         return TransactionManager.get().send(info.getId(), message, target);
     }

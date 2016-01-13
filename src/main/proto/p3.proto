@@ -10,5 +10,6 @@ message P3Meta {
 
 message PackageData {
     required P3Meta meta = 1;
+    required string checksum = 3;
     required bytes data = 2;
 }

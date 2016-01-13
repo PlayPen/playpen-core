@@ -1,8 +1,10 @@
 package io.playpen.core.p3;
 
+import io.playpen.core.utils.AuthUtils;
 import lombok.Data;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.*;
 
 @Data
@@ -39,6 +41,9 @@ public class P3Package {
 
     private boolean resolved;
 
+    // ALWAYS call calculateChecksum() before using this!
+    private String checksum = null;
+
     private String id;
 
     private String version;
@@ -71,5 +76,26 @@ public class P3Package {
         }
 
         return true;
+    }
+
+    public void calculateChecksum() throws PackageException {
+        calculateChecksum(false);
+    }
+
+    public void calculateChecksum(boolean force) throws PackageException {
+        if (!force && checksum != null)
+            return;
+
+        if (!resolved)
+            throw new PackageException("Cannot calculate checksum on unresolved package");
+
+        if (localPath == null || localPath.isEmpty())
+            throw new PackageException("Cannot calculate checksum on package with invalid localPath");
+
+        try {
+            checksum = AuthUtils.createPackageChecksum(localPath);
+        } catch (IOException e) {
+            throw new PackageException("Unable to calculate checksum from package file", e);
+        }
     }
 }
