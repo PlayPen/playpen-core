@@ -1161,9 +1161,17 @@ public class Client extends PlayPen {
             return false;
         }
 
+        try {
+            p3.calculateChecksum();
+        } catch (PackageException e) {
+            log.error("Unable to calculate checksum on package", e);
+            return false;
+        }
+
         Commands.C_UploadPackage upload = Commands.C_UploadPackage.newBuilder()
                 .setData(P3.PackageData.newBuilder()
                             .setMeta(P3.P3Meta.newBuilder().setId(p3.getId()).setVersion(p3.getVersion()))
+                            .setChecksum(p3.getChecksum())
                             .setData(ByteString.copyFrom(bytes)))
                 .build();
 

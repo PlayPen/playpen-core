@@ -75,10 +75,6 @@ message FreezeServer {
     required string uuid = 1;
 }
 
-message ExpireCache {
-    required P3Meta p3 = 1;
-}
-
 message C_CoordinatorListResponse {
     repeated LocalCoordinator coordinators = 1;
 }
@@ -181,7 +177,6 @@ message BaseCommand {
         CONSOLE_MESSAGE = 11;
         DETACH_CONSOLE = 12;
         FREEZE_SERVER = 26;
-        EXPIRE_CACHE = 29;
         PACKAGE_CHECKSUM_REQUEST = 35;
         PACKAGE_CHECKSUM_RESPONSE = 36;
 
@@ -222,7 +217,6 @@ message BaseCommand {
     optional ConsoleMessage consoleMessage = 11;
     optional DetachConsole detachConsole = 12;
     optional FreezeServer freezeServer = 23;
-    optional ExpireCache expireCache = 26;
     optional PackageChecksumRequest checksumRequest = 33;
     optional PackageChecksumResponse checksumResponse = 34;
 

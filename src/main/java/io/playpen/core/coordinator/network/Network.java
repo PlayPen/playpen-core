@@ -349,6 +349,9 @@ public class Network extends PlayPen {
             case PACKAGE_REQUEST:
                 return processPackageRequest(command.getPackageRequest(), info, from);
 
+            case PACKAGE_CHECKSUM_REQUEST:
+                return processPackageChecksumRequest(command.getChecksumRequest(), info, from);
+
             case SERVER_SHUTDOWN:
                 return processServerShutdown(command.getServerShutdown(), info, from);
 
@@ -827,6 +830,95 @@ public class Network extends PlayPen {
         return TransactionManager.get().send(info.getId(), message, target);
     }
 
+    protected boolean processPackageChecksumRequest(Commands.PackageChecksumRequest command, TransactionInfo info, String from) {
+        LocalCoordinator coord = getCoordinator(from);
+        if(coord == null) {
+            log.error("Cannot process PACKAGE_CHECKSUM_REQUEST on invalid coordinator " + from);
+            return false;
+        }
+
+        String id = command.getP3().getId();
+        String version = command.getP3().getVersion();
+        log.info("Package " + id + " at " + version + " requested by " + from);
+
+        P3Package p3 = packageManager.resolve(id, version);
+        if(p3 == null) {
+            log.error("Unable to resolve package " + id + " at " + version + " for " + from);
+            return sendPackageChecksumResponseFailure(from, info.getId());
+        }
+
+        return sendPackageChecksumResponse(from, info.getId(), p3);
+    }
+
+    protected boolean sendPackageChecksumResponseFailure(String target, String tid) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Unknown transaction " + tid + ", unable to send package");
+            return false;
+        }
+
+        Commands.PackageChecksumResponse response = Commands.PackageChecksumResponse.newBuilder()
+                .setOk(false)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.PACKAGE_CHECKSUM_RESPONSE)
+                .setChecksumResponse(response)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for package checksum response (failure)");
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
+    protected boolean sendPackageChecksumResponse(String target, String tid, P3Package p3) {
+        if(!p3.isResolved()) {
+            log.error("Cannot pass an unresolved package to sendPackageChecksum");
+            return false;
+        }
+
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Unknown transaction " + tid + ", unable to send package");
+            return false;
+        }
+
+        try {
+            p3.calculateChecksum();
+        }
+        catch (PackageException e) {
+            log.log(Level.ERROR, "Unable to calculate package checksum", e);
+            return false;
+        }
+
+        Commands.PackageChecksumResponse response = Commands.PackageChecksumResponse.newBuilder()
+                .setOk(true)
+                .setChecksum(p3.getChecksum())
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.PACKAGE_CHECKSUM_RESPONSE)
+                .setChecksumResponse(response)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for package checksum response");
+            return false;
+        }
+
+        log.info("Sending package checksum " + p3.getId() + " at " + p3.getVersion() + " to " + target);
+        log.info("Checksum: " + p3.getChecksum());
+
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
     protected boolean sendDeprovision(String target, String serverId, boolean force) {
         LocalCoordinator coord = getCoordinator(target);
         if(coord == null) {
@@ -1100,35 +1192,6 @@ public class Network extends PlayPen {
         }
 
         log.info("Freezing server " + serverId + " on " + target);
-
-        return TransactionManager.get().send(info.getId(), message, target);
-    }
-
-    protected boolean sendExpireCache(P3Package.P3PackageInfo p3info, String target) {
-        LocalCoordinator coord = getCoordinator(target);
-        if(coord == null) {
-            log.error("Cannot send EXPIRE_CACHE to invalid target " + target);
-            return false;
-        }
-
-        Commands.ExpireCache expire = Commands.ExpireCache.newBuilder()
-                .setP3(P3.P3Meta.newBuilder().setId(p3info.getId()).setVersion(p3info.getVersion()))
-                .build();
-
-        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
-                .setType(Commands.BaseCommand.CommandType.EXPIRE_CACHE)
-                .setExpireCache(expire)
-                .build();
-
-        TransactionInfo info = TransactionManager.get().begin();
-
-        Protocol.Transaction message = TransactionManager.get()
-                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
-        if(message == null) {
-            log.error("Unable to build transaction for EXPIRE_CACHE");
-            TransactionManager.get().cancel(info.getId());
-            return false;
-        }
 
         return TransactionManager.get().send(info.getId(), message, target);
     }
@@ -1571,6 +1634,20 @@ public class Network extends PlayPen {
             return false;
         }
 
+        // checksum
+        String checksum = null;
+        try {
+            checksum = AuthUtils.createPackageChecksum(tmpDest.toString());
+        } catch (IOException e) {
+            log.error("Unable to generate checksum from downloaded package at " + tmpDest, e);
+            return false;
+        }
+
+        if (!checksum.equals(command.getData().getChecksum())) {
+            log.error("Checksum mismatch! Expected: " + command.getData().getChecksum() + ", got: " + checksum);
+            return false;
+        }
+
         if(trueDest.exists()) {
             if(!trueDest.delete())
             {
@@ -1597,12 +1674,6 @@ public class Network extends PlayPen {
 
         log.info("Expiring cache for package " + p3info.getId() + " (" + p3info.getVersion() + ")");
         getPackageManager().getPackageCache().remove(p3info);
-
-        for(LocalCoordinator coord : coordinators.values()) {
-            if(coord.isEnabled()) {
-                sendExpireCache(p3info, coord.getUuid());
-            }
-        }
 
         c_sendAck("Successfully received package " + p3info.getId() + " (" + p3info.getVersion() + ")", from);
 
