@@ -34,6 +34,11 @@ message PackageResponse {
     optional PackageData data = 2;
 }
 
+message SplitPackageResponse {
+    required bool ok = 1;
+    optional SplitPackageData data = 2;
+}
+
 message PackageChecksumRequest {
     required P3Meta p3 = 1;
 }
@@ -179,6 +184,7 @@ message BaseCommand {
         FREEZE_SERVER = 26;
         PACKAGE_CHECKSUM_REQUEST = 35;
         PACKAGE_CHECKSUM_RESPONSE = 36;
+        SPLIT_PACKAGE_RESPONSE = 37;
 
         // Client commands
         C_GET_COORDINATOR_LIST = 13; // no message body
@@ -219,6 +225,7 @@ message BaseCommand {
     optional FreezeServer freezeServer = 23;
     optional PackageChecksumRequest checksumRequest = 33;
     optional PackageChecksumResponse checksumResponse = 34;
+    optional SplitPackageResponse splitPackageResponse = 35;
 
     optional C_CoordinatorListResponse c_coordinatorListResponse = 13;
     optional C_Provision c_provision = 14;

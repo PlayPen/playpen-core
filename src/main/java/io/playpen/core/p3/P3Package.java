@@ -2,12 +2,14 @@ package io.playpen.core.p3;
 
 import io.playpen.core.utils.AuthUtils;
 import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.*;
 
 @Data
+@Log4j2
 public class P3Package {
 
     @Data
@@ -82,7 +84,7 @@ public class P3Package {
         calculateChecksum(false);
     }
 
-    public void calculateChecksum(boolean force) throws PackageException {
+    public synchronized void calculateChecksum(boolean force) throws PackageException {
         if (!force && checksum != null)
             return;
 
@@ -91,6 +93,8 @@ public class P3Package {
 
         if (localPath == null || localPath.isEmpty())
             throw new PackageException("Cannot calculate checksum on package with invalid localPath");
+
+        log.debug("Recalculating checksum on " + id + " (" + version + ")");
 
         try {
             checksum = AuthUtils.createPackageChecksum(localPath);

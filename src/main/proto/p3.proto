@@ -13,3 +13,12 @@ message PackageData {
     required string checksum = 3;
     required bytes data = 2;
 }
+
+message SplitPackageData {
+    required P3Meta meta = 1;
+    optional string checksum = 2;
+    required bool endOfFile = 3;
+    optional uint32 chunkCount = 4;
+    optional uint32 chunkId = 5;
+    optional bytes data = 6;
+}
