@@ -15,6 +15,8 @@ You must have the [protoc compiler](https://developers.google.com/protocol-buffe
 protocol. Run `build_protocol.bat` or `build_protocol.sh` from the project's root
 directory.
 
+__Make sure you use protobuf 2.x.x! 3.x.x is not currently supported!__
+
 ## Usage
 
 Before using any playpen tools, PlayPen needs to set itself up. Simply place the
