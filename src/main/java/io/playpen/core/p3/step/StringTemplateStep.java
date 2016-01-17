@@ -8,13 +8,16 @@ import io.playpen.core.utils.STUtils;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.stringtemplate.v4.AutoIndentWriter;
 import org.stringtemplate.v4.ST;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Locale;
 
 @Log4j2
 public class StringTemplateStep implements IPackageStep {
@@ -49,7 +52,7 @@ public class StringTemplateStep implements IPackageStep {
         }
 
         for(File file : files) {
-            String fileContents = null;
+            String fileContents;
             try {
                 fileContents = new String(Files.readAllBytes(file.toPath()));
             }
@@ -64,10 +67,8 @@ public class StringTemplateStep implements IPackageStep {
 
             STUtils.buildSTProperties(p3, ctx, template);
 
-            String rendered = template.render();
-
-            try (FileOutputStream output = new FileOutputStream(file, false)) {
-                output.write(rendered.getBytes());
+            try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.TRUNCATE_EXISTING)) {
+                template.write(new AutoIndentWriter(writer), Locale.US);
             }
             catch(IOException e) {
                 log.error("Unable to write file " + file.getPath(), e);
