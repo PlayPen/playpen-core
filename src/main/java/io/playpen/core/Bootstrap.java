@@ -17,6 +17,9 @@ import java.nio.file.Paths;
 @Log4j2
 public class Bootstrap {
     @Getter
+    private static final int protocolVersion = 3; // update ONLY on breaking protocol changes
+
+    @Getter
     private static File homeDir;
 
     private static boolean copyFileFromJar(String file) throws IOException, URISyntaxException {

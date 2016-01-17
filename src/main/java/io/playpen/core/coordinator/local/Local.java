@@ -17,6 +17,7 @@ import io.playpen.core.networking.TransactionManager;
 import io.playpen.core.networking.netty.AuthenticatedMessageInitializer;
 import io.playpen.core.p3.ExecutionType;
 import io.playpen.core.p3.P3Package;
+import io.playpen.core.p3.PackageException;
 import io.playpen.core.p3.PackageManager;
 import io.playpen.core.p3.resolver.LocalRepositoryResolver;
 import io.playpen.core.plugin.PluginManager;
@@ -38,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
@@ -87,6 +89,12 @@ public class Local extends PlayPen {
     private Map<String, ConsoleMessageListener> consoles = new ConcurrentHashMap<>();
 
     private Map<P3Package.P3PackageInfo, CountDownLatch> downloadMap = new ConcurrentHashMap<>();
+
+    private final Object chunkLock = new Object();
+    private Map<P3Package.P3PackageInfo, Semaphore> packageChunkLocks = new ConcurrentHashMap<>();
+
+    private Map<String, String> checksumMap = new ConcurrentHashMap<>();
+    private Map<String, CountDownLatch> checksumLatches = new ConcurrentHashMap<>();
 
     private Local() {
         super();
@@ -434,6 +442,7 @@ public class Local extends PlayPen {
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(getUuid())
+                .setVersion(Bootstrap.getProtocolVersion())
                 .setHash(hash)
                 .setPayload(messageBytes)
                 .build();
@@ -484,6 +493,12 @@ public class Local extends PlayPen {
             case PACKAGE_RESPONSE:
                 return processPackageResponse(command.getPackageResponse(), info);
 
+            case SPLIT_PACKAGE_RESPONSE:
+                return processSplitPackageResponse(command.getSplitPackageResponse(), info);
+
+            case PACKAGE_CHECKSUM_RESPONSE:
+                return processPackageChecksumResponse(command.getChecksumResponse(), info);
+
             case DEPROVISION:
                 return processDeprovision(command.getDeprovision(), info);
 
@@ -501,9 +516,6 @@ public class Local extends PlayPen {
 
             case FREEZE_SERVER:
                 return processFreezeServer(command.getFreezeServer(), info);
-
-            case EXPIRE_CACHE:
-                return processExpireCache(command.getExpireCache(), info);
         }
     }
 
@@ -774,6 +786,20 @@ public class Local extends PlayPen {
             return false;
         }
 
+        // checksum
+        String checksum = null;
+        try {
+            checksum = AuthUtils.createPackageChecksum(tmpDest.toString());
+        } catch (IOException e) {
+            log.error("Unable to generate checksum from downloaded package at " + tmpDest, e);
+            return false;
+        }
+
+        if (!checksum.equals(response.getData().getChecksum())) {
+            log.error("Checksum mismatch! Expected: " + response.getData().getChecksum() + ", got: " + checksum);
+            return false;
+        }
+
         if(trueDest.exists()) {
             log.error("Cannot move package to existing file " + trueDest);
             return false;
@@ -797,6 +823,186 @@ public class Local extends PlayPen {
             latch.countDown();
         }
 
+        return true;
+    }
+
+    protected boolean processSplitPackageResponse(Commands.SplitPackageResponse response, TransactionInfo info) {
+        if(!response.getOk()) {
+            log.error("Received non-ok package response");
+            return false;
+        }
+
+        File trueDest = Paths.get(
+                Bootstrap.getHomeDir().getPath(),
+                "cache", "packages",
+                response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3").toFile();
+
+        P3.SplitPackageData data = response.getData();
+        P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
+        p3info.setId(data.getMeta().getId());
+        p3info.setVersion(data.getMeta().getVersion());
+
+        if (data.getEndOfFile()) {
+            log.info("Received end of file for package " + data.getMeta().getId() + " (" + data.getMeta().getVersion() + ")");
+
+            synchronized(chunkLock) {
+                if (!packageChunkLocks.containsKey(p3info)) {
+                    packageChunkLocks.put(p3info, new Semaphore(0));
+                }
+            }
+
+            try {
+                if (!packageChunkLocks.get(p3info).tryAcquire(data.getChunkCount(), 340, TimeUnit.SECONDS)) {
+                    log.error("Timed out waiting for chunk download to finish");
+                    return false;
+                }
+            } catch (InterruptedException e) {
+                log.error("Interrupted while waiting for chunk download to finish", e);
+                return false;
+            }
+            finally {
+                packageChunkLocks.remove(p3info);
+            }
+
+            // merge all chunks
+            log.info("Merging chunks...");
+
+            File tmpDest = Paths.get(
+                Bootstrap.getHomeDir().getPath(),
+                "temp",
+                UUID.randomUUID() + ".p3").toFile();
+            try (FileOutputStream output = new FileOutputStream(tmpDest, true)) {
+                for (int i = 0; i < data.getChunkCount(); ++i) {
+                    Path oldFile = Paths.get(
+                            Bootstrap.getHomeDir().getPath(),
+                            "temp",
+                            "split-" + i + "-" + info.getId() + ".p3"
+                    );
+
+                    IOUtils.write(Files.readAllBytes(oldFile), output);
+                    Files.delete(oldFile);
+                }
+            }
+            catch(IOException e) {
+                log.error("Unable to write package chunks to " + tmpDest, e);
+                return false;
+            }
+
+            log.info("Merge finished.");
+
+            // checksum
+            String checksum = null;
+            try {
+                checksum = AuthUtils.createPackageChecksum(tmpDest.toString());
+            } catch (IOException e) {
+                log.error("Unable to generate checksum from downloaded package at " + tmpDest, e);
+                return false;
+            }
+
+            if (!checksum.equals(data.getChecksum())) {
+                log.error("Checksum mismatch! Expected: " + data.getChecksum() + ", got: " + checksum);
+                return false;
+            }
+
+            if(trueDest.exists()) {
+                log.error("Cannot move package to existing file " + trueDest);
+                return false;
+            }
+
+            log.info("Moving package " + data.getMeta().getId() +  " at " + data.getMeta().getVersion() + " to cache");
+
+            try {
+                Files.move(tmpDest.toPath(), trueDest.toPath());
+            }
+            catch(IOException e) {
+                log.error("Cannot move package to " + trueDest, e);
+                return false;
+            }
+            CountDownLatch latch = downloadMap.getOrDefault(p3info, null);
+            if(latch != null) {
+                latch.countDown();
+            }
+
+            return true;
+        }
+
+        File tmpDest = Paths.get(
+            Bootstrap.getHomeDir().getPath(),
+            "temp",
+            "split-" + data.getChunkId() + "-" + info.getId() + ".p3").toFile();
+
+        if(tmpDest.exists()) {
+            log.error("Cannot write package to existing file " + tmpDest);
+            return false;
+        }
+
+        log.info("Writing received package chunk #" + data.getChunkId() + " for " + response.getData().getMeta().getId() + " (" + response.getData().getMeta().getVersion() + ") to temp");
+
+        // append data
+        try (FileOutputStream output = new FileOutputStream(tmpDest)) {
+            IOUtils.write(response.getData().getData().toByteArray(), output);
+        }
+        catch(IOException e) {
+            log.error("Unable to write package chunk to " + tmpDest, e);
+            return false;
+        }
+
+        synchronized(chunkLock) {
+            if (!packageChunkLocks.containsKey(p3info)) {
+                packageChunkLocks.put(p3info, new Semaphore(0));
+            }
+        }
+
+        packageChunkLocks.get(p3info).release();
+
+        return true;
+    }
+
+    protected boolean sendPackageChecksumRequest(String tid, String id, String version) {
+        P3.P3Meta meta = P3.P3Meta.newBuilder()
+                .setId(id)
+                .setVersion(version)
+                .build();
+
+        Commands.PackageChecksumRequest request = Commands.PackageChecksumRequest.newBuilder()
+                .setP3(meta)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.PACKAGE_CHECKSUM_REQUEST)
+                .setChecksumRequest(request)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.CREATE, command);
+        if(message == null) {
+            log.error("Unable to build message for package checksum request");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        log.info("Sending package checksum request of " + id + " at " + version);
+        return TransactionManager.get().send(info.getId(), message, null);
+    }
+
+    protected boolean processPackageChecksumResponse(Commands.PackageChecksumResponse command, TransactionInfo info) {
+        CountDownLatch latch = checksumLatches.getOrDefault(info.getId(), null);
+        if (latch == null) {
+            log.warn("No checksum transaction matches " + info.getId() + ", ignoring.");
+            return false; // we didn't ask for this checksum, or it expired
+        }
+
+        if (!command.getOk()) {
+            log.error("Received bad package checksum response.");
+            latch.countDown(); // bad package
+            return true;
+        }
+
+        log.info("Received package checksum: " + command.getChecksum());
+        checksumMap.put(info.getId(), command.getChecksum());
+        latch.countDown();
         return true;
     }
 
@@ -972,12 +1178,10 @@ public class Local extends PlayPen {
         return true;
     }
 
-    protected boolean processExpireCache(Commands.ExpireCache message, TransactionInfo info) {
-        log.info("Expiring cache for " + message.getP3().getId() + " (" + message.getP3().getVersion() + ")");
+    protected void expireCache(String id, String version) {
+        log.info("Expiring cache for " + id + " (" + version + ")");
 
-        P3Package p3 = getPackageManager().resolve(message.getP3().getId(), message.getP3().getVersion(), false);
-        if(p3 == null)
-            return true;
+        P3Package p3 = getPackageManager().resolve(id, version, false);
 
         P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
         p3info.setId(p3.getId());
@@ -986,8 +1190,6 @@ public class Local extends PlayPen {
         File file = new File(p3.getLocalPath());
         file.delete();
         getPackageManager().getPackageCache().remove(p3info);
-
-        return true;
     }
 
     protected void checkPackageForProvision(String tid, String id, String version, String uuid, Map<String, String> properties, String name) {
@@ -1004,12 +1206,97 @@ public class Local extends PlayPen {
             return;
         }
 
+        // TODO: Clean up checksum stuff. Right now we check checksums even if the package was just downloaded, which
+        // is a waste of time.
+
+        Set<P3Package.P3PackageInfo> checked = new HashSet<>();
+        Queue<P3Package> toCheck = new LinkedList<>();
+        toCheck.add(p3);
+        while (toCheck.peek() != null) {
+            P3Package check = toCheck.poll();
+            P3Package.P3PackageInfo p3Info = new P3Package.P3PackageInfo();
+            p3Info.setId(check.getId());
+            p3Info.setVersion(check.getVersion());
+            if (checked.contains(p3Info))
+                continue;
+
+            checked.add(p3Info);
+
+            if (!check.isResolved())
+                check = packageManager.resolve(check.getId(), check.getVersion());
+
+            if (check == null) {
+                log.error("Unable to resolve package " + check.getId() + " at " + check.getVersion() + ", failing provision.");
+                sendProvisionResponse(tid, false);
+                return;
+            }
+
+            String newChecksum = requestChecksumForPackage(check.getId(), check.getVersion());
+
+            try {
+                check.calculateChecksum();
+            } catch (PackageException e) {
+                log.error("Unable to calculate local package checksum");
+                sendProvisionResponse(tid, false);
+                return;
+            }
+
+            if (newChecksum == null || !Objects.equals(newChecksum, check.getChecksum())) {
+                // need a new version of the package
+                log.info("Package " + check.getId() + " at " + check.getVersion() + " has a checksum mismatch, expiring cache and resolving again.");
+                expireCache(check.getId(), check.getVersion());
+                check = packageManager.resolve(check.getId(), check.getVersion());
+                if (check == null) {
+                    sendProvisionResponse(tid, false);
+                    return;
+                }
+            }
+
+            toCheck.addAll(check.getDependencies());
+        }
+
+
         if(provision(p3, uuid, properties, name)) {
             sendProvisionResponse(tid, true);
         }
         else {
             sendProvisionResponse(tid, false);
         }
+    }
+
+    protected String requestChecksumForPackage(String id, String version) {
+        log.info("Waiting for checksum for " + id + " at " + version);
+
+        P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
+        p3info.setId(id);
+        p3info.setVersion(version);
+
+        CountDownLatch latch = new CountDownLatch(1);
+        TransactionInfo info = TransactionManager.get().begin();
+        checksumLatches.put(info.getId(), latch);
+
+        if (!Local.get().sendPackageChecksumRequest(info.getId(), id, version)) {
+            log.error("Unable to send package checksum request for " + id + " at " + version);
+            checksumLatches.remove(info.getId());
+            return null;
+        }
+
+        try {
+            latch.await(15, TimeUnit.SECONDS);
+        }
+        catch(InterruptedException e) {
+            log.error("Interrupted while waiting for package checksum");
+            checksumMap.remove(info.getId());
+            return null;
+        }
+        finally {
+            checksumLatches.remove(info.getId());
+        }
+
+        String checksum = checksumMap.getOrDefault(info.getId(), null);
+        checksumMap.remove(info.getId());
+
+        return checksum;
     }
 
     @Log4j2
@@ -1045,10 +1332,10 @@ public class Local extends PlayPen {
                 }
             }
 
-            log.info("Waiting up to 60 seconds for package download");
+            log.info("Waiting up to 240 seconds for package download");
 
             try {
-                latch.await(60, TimeUnit.SECONDS);
+                latch.await(240, TimeUnit.SECONDS);
             }
             catch(InterruptedException e) {
                 log.error("Interrupted while waiting for package download");

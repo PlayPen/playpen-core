@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class TransactionManager {
-    public static final long TRANSACTION_TIMEOUT = 120; // seconds
+    public static final long TRANSACTION_TIMEOUT = 340; // seconds
 
     private static TransactionManager instance = new TransactionManager();
 

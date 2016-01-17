@@ -16,6 +16,7 @@ import io.playpen.core.networking.TransactionInfo;
 import io.playpen.core.networking.TransactionManager;
 import io.playpen.core.networking.netty.AuthenticatedMessageInitializer;
 import io.playpen.core.p3.P3Package;
+import io.playpen.core.p3.PackageException;
 import io.playpen.core.p3.PackageManager;
 import io.playpen.core.plugin.EventManager;
 import io.playpen.core.plugin.IPlugin;
@@ -29,13 +30,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,6 +71,9 @@ public class Network extends PlayPen {
 
     @Getter
     private Map<String, String> globalStrings = new HashMap<>();
+
+    @Getter
+    private int packageSizeSplit = -1;
 
     @Getter
     private NioEventLoopGroup eventLoopGroup = null;
@@ -109,6 +112,7 @@ public class Network extends PlayPen {
                 String value = strings.getString(key);
                 globalStrings.put(key, value);
             }
+            packageSizeSplit = config.getInt("package-size-split");
         }
         catch(Exception e) {
             log.fatal("Unable to read configuration file.", e);
@@ -174,6 +178,7 @@ public class Network extends PlayPen {
             }
 
             log.info("Listening on " + ip + " port " + port);
+            log.info("Package chunk size is set to " + packageSizeSplit + "MB");
 
             eventManager.callEvent(INetworkListener::onNetworkStartup);
 
@@ -263,6 +268,7 @@ public class Network extends PlayPen {
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(coord.getUuid())
+                .setVersion(Bootstrap.getProtocolVersion())
                 .setHash(hash)
                 .setPayload(messageBytes)
                 .build();
@@ -345,6 +351,9 @@ public class Network extends PlayPen {
 
             case PACKAGE_REQUEST:
                 return processPackageRequest(command.getPackageRequest(), info, from);
+
+            case PACKAGE_CHECKSUM_REQUEST:
+                return processPackageChecksumRequest(command.getChecksumRequest(), info, from);
 
             case SERVER_SHUTDOWN:
                 return processServerShutdown(command.getServerShutdown(), info, from);
@@ -732,7 +741,12 @@ public class Network extends PlayPen {
             return sendPackageResponseFailure(from, info.getId());
         }
 
-        return sendPackageResponse(from, info.getId(), p3);
+        if (sendPackageResponse(from, info.getId(), p3)) {
+            return true;
+        }
+        else {
+            return sendPackageResponseFailure(from, info.getId());
+        }
     }
 
     protected boolean sendPackageResponseFailure(String target, String tid) {
@@ -778,38 +792,214 @@ public class Network extends PlayPen {
                 .setVersion(p3.getVersion())
                 .build();
 
-        byte[] packageBytes = null;
         try {
-            packageBytes = Files.readAllBytes(Paths.get(p3.getLocalPath()));
+            p3.calculateChecksum();
         }
-        catch(IOException e) {
-            log.error("Unable to read package data", e);
+        catch (PackageException e) {
+            log.log(Level.ERROR, "Unable to calculate package checksum", e);
             return false;
         }
 
-        P3.PackageData data = P3.PackageData.newBuilder()
-                .setMeta(meta)
-                .setData(ByteString.copyFrom(packageBytes))
-                .build();
+        File packageFile = new File(p3.getLocalPath());
+        long fileLength = packageFile.length();
+        if (fileLength / 1024 / 1024 > packageSizeSplit) {
+            log.info("Sending chunked package " + p3.getId() + " at " + p3.getVersion() + " to " + target);
+            log.debug("Checksum: " + p3.getChecksum());
+            try (FileInputStream in = new FileInputStream(packageFile)) {
+                byte[] packageBytes = new byte[packageSizeSplit * 1024 * 1024];
+                int chunkLen = 0;
+                int chunkId = 0;
+                while ((chunkLen = in.read(packageBytes)) != -1) {
+                    P3.SplitPackageData data = P3.SplitPackageData.newBuilder()
+                            .setMeta(meta)
+                            .setEndOfFile(false)
+                            .setChunkId(chunkId)
+                            .setData(ByteString.copyFrom(packageBytes, 0, chunkLen))
+                            .build();
 
-        Commands.PackageResponse response = Commands.PackageResponse.newBuilder()
-                .setOk(true)
-                .setData(data)
+                    Commands.SplitPackageResponse response = Commands.SplitPackageResponse.newBuilder()
+                            .setOk(true)
+                            .setData(data)
+                            .build();
+
+                    Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                            .setType(Commands.BaseCommand.CommandType.SPLIT_PACKAGE_RESPONSE)
+                            .setSplitPackageResponse(response)
+                            .build();
+
+                    Protocol.Transaction message = TransactionManager.get()
+                            .build(info.getId(), Protocol.Transaction.Mode.CONTINUE, command);
+                    if (message == null) {
+                        log.error("Unable to build transaction for split package response");
+                        return false;
+                    }
+
+                    if (!TransactionManager.get().send(info.getId(), message, target)) {
+                        log.error("Unable to send transaction for split package response");
+                        return false;
+                    }
+
+                    ++chunkId;
+                }
+
+                P3.SplitPackageData data = P3.SplitPackageData.newBuilder()
+                        .setMeta(meta)
+                        .setEndOfFile(true)
+                        .setChecksum(p3.getChecksum())
+                        .setChunkCount(chunkId)
+                        .build();
+
+                Commands.SplitPackageResponse response = Commands.SplitPackageResponse.newBuilder()
+                        .setOk(true)
+                        .setData(data)
+                        .build();
+
+                Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                        .setType(Commands.BaseCommand.CommandType.SPLIT_PACKAGE_RESPONSE)
+                        .setSplitPackageResponse(response)
+                        .build();
+
+                Protocol.Transaction message = TransactionManager.get()
+                        .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+                if (message == null) {
+                    log.error("Unable to build transaction for split package response");
+                    return false;
+                }
+
+                log.info("Finishing split package response (" + chunkId + " chunks)");
+                log.debug("Checksum: " + p3.getChecksum());
+
+                return TransactionManager.get().send(info.getId(), message, target);
+            } catch (IOException e) {
+                log.error("Unable to read package data", e);
+                return false;
+            }
+        }
+        else {
+            byte[] packageBytes = null;
+            try {
+                packageBytes = Files.readAllBytes(Paths.get(p3.getLocalPath()));
+            }
+            catch(IOException e) {
+                log.error("Unable to read package data", e);
+                return false;
+            }
+
+            P3.PackageData data = P3.PackageData.newBuilder()
+                    .setMeta(meta)
+                    .setChecksum(p3.getChecksum())
+                    .setData(ByteString.copyFrom(packageBytes))
+                    .build();
+
+            Commands.PackageResponse response = Commands.PackageResponse.newBuilder()
+                    .setOk(true)
+                    .setData(data)
+                    .build();
+
+            Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                    .setType(Commands.BaseCommand.CommandType.PACKAGE_RESPONSE)
+                    .setPackageResponse(response)
+                    .build();
+
+            Protocol.Transaction message = TransactionManager.get()
+                    .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+            if(message == null) {
+                log.error("Unable to build transaction for package response");
+                return false;
+            }
+
+            log.info("Sending package " + p3.getId() + " at " + p3.getVersion() + " to " + target);
+            log.debug("Checksum: " + p3.getChecksum());
+
+            return TransactionManager.get().send(info.getId(), message, target);
+        }
+    }
+
+    protected boolean processPackageChecksumRequest(Commands.PackageChecksumRequest command, TransactionInfo info, String from) {
+        LocalCoordinator coord = getCoordinator(from);
+        if(coord == null) {
+            log.error("Cannot process PACKAGE_CHECKSUM_REQUEST on invalid coordinator " + from);
+            return false;
+        }
+
+        String id = command.getP3().getId();
+        String version = command.getP3().getVersion();
+        log.info("Package " + id + " at " + version + " requested by " + from);
+
+        P3Package p3 = packageManager.resolve(id, version);
+        if(p3 == null) {
+            log.error("Unable to resolve package " + id + " at " + version + " for " + from);
+            return sendPackageChecksumResponseFailure(from, info.getId());
+        }
+
+        return sendPackageChecksumResponse(from, info.getId(), p3);
+    }
+
+    protected boolean sendPackageChecksumResponseFailure(String target, String tid) {
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Unknown transaction " + tid + ", unable to send package");
+            return false;
+        }
+
+        Commands.PackageChecksumResponse response = Commands.PackageChecksumResponse.newBuilder()
+                .setOk(false)
                 .build();
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
-                .setType(Commands.BaseCommand.CommandType.PACKAGE_RESPONSE)
-                .setPackageResponse(response)
+                .setType(Commands.BaseCommand.CommandType.PACKAGE_CHECKSUM_RESPONSE)
+                .setChecksumResponse(response)
                 .build();
 
         Protocol.Transaction message = TransactionManager.get()
                 .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
         if(message == null) {
-            log.error("Unable to build transaction for package response");
+            log.error("Unable to build transaction for package checksum response (failure)");
             return false;
         }
 
-        log.info("Sending package " + p3.getId() + " at " + p3.getVersion() + " to " + target);
+        return TransactionManager.get().send(info.getId(), message, target);
+    }
+
+    protected boolean sendPackageChecksumResponse(String target, String tid, P3Package p3) {
+        if(!p3.isResolved()) {
+            log.error("Cannot pass an unresolved package to sendPackageChecksum");
+            return false;
+        }
+
+        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        if(info == null) {
+            log.error("Unknown transaction " + tid + ", unable to send package");
+            return false;
+        }
+
+        try {
+            p3.calculateChecksum();
+        }
+        catch (PackageException e) {
+            log.log(Level.ERROR, "Unable to calculate package checksum", e);
+            return false;
+        }
+
+        Commands.PackageChecksumResponse response = Commands.PackageChecksumResponse.newBuilder()
+                .setOk(true)
+                .setChecksum(p3.getChecksum())
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.PACKAGE_CHECKSUM_RESPONSE)
+                .setChecksumResponse(response)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+        if(message == null) {
+            log.error("Unable to build transaction for package checksum response");
+            return false;
+        }
+
+        log.info("Sending package checksum " + p3.getId() + " at " + p3.getVersion() + " to " + target);
+        log.debug("Checksum: " + p3.getChecksum());
 
         return TransactionManager.get().send(info.getId(), message, target);
     }
@@ -1087,35 +1277,6 @@ public class Network extends PlayPen {
         }
 
         log.info("Freezing server " + serverId + " on " + target);
-
-        return TransactionManager.get().send(info.getId(), message, target);
-    }
-
-    protected boolean sendExpireCache(P3Package.P3PackageInfo p3info, String target) {
-        LocalCoordinator coord = getCoordinator(target);
-        if(coord == null) {
-            log.error("Cannot send EXPIRE_CACHE to invalid target " + target);
-            return false;
-        }
-
-        Commands.ExpireCache expire = Commands.ExpireCache.newBuilder()
-                .setP3(P3.P3Meta.newBuilder().setId(p3info.getId()).setVersion(p3info.getVersion()))
-                .build();
-
-        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
-                .setType(Commands.BaseCommand.CommandType.EXPIRE_CACHE)
-                .setExpireCache(expire)
-                .build();
-
-        TransactionInfo info = TransactionManager.get().begin();
-
-        Protocol.Transaction message = TransactionManager.get()
-                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
-        if(message == null) {
-            log.error("Unable to build transaction for EXPIRE_CACHE");
-            TransactionManager.get().cancel(info.getId());
-            return false;
-        }
 
         return TransactionManager.get().send(info.getId(), message, target);
     }
@@ -1558,6 +1719,20 @@ public class Network extends PlayPen {
             return false;
         }
 
+        // checksum
+        String checksum = null;
+        try {
+            checksum = AuthUtils.createPackageChecksum(tmpDest.toString());
+        } catch (IOException e) {
+            log.error("Unable to generate checksum from downloaded package at " + tmpDest, e);
+            return false;
+        }
+
+        if (!checksum.equals(command.getData().getChecksum())) {
+            log.error("Checksum mismatch! Expected: " + command.getData().getChecksum() + ", got: " + checksum);
+            return false;
+        }
+
         if(trueDest.exists()) {
             if(!trueDest.delete())
             {
@@ -1584,12 +1759,6 @@ public class Network extends PlayPen {
 
         log.info("Expiring cache for package " + p3info.getId() + " (" + p3info.getVersion() + ")");
         getPackageManager().getPackageCache().remove(p3info);
-
-        for(LocalCoordinator coord : coordinators.values()) {
-            if(coord.isEnabled()) {
-                sendExpireCache(p3info, coord.getUuid());
-            }
-        }
 
         c_sendAck("Successfully received package " + p3info.getId() + " (" + p3info.getVersion() + ")", from);
 

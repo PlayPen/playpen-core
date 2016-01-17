@@ -149,6 +149,7 @@ public abstract class APIClient extends PlayPen {
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
                 .setUuid(getUUID())
+                .setVersion(io.playpen.core.Bootstrap.getProtocolVersion())
                 .setHash(hash)
                 .setPayload(messageBytes)
                 .build();

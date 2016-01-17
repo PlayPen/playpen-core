@@ -39,4 +39,4 @@
 /live
 
 # Protobuf package
-/src/main/java/net/thechunk/playpen/protocol
+/src/main/java/io/playpen/core/protocol
