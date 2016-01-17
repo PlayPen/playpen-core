@@ -2,7 +2,7 @@ package io.playpen.core.utils;
 
 import io.playpen.core.protocol.Protocol;
 import org.apache.commons.codec.binary.Hex;
-import org.jasypt.util.binary.BasicBinaryEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,17 +15,24 @@ import java.security.NoSuchAlgorithmException;
 
 public class AuthUtils {
 
+    private static StandardPBEByteEncryptor getEncryptor(String key)
+    {
+        StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();
+        encryptor.setPassword(key);
+        encryptor.setAlgorithm("PBEWithHmacSHA256AndAES_128");
+        encryptor.setKeyObtentionIterations(2000);
+        return encryptor;
+    }
+
     public static byte[] encrypt(byte[] bytes, String key)
     {
-        BasicBinaryEncryptor encryptor = new BasicBinaryEncryptor();
-        encryptor.setPassword(key);
+        StandardPBEByteEncryptor encryptor = getEncryptor(key);
         return encryptor.encrypt(bytes);
     }
 
     public static byte[] decrypt(byte[] bytes, String key)
     {
-        BasicBinaryEncryptor encryptor = new BasicBinaryEncryptor();
-        encryptor.setPassword(key);
+        StandardPBEByteEncryptor encryptor = getEncryptor(key);
         return encryptor.decrypt(bytes);
     }
 
