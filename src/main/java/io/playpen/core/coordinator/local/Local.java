@@ -30,17 +30,15 @@ import io.playpen.core.utils.JSONUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.channels.FileChannel;
+import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -762,24 +760,19 @@ public class Local extends PlayPen {
             return false;
         }
 
-        File tmpDest = Paths.get(
+        Path tmpDest = Paths.get(
                 Bootstrap.getHomeDir().getPath(),
                 "temp",
-                UUID.randomUUID() + ".p3").toFile();
-        File trueDest = Paths.get(
+                UUID.randomUUID() + ".p3");
+        Path trueDest = Paths.get(
                 Bootstrap.getHomeDir().getPath(),
                 "cache", "packages",
-                response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3").toFile();
-
-        if(tmpDest.exists()) {
-            log.error("Cannot write package to existing file " + tmpDest);
-            return false;
-        }
+                response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3");
 
         log.info("Writing received package " + response.getData().getMeta().getId() + " at " + response.getData().getMeta().getVersion() + " to temp");
 
-        try (FileOutputStream output = new FileOutputStream(tmpDest)) {
-            IOUtils.write(response.getData().getData().toByteArray(), output);
+        try (OutputStream output = Files.newOutputStream(tmpDest, StandardOpenOption.CREATE_NEW)) {
+            response.getData().getData().writeTo(output);
         }
         catch(IOException e) {
             log.error("Unable to write package to " + tmpDest, e);
@@ -800,15 +793,11 @@ public class Local extends PlayPen {
             return false;
         }
 
-        if(trueDest.exists()) {
-            log.error("Cannot move package to existing file " + trueDest);
-            return false;
-        }
 
         log.info("Moving package " + response.getData().getMeta().getId() +  " at " + response.getData().getMeta().getVersion() + " to cache");
 
         try {
-            Files.move(tmpDest.toPath(), trueDest.toPath());
+            Files.move(tmpDest, trueDest);
         }
         catch(IOException e) {
             log.error("Cannot move package to " + trueDest, e);
@@ -832,10 +821,10 @@ public class Local extends PlayPen {
             return false;
         }
 
-        File trueDest = Paths.get(
+        Path trueDest = Paths.get(
                 Bootstrap.getHomeDir().getPath(),
                 "cache", "packages",
-                response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3").toFile();
+                response.getData().getMeta().getId() + "_" + response.getData().getMeta().getVersion() + ".p3");
 
         P3.SplitPackageData data = response.getData();
         P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
@@ -867,11 +856,11 @@ public class Local extends PlayPen {
             // merge all chunks
             log.info("Merging chunks...");
 
-            File tmpDest = Paths.get(
+            Path tmpDest = Paths.get(
                 Bootstrap.getHomeDir().getPath(),
                 "temp",
-                UUID.randomUUID() + ".p3").toFile();
-            try (FileOutputStream output = new FileOutputStream(tmpDest, true)) {
+                UUID.randomUUID() + ".p3");
+            try (FileChannel channel = FileChannel.open(tmpDest, StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW)) {
                 for (int i = 0; i < data.getChunkCount(); ++i) {
                     Path oldFile = Paths.get(
                             Bootstrap.getHomeDir().getPath(),
@@ -879,8 +868,21 @@ public class Local extends PlayPen {
                             "split-" + i + "-" + info.getId() + ".p3"
                     );
 
-                    IOUtils.write(Files.readAllBytes(oldFile), output);
-                    Files.delete(oldFile);
+                    try (FileChannel chunkChannel = FileChannel.open(oldFile, StandardOpenOption.READ,
+                            StandardOpenOption.DELETE_ON_CLOSE)) {
+                        long currentFilePos = 0;
+                        long sz = chunkChannel.size();
+                        while (currentFilePos < sz) {
+                            long remain = sz - currentFilePos;
+                            long bytesCopied = chunkChannel.transferTo(currentFilePos, remain, channel);
+
+                            if (bytesCopied == 0) {
+                                break;
+                            }
+
+                            currentFilePos += bytesCopied;
+                        }
+                    }
                 }
             }
             catch(IOException e) {
@@ -904,15 +906,10 @@ public class Local extends PlayPen {
                 return false;
             }
 
-            if(trueDest.exists()) {
-                log.error("Cannot move package to existing file " + trueDest);
-                return false;
-            }
-
             log.info("Moving package " + data.getMeta().getId() +  " at " + data.getMeta().getVersion() + " to cache");
 
             try {
-                Files.move(tmpDest.toPath(), trueDest.toPath());
+                Files.move(tmpDest, trueDest);
             }
             catch(IOException e) {
                 log.error("Cannot move package to " + trueDest, e);
@@ -926,21 +923,16 @@ public class Local extends PlayPen {
             return true;
         }
 
-        File tmpDest = Paths.get(
+        Path tmpDest = Paths.get(
             Bootstrap.getHomeDir().getPath(),
             "temp",
-            "split-" + data.getChunkId() + "-" + info.getId() + ".p3").toFile();
-
-        if(tmpDest.exists()) {
-            log.error("Cannot write package to existing file " + tmpDest);
-            return false;
-        }
+            "split-" + data.getChunkId() + "-" + info.getId() + ".p3");
 
         log.info("Writing received package chunk #" + data.getChunkId() + " for " + response.getData().getMeta().getId() + " (" + response.getData().getMeta().getVersion() + ") to temp");
 
         // append data
-        try (FileOutputStream output = new FileOutputStream(tmpDest)) {
-            IOUtils.write(response.getData().getData().toByteArray(), output);
+        try (OutputStream output = Files.newOutputStream(tmpDest, StandardOpenOption.CREATE_NEW)) {
+            response.getData().getData().writeTo(output);
         }
         catch(IOException e) {
             log.error("Unable to write package chunk to " + tmpDest, e);

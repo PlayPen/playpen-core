@@ -37,9 +37,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.InetAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -806,7 +804,7 @@ public class Network extends PlayPen {
             log.info("Sending chunked package " + p3.getId() + " at " + p3.getVersion() + " to " + target);
             log.debug("Checksum: " + p3.getChecksum());
             try (FileInputStream in = new FileInputStream(packageFile)) {
-                byte[] packageBytes = new byte[packageSizeSplit * 1024 * 1024];
+                byte[] packageBytes = new byte[1048576];
                 int chunkLen = 0;
                 int chunkId = 0;
                 while ((chunkLen = in.read(packageBytes)) != -1) {
@@ -876,19 +874,19 @@ public class Network extends PlayPen {
             }
         }
         else {
-            byte[] packageBytes = null;
-            try {
-                packageBytes = Files.readAllBytes(Paths.get(p3.getLocalPath()));
+            ByteString packageData;
+            try (InputStream stream = Files.newInputStream(Paths.get(p3.getLocalPath()))) {
+                packageData = ByteString.readFrom(stream);
             }
             catch(IOException e) {
-                log.error("Unable to read package data", e);
+                log.fatal("Unable to read package file", e);
                 return false;
             }
 
             P3.PackageData data = P3.PackageData.newBuilder()
                     .setMeta(meta)
                     .setChecksum(p3.getChecksum())
-                    .setData(ByteString.copyFrom(packageBytes))
+                    .setData(packageData)
                     .build();
 
             Commands.PackageResponse response = Commands.PackageResponse.newBuilder()
@@ -1693,25 +1691,19 @@ public class Network extends PlayPen {
     }
 
     protected boolean c_processUploadPackage(Commands.C_UploadPackage command, TransactionInfo info, String from) {
-        File tmpDest = Paths.get(
+        Path tmpDest = Paths.get(
                 Bootstrap.getHomeDir().getPath(),
                 "temp",
-                UUID.randomUUID() + ".p3").toFile();
-        File trueDest = Paths.get(
+                UUID.randomUUID() + ".p3");
+        Path trueDest = Paths.get(
                 Bootstrap.getHomeDir().getPath(),
                 "packages",
-                command.getData().getMeta().getId() + "_" + command.getData().getMeta().getVersion() + ".p3").toFile();
-
-        if(tmpDest.exists()) {
-            log.error("Cannot write package to existing file " + tmpDest);
-            c_sendAck("Cannot write package to existing file " + tmpDest, from);
-            return false;
-        }
+                command.getData().getMeta().getId() + "_" + command.getData().getMeta().getVersion() + ".p3");
 
         log.info("Writing received package " + command.getData().getMeta().getId() + " at " + command.getData().getMeta().getVersion() + " to temp");
 
-        try (FileOutputStream output = new FileOutputStream(tmpDest)) {
-            IOUtils.write(command.getData().getData().toByteArray(), output);
+        try (OutputStream output = Files.newOutputStream(tmpDest, StandardOpenOption.CREATE_NEW)) {
+            command.getData().getData().writeTo(output);
         }
         catch(IOException e) {
             log.error("Unable to write package to " + tmpDest, e);
@@ -1733,19 +1725,10 @@ public class Network extends PlayPen {
             return false;
         }
 
-        if(trueDest.exists()) {
-            if(!trueDest.delete())
-            {
-                log.error("Unable to remove old version of package at " + trueDest);
-                c_sendAck("Unable to remove old version of package at " + trueDest, from);
-                return false;
-            }
-        }
-
         log.info("Moving package " + command.getData().getMeta().getId() +  " at " + command.getData().getMeta().getVersion() + " to repository");
 
         try {
-            Files.move(tmpDest.toPath(), trueDest.toPath());
+            Files.move(tmpDest, trueDest, StandardCopyOption.REPLACE_EXISTING);
         }
         catch(IOException e) {
             log.error("Cannot move package to " + trueDest, e);

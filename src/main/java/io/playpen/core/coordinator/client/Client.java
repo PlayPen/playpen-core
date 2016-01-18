@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -1152,12 +1153,12 @@ public class Client extends PlayPen {
 
     protected boolean sendPackage(P3Package p3)
     {
-        byte[] bytes;
-        try {
-            bytes = Files.readAllBytes(Paths.get(p3.getLocalPath()));
+        ByteString packageData;
+        try (InputStream stream = Files.newInputStream(Paths.get(p3.getLocalPath()))) {
+            packageData = ByteString.readFrom(stream);
         }
         catch(IOException e) {
-            log.fatal("Unable to read configuration file", e);
+            log.fatal("Unable to read package file", e);
             return false;
         }
 
@@ -1172,7 +1173,7 @@ public class Client extends PlayPen {
                 .setData(P3.PackageData.newBuilder()
                             .setMeta(P3.P3Meta.newBuilder().setId(p3.getId()).setVersion(p3.getVersion()))
                             .setChecksum(p3.getChecksum())
-                            .setData(ByteString.copyFrom(bytes)))
+                            .setData(packageData))
                 .build();
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
