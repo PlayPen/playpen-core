@@ -19,8 +19,8 @@ public class AuthUtils {
     {
         StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();
         encryptor.setPassword(key);
-        encryptor.setAlgorithm("PBEWithHmacSHA256AndAES_128");
-        encryptor.setKeyObtentionIterations(2000);
+        encryptor.setAlgorithm("PBEWithSHA1AndRC4_128");
+        encryptor.setKeyObtentionIterations(4000);
         return encryptor;
     }
 
