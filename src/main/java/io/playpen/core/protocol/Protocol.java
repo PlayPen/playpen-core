@@ -27,6 +27,23 @@ public final class Protocol {
         getUuidBytes();
 
     /**
+     * <code>required uint32 version = 4;</code>
+     *
+     * <pre>
+     * VERSION IS SET IN io.playpen.core.Bootstrap
+     * </pre>
+     */
+    boolean hasVersion();
+    /**
+     * <code>required uint32 version = 4;</code>
+     *
+     * <pre>
+     * VERSION IS SET IN io.playpen.core.Bootstrap
+     * </pre>
+     */
+    int getVersion();
+
+    /**
      * <code>required string hash = 2;</code>
      */
     boolean hasHash();
@@ -109,13 +126,18 @@ public final class Protocol {
             }
             case 18: {
               com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               hash_ = bs;
               break;
             }
             case 26: {
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000008;
               payload_ = input.readBytes();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000002;
+              version_ = input.readUInt32();
               break;
             }
           }
@@ -200,13 +222,36 @@ public final class Protocol {
       }
     }
 
+    public static final int VERSION_FIELD_NUMBER = 4;
+    private int version_;
+    /**
+     * <code>required uint32 version = 4;</code>
+     *
+     * <pre>
+     * VERSION IS SET IN io.playpen.core.Bootstrap
+     * </pre>
+     */
+    public boolean hasVersion() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required uint32 version = 4;</code>
+     *
+     * <pre>
+     * VERSION IS SET IN io.playpen.core.Bootstrap
+     * </pre>
+     */
+    public int getVersion() {
+      return version_;
+    }
+
     public static final int HASH_FIELD_NUMBER = 2;
     private java.lang.Object hash_;
     /**
      * <code>required string hash = 2;</code>
      */
     public boolean hasHash() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>required string hash = 2;</code>
@@ -248,7 +293,7 @@ public final class Protocol {
      * <code>required bytes payload = 3;</code>
      */
     public boolean hasPayload() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
      * <code>required bytes payload = 3;</code>
@@ -259,6 +304,7 @@ public final class Protocol {
 
     private void initFields() {
       uuid_ = "";
+      version_ = 0;
       hash_ = "";
       payload_ = com.google.protobuf.ByteString.EMPTY;
     }
@@ -269,6 +315,10 @@ public final class Protocol {
       if (isInitialized == 0) return false;
 
       if (!hasUuid()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasVersion()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -290,11 +340,14 @@ public final class Protocol {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(1, getUuidBytes());
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBytes(2, getHashBytes());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeBytes(3, payload_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeUInt32(4, version_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -309,13 +362,17 @@ public final class Protocol {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(1, getUuidBytes());
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getHashBytes());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(3, payload_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(4, version_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -436,10 +493,12 @@ public final class Protocol {
         super.clear();
         uuid_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        hash_ = "";
+        version_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
-        payload_ = com.google.protobuf.ByteString.EMPTY;
+        hash_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
+        payload_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -475,9 +534,13 @@ public final class Protocol {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.hash_ = hash_;
+        result.version_ = version_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
+        }
+        result.hash_ = hash_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
         }
         result.payload_ = payload_;
         result.bitField0_ = to_bitField0_;
@@ -501,8 +564,11 @@ public final class Protocol {
           uuid_ = other.uuid_;
           onChanged();
         }
+        if (other.hasVersion()) {
+          setVersion(other.getVersion());
+        }
         if (other.hasHash()) {
-          bitField0_ |= 0x00000002;
+          bitField0_ |= 0x00000004;
           hash_ = other.hash_;
           onChanged();
         }
@@ -515,6 +581,10 @@ public final class Protocol {
 
       public final boolean isInitialized() {
         if (!hasUuid()) {
+          
+          return false;
+        }
+        if (!hasVersion()) {
           
           return false;
         }
@@ -624,12 +694,60 @@ public final class Protocol {
         return this;
       }
 
+      private int version_ ;
+      /**
+       * <code>required uint32 version = 4;</code>
+       *
+       * <pre>
+       * VERSION IS SET IN io.playpen.core.Bootstrap
+       * </pre>
+       */
+      public boolean hasVersion() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required uint32 version = 4;</code>
+       *
+       * <pre>
+       * VERSION IS SET IN io.playpen.core.Bootstrap
+       * </pre>
+       */
+      public int getVersion() {
+        return version_;
+      }
+      /**
+       * <code>required uint32 version = 4;</code>
+       *
+       * <pre>
+       * VERSION IS SET IN io.playpen.core.Bootstrap
+       * </pre>
+       */
+      public Builder setVersion(int value) {
+        bitField0_ |= 0x00000002;
+        version_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint32 version = 4;</code>
+       *
+       * <pre>
+       * VERSION IS SET IN io.playpen.core.Bootstrap
+       * </pre>
+       */
+      public Builder clearVersion() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        version_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object hash_ = "";
       /**
        * <code>required string hash = 2;</code>
        */
       public boolean hasHash() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>required string hash = 2;</code>
@@ -672,7 +790,7 @@ public final class Protocol {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  bitField0_ |= 0x00000004;
         hash_ = value;
         onChanged();
         return this;
@@ -681,7 +799,7 @@ public final class Protocol {
        * <code>required string hash = 2;</code>
        */
       public Builder clearHash() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         hash_ = getDefaultInstance().getHash();
         onChanged();
         return this;
@@ -694,7 +812,7 @@ public final class Protocol {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  bitField0_ |= 0x00000004;
         hash_ = value;
         onChanged();
         return this;
@@ -705,7 +823,7 @@ public final class Protocol {
        * <code>required bytes payload = 3;</code>
        */
       public boolean hasPayload() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
        * <code>required bytes payload = 3;</code>
@@ -720,7 +838,7 @@ public final class Protocol {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  bitField0_ |= 0x00000008;
         payload_ = value;
         onChanged();
         return this;
@@ -729,7 +847,7 @@ public final class Protocol {
        * <code>required bytes payload = 3;</code>
        */
       public Builder clearPayload() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         payload_ = getDefaultInstance().getPayload();
         onChanged();
         return this;
@@ -1682,14 +1800,14 @@ public final class Protocol {
   static {
     java.lang.String[] descriptorData = {
       "\n\016protocol.proto\022\030io.playpen.core.protoc" +
-      "ol\032\rcommand.proto\"C\n\024AuthenticatedMessag" +
-      "e\022\014\n\004uuid\030\001 \002(\t\022\014\n\004hash\030\002 \002(\t\022\017\n\007payload" +
-      "\030\003 \002(\014\"\307\001\n\013Transaction\022\n\n\002id\030\001 \002(\t\0228\n\004mo" +
-      "de\030\002 \002(\0162*.io.playpen.core.protocol.Tran" +
-      "saction.Mode\0226\n\007payload\030\003 \002(\0132%.io.playp" +
-      "en.core.protocol.BaseCommand\":\n\004Mode\022\n\n\006" +
-      "CREATE\020\001\022\014\n\010CONTINUE\020\002\022\014\n\010COMPLETE\020\003\022\n\n\006" +
-      "SINGLE\020\004B\nB\010Protocol"
+      "ol\032\rcommand.proto\"T\n\024AuthenticatedMessag" +
+      "e\022\014\n\004uuid\030\001 \002(\t\022\017\n\007version\030\004 \002(\r\022\014\n\004hash" +
+      "\030\002 \002(\t\022\017\n\007payload\030\003 \002(\014\"\307\001\n\013Transaction\022" +
+      "\n\n\002id\030\001 \002(\t\0228\n\004mode\030\002 \002(\0162*.io.playpen.c" +
+      "ore.protocol.Transaction.Mode\0226\n\007payload" +
+      "\030\003 \002(\0132%.io.playpen.core.protocol.BaseCo" +
+      "mmand\":\n\004Mode\022\n\n\006CREATE\020\001\022\014\n\010CONTINUE\020\002\022" +
+      "\014\n\010COMPLETE\020\003\022\n\n\006SINGLE\020\004B\nB\010Protocol"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1709,7 +1827,7 @@ public final class Protocol {
     internal_static_io_playpen_core_protocol_AuthenticatedMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_AuthenticatedMessage_descriptor,
-        new java.lang.String[] { "Uuid", "Hash", "Payload", });
+        new java.lang.String[] { "Uuid", "Version", "Hash", "Payload", });
     internal_static_io_playpen_core_protocol_Transaction_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_io_playpen_core_protocol_Transaction_fieldAccessorTable = new

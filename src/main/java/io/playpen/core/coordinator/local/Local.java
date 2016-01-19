@@ -54,6 +54,8 @@ public class Local extends PlayPen {
 
     private Map<String, Server> servers = new ConcurrentHashMap<>();
 
+    private Map<String, Coordinator.Server> provisioningServers = new ConcurrentHashMap<>();
+
     private PackageManager packageManager = null;
 
     private ScheduledExecutorService scheduler = null;
@@ -652,6 +654,18 @@ public class Local extends PlayPen {
             syncBuilder.addServers(serverBuilder.build());
         }
 
+        for (Coordinator.Server localServer : provisioningServers.values()) {
+            Coordinator.Server.Builder server = Coordinator.Server.newBuilder()
+                    .setUuid(localServer.getUuid())
+                    .setP3(localServer.getP3())
+                    .setActive(false)
+                    .addAllProperties(localServer.getPropertiesList());
+            if (localServer.getName() != null)
+                server.setName(localServer.getName());
+
+            syncBuilder.addServers(server.build());
+        }
+
         Commands.Sync sync = syncBuilder.build();
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
@@ -692,7 +706,17 @@ public class Local extends PlayPen {
         final String uuid = server.getUuid();
         final String name = server.hasName() ? server.getName() : null;
         final String tid = info.getId();
-        scheduler.schedule(() -> Local.get().checkPackageForProvision(tid, id, version, uuid, properties, name), 2, TimeUnit.SECONDS);
+
+        provisioningServers.put(server.getUuid(), server);
+
+        scheduler.schedule(() -> {
+            try {
+                Local.get().checkPackageForProvision(tid, id, version, uuid, properties, name);
+            }
+            finally {
+                provisioningServers.remove(uuid);
+            }
+        }, 2, TimeUnit.SECONDS);
 
         return true;
     }

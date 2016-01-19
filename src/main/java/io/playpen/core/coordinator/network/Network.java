@@ -561,7 +561,7 @@ public class Network extends PlayPen {
         coord.getServers().clear();
         for(Coordinator.Server cmdServer : command.getServersList()) {
             Server server = new Server();
-            server.setActive(true);
+            server.setActive(cmdServer.getActive());
             server.setUuid(cmdServer.getUuid());
             server.setName(cmdServer.hasName() ? cmdServer.getName() : server.getUuid());
             server.setP3(packageManager.resolve(cmdServer.getP3().getId(), cmdServer.getP3().getVersion()));

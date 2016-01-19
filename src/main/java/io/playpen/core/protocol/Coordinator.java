@@ -1273,6 +1273,15 @@ public final class Coordinator {
         getNameBytes();
 
     /**
+     * <code>optional bool active = 5 [default = true];</code>
+     */
+    boolean hasActive();
+    /**
+     * <code>optional bool active = 5 [default = true];</code>
+     */
+    boolean getActive();
+
+    /**
      * <code>repeated .io.playpen.core.protocol.Property properties = 4;</code>
      */
     java.util.List<io.playpen.core.protocol.Coordinator.Property> 
@@ -1374,11 +1383,16 @@ public final class Coordinator {
               break;
             }
             case 34: {
-              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
                 properties_ = new java.util.ArrayList<io.playpen.core.protocol.Coordinator.Property>();
-                mutable_bitField0_ |= 0x00000008;
+                mutable_bitField0_ |= 0x00000010;
               }
               properties_.add(input.readMessage(io.playpen.core.protocol.Coordinator.Property.PARSER, extensionRegistry));
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000008;
+              active_ = input.readBool();
               break;
             }
           }
@@ -1389,7 +1403,7 @@ public final class Coordinator {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
           properties_ = java.util.Collections.unmodifiableList(properties_);
         }
         this.unknownFields = unknownFields.build();
@@ -1529,6 +1543,21 @@ public final class Coordinator {
       }
     }
 
+    public static final int ACTIVE_FIELD_NUMBER = 5;
+    private boolean active_;
+    /**
+     * <code>optional bool active = 5 [default = true];</code>
+     */
+    public boolean hasActive() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional bool active = 5 [default = true];</code>
+     */
+    public boolean getActive() {
+      return active_;
+    }
+
     public static final int PROPERTIES_FIELD_NUMBER = 4;
     private java.util.List<io.playpen.core.protocol.Coordinator.Property> properties_;
     /**
@@ -1568,6 +1597,7 @@ public final class Coordinator {
       p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
       uuid_ = "";
       name_ = "";
+      active_ = true;
       properties_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
@@ -1613,6 +1643,9 @@ public final class Coordinator {
       for (int i = 0; i < properties_.size(); i++) {
         output.writeMessage(4, properties_.get(i));
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBool(5, active_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1637,6 +1670,10 @@ public final class Coordinator {
       for (int i = 0; i < properties_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, properties_.get(i));
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, active_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1767,9 +1804,11 @@ public final class Coordinator {
         bitField0_ = (bitField0_ & ~0x00000002);
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
+        active_ = true;
+        bitField0_ = (bitField0_ & ~0x00000008);
         if (propertiesBuilder_ == null) {
           properties_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000010);
         } else {
           propertiesBuilder_.clear();
         }
@@ -1817,10 +1856,14 @@ public final class Coordinator {
           to_bitField0_ |= 0x00000004;
         }
         result.name_ = name_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.active_ = active_;
         if (propertiesBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          if (((bitField0_ & 0x00000010) == 0x00000010)) {
             properties_ = java.util.Collections.unmodifiableList(properties_);
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000010);
           }
           result.properties_ = properties_;
         } else {
@@ -1855,11 +1898,14 @@ public final class Coordinator {
           name_ = other.name_;
           onChanged();
         }
+        if (other.hasActive()) {
+          setActive(other.getActive());
+        }
         if (propertiesBuilder_ == null) {
           if (!other.properties_.isEmpty()) {
             if (properties_.isEmpty()) {
               properties_ = other.properties_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000010);
             } else {
               ensurePropertiesIsMutable();
               properties_.addAll(other.properties_);
@@ -1872,7 +1918,7 @@ public final class Coordinator {
               propertiesBuilder_.dispose();
               propertiesBuilder_ = null;
               properties_ = other.properties_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000010);
               propertiesBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getPropertiesFieldBuilder() : null;
@@ -2194,12 +2240,44 @@ public final class Coordinator {
         return this;
       }
 
+      private boolean active_ = true;
+      /**
+       * <code>optional bool active = 5 [default = true];</code>
+       */
+      public boolean hasActive() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional bool active = 5 [default = true];</code>
+       */
+      public boolean getActive() {
+        return active_;
+      }
+      /**
+       * <code>optional bool active = 5 [default = true];</code>
+       */
+      public Builder setActive(boolean value) {
+        bitField0_ |= 0x00000008;
+        active_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool active = 5 [default = true];</code>
+       */
+      public Builder clearActive() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        active_ = true;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<io.playpen.core.protocol.Coordinator.Property> properties_ =
         java.util.Collections.emptyList();
       private void ensurePropertiesIsMutable() {
-        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
           properties_ = new java.util.ArrayList<io.playpen.core.protocol.Coordinator.Property>(properties_);
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000010;
          }
       }
 
@@ -2349,7 +2427,7 @@ public final class Coordinator {
       public Builder clearProperties() {
         if (propertiesBuilder_ == null) {
           properties_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000010);
           onChanged();
         } else {
           propertiesBuilder_.clear();
@@ -2426,7 +2504,7 @@ public final class Coordinator {
           propertiesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               io.playpen.core.protocol.Coordinator.Property, io.playpen.core.protocol.Coordinator.Property.Builder, io.playpen.core.protocol.Coordinator.PropertyOrBuilder>(
                   properties_,
-                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  ((bitField0_ & 0x00000010) == 0x00000010),
                   getParentForChildren(),
                   isClean());
           properties_ = null;
@@ -4131,16 +4209,16 @@ public final class Coordinator {
       "\n\021coordinator.proto\022\030io.playpen.core.pro" +
       "tocol\032\010p3.proto\"\'\n\010Resource\022\014\n\004name\030\001 \002(" +
       "\t\022\r\n\005value\030\002 \002(\021\"\'\n\010Property\022\014\n\004name\030\001 \002" +
-      "(\t\022\r\n\005value\030\002 \002(\t\"\212\001\n\006Server\022,\n\002p3\030\001 \002(\013" +
+      "(\t\022\r\n\005value\030\002 \002(\t\"\240\001\n\006Server\022,\n\002p3\030\001 \002(\013" +
       "2 .io.playpen.core.protocol.P3Meta\022\014\n\004uu" +
-      "id\030\002 \002(\t\022\014\n\004name\030\003 \001(\t\0226\n\nproperties\030\004 \003" +
-      "(\0132\".io.playpen.core.protocol.Property\"\275" +
-      "\001\n\020LocalCoordinator\022\014\n\004uuid\030\001 \002(\t\022\014\n\004nam" +
-      "e\030\002 \001(\t\022\017\n\007enabled\030\003 \002(\010\0225\n\tresources\030\004 " +
-      "\003(\0132\".io.playpen.core.protocol.Resource\022",
-      "\022\n\nattributes\030\005 \003(\t\0221\n\007servers\030\006 \003(\0132 .i" +
-      "o.playpen.core.protocol.ServerB\rB\013Coordi" +
-      "nator"
+      "id\030\002 \002(\t\022\014\n\004name\030\003 \001(\t\022\024\n\006active\030\005 \001(\010:\004" +
+      "true\0226\n\nproperties\030\004 \003(\0132\".io.playpen.co" +
+      "re.protocol.Property\"\275\001\n\020LocalCoordinato" +
+      "r\022\014\n\004uuid\030\001 \002(\t\022\014\n\004name\030\002 \001(\t\022\017\n\007enabled" +
+      "\030\003 \002(\010\0225\n\tresources\030\004 \003(\0132\".io.playpen.c",
+      "ore.protocol.Resource\022\022\n\nattributes\030\005 \003(" +
+      "\t\0221\n\007servers\030\006 \003(\0132 .io.playpen.core.pro" +
+      "tocol.ServerB\rB\013Coordinator"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4172,7 +4250,7 @@ public final class Coordinator {
     internal_static_io_playpen_core_protocol_Server_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_Server_descriptor,
-        new java.lang.String[] { "P3", "Uuid", "Name", "Properties", });
+        new java.lang.String[] { "P3", "Uuid", "Name", "Active", "Properties", });
     internal_static_io_playpen_core_protocol_LocalCoordinator_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_io_playpen_core_protocol_LocalCoordinator_fieldAccessorTable = new

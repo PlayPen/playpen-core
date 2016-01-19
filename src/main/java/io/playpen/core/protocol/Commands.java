@@ -3556,6 +3556,1698 @@ public final class Commands {
     // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.PackageResponse)
   }
 
+  public interface SplitPackageResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:io.playpen.core.protocol.SplitPackageResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required bool ok = 1;</code>
+     */
+    boolean hasOk();
+    /**
+     * <code>required bool ok = 1;</code>
+     */
+    boolean getOk();
+
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    boolean hasData();
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    io.playpen.core.protocol.P3.SplitPackageData getData();
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    io.playpen.core.protocol.P3.SplitPackageDataOrBuilder getDataOrBuilder();
+  }
+  /**
+   * Protobuf type {@code io.playpen.core.protocol.SplitPackageResponse}
+   */
+  public static final class SplitPackageResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:io.playpen.core.protocol.SplitPackageResponse)
+      SplitPackageResponseOrBuilder {
+    // Use SplitPackageResponse.newBuilder() to construct.
+    private SplitPackageResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private SplitPackageResponse(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final SplitPackageResponse defaultInstance;
+    public static SplitPackageResponse getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public SplitPackageResponse getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SplitPackageResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              ok_ = input.readBool();
+              break;
+            }
+            case 18: {
+              io.playpen.core.protocol.P3.SplitPackageData.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = data_.toBuilder();
+              }
+              data_ = input.readMessage(io.playpen.core.protocol.P3.SplitPackageData.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(data_);
+                data_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_SplitPackageResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_SplitPackageResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.playpen.core.protocol.Commands.SplitPackageResponse.class, io.playpen.core.protocol.Commands.SplitPackageResponse.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<SplitPackageResponse> PARSER =
+        new com.google.protobuf.AbstractParser<SplitPackageResponse>() {
+      public SplitPackageResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SplitPackageResponse(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SplitPackageResponse> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int OK_FIELD_NUMBER = 1;
+    private boolean ok_;
+    /**
+     * <code>required bool ok = 1;</code>
+     */
+    public boolean hasOk() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bool ok = 1;</code>
+     */
+    public boolean getOk() {
+      return ok_;
+    }
+
+    public static final int DATA_FIELD_NUMBER = 2;
+    private io.playpen.core.protocol.P3.SplitPackageData data_;
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    public boolean hasData() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    public io.playpen.core.protocol.P3.SplitPackageData getData() {
+      return data_;
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    public io.playpen.core.protocol.P3.SplitPackageDataOrBuilder getDataOrBuilder() {
+      return data_;
+    }
+
+    private void initFields() {
+      ok_ = false;
+      data_ = io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasOk()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (hasData()) {
+        if (!getData().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(1, ok_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, data_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, ok_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, data_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.SplitPackageResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(io.playpen.core.protocol.Commands.SplitPackageResponse prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code io.playpen.core.protocol.SplitPackageResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:io.playpen.core.protocol.SplitPackageResponse)
+        io.playpen.core.protocol.Commands.SplitPackageResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_SplitPackageResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_SplitPackageResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.playpen.core.protocol.Commands.SplitPackageResponse.class, io.playpen.core.protocol.Commands.SplitPackageResponse.Builder.class);
+      }
+
+      // Construct using io.playpen.core.protocol.Commands.SplitPackageResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getDataFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        ok_ = false;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (dataBuilder_ == null) {
+          data_ = io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+        } else {
+          dataBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_SplitPackageResponse_descriptor;
+      }
+
+      public io.playpen.core.protocol.Commands.SplitPackageResponse getDefaultInstanceForType() {
+        return io.playpen.core.protocol.Commands.SplitPackageResponse.getDefaultInstance();
+      }
+
+      public io.playpen.core.protocol.Commands.SplitPackageResponse build() {
+        io.playpen.core.protocol.Commands.SplitPackageResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public io.playpen.core.protocol.Commands.SplitPackageResponse buildPartial() {
+        io.playpen.core.protocol.Commands.SplitPackageResponse result = new io.playpen.core.protocol.Commands.SplitPackageResponse(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.ok_ = ok_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (dataBuilder_ == null) {
+          result.data_ = data_;
+        } else {
+          result.data_ = dataBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.playpen.core.protocol.Commands.SplitPackageResponse) {
+          return mergeFrom((io.playpen.core.protocol.Commands.SplitPackageResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.playpen.core.protocol.Commands.SplitPackageResponse other) {
+        if (other == io.playpen.core.protocol.Commands.SplitPackageResponse.getDefaultInstance()) return this;
+        if (other.hasOk()) {
+          setOk(other.getOk());
+        }
+        if (other.hasData()) {
+          mergeData(other.getData());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasOk()) {
+          
+          return false;
+        }
+        if (hasData()) {
+          if (!getData().isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.playpen.core.protocol.Commands.SplitPackageResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.playpen.core.protocol.Commands.SplitPackageResponse) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean ok_ ;
+      /**
+       * <code>required bool ok = 1;</code>
+       */
+      public boolean hasOk() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bool ok = 1;</code>
+       */
+      public boolean getOk() {
+        return ok_;
+      }
+      /**
+       * <code>required bool ok = 1;</code>
+       */
+      public Builder setOk(boolean value) {
+        bitField0_ |= 0x00000001;
+        ok_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool ok = 1;</code>
+       */
+      public Builder clearOk() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        ok_ = false;
+        onChanged();
+        return this;
+      }
+
+      private io.playpen.core.protocol.P3.SplitPackageData data_ = io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.P3.SplitPackageData, io.playpen.core.protocol.P3.SplitPackageData.Builder, io.playpen.core.protocol.P3.SplitPackageDataOrBuilder> dataBuilder_;
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public boolean hasData() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public io.playpen.core.protocol.P3.SplitPackageData getData() {
+        if (dataBuilder_ == null) {
+          return data_;
+        } else {
+          return dataBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public Builder setData(io.playpen.core.protocol.P3.SplitPackageData value) {
+        if (dataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          data_ = value;
+          onChanged();
+        } else {
+          dataBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public Builder setData(
+          io.playpen.core.protocol.P3.SplitPackageData.Builder builderForValue) {
+        if (dataBuilder_ == null) {
+          data_ = builderForValue.build();
+          onChanged();
+        } else {
+          dataBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public Builder mergeData(io.playpen.core.protocol.P3.SplitPackageData value) {
+        if (dataBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              data_ != io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance()) {
+            data_ =
+              io.playpen.core.protocol.P3.SplitPackageData.newBuilder(data_).mergeFrom(value).buildPartial();
+          } else {
+            data_ = value;
+          }
+          onChanged();
+        } else {
+          dataBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public Builder clearData() {
+        if (dataBuilder_ == null) {
+          data_ = io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+          onChanged();
+        } else {
+          dataBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public io.playpen.core.protocol.P3.SplitPackageData.Builder getDataBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getDataFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public io.playpen.core.protocol.P3.SplitPackageDataOrBuilder getDataOrBuilder() {
+        if (dataBuilder_ != null) {
+          return dataBuilder_.getMessageOrBuilder();
+        } else {
+          return data_;
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.P3.SplitPackageData, io.playpen.core.protocol.P3.SplitPackageData.Builder, io.playpen.core.protocol.P3.SplitPackageDataOrBuilder> 
+          getDataFieldBuilder() {
+        if (dataBuilder_ == null) {
+          dataBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.playpen.core.protocol.P3.SplitPackageData, io.playpen.core.protocol.P3.SplitPackageData.Builder, io.playpen.core.protocol.P3.SplitPackageDataOrBuilder>(
+                  getData(),
+                  getParentForChildren(),
+                  isClean());
+          data_ = null;
+        }
+        return dataBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:io.playpen.core.protocol.SplitPackageResponse)
+    }
+
+    static {
+      defaultInstance = new SplitPackageResponse(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.SplitPackageResponse)
+  }
+
+  public interface PackageChecksumRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:io.playpen.core.protocol.PackageChecksumRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+     */
+    boolean hasP3();
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+     */
+    io.playpen.core.protocol.P3.P3Meta getP3();
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+     */
+    io.playpen.core.protocol.P3.P3MetaOrBuilder getP3OrBuilder();
+  }
+  /**
+   * Protobuf type {@code io.playpen.core.protocol.PackageChecksumRequest}
+   */
+  public static final class PackageChecksumRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:io.playpen.core.protocol.PackageChecksumRequest)
+      PackageChecksumRequestOrBuilder {
+    // Use PackageChecksumRequest.newBuilder() to construct.
+    private PackageChecksumRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private PackageChecksumRequest(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final PackageChecksumRequest defaultInstance;
+    public static PackageChecksumRequest getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public PackageChecksumRequest getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PackageChecksumRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              io.playpen.core.protocol.P3.P3Meta.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = p3_.toBuilder();
+              }
+              p3_ = input.readMessage(io.playpen.core.protocol.P3.P3Meta.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(p3_);
+                p3_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.playpen.core.protocol.Commands.PackageChecksumRequest.class, io.playpen.core.protocol.Commands.PackageChecksumRequest.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<PackageChecksumRequest> PARSER =
+        new com.google.protobuf.AbstractParser<PackageChecksumRequest>() {
+      public PackageChecksumRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PackageChecksumRequest(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PackageChecksumRequest> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int P3_FIELD_NUMBER = 1;
+    private io.playpen.core.protocol.P3.P3Meta p3_;
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+     */
+    public boolean hasP3() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+     */
+    public io.playpen.core.protocol.P3.P3Meta getP3() {
+      return p3_;
+    }
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+     */
+    public io.playpen.core.protocol.P3.P3MetaOrBuilder getP3OrBuilder() {
+      return p3_;
+    }
+
+    private void initFields() {
+      p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasP3()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getP3().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, p3_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, p3_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(io.playpen.core.protocol.Commands.PackageChecksumRequest prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code io.playpen.core.protocol.PackageChecksumRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:io.playpen.core.protocol.PackageChecksumRequest)
+        io.playpen.core.protocol.Commands.PackageChecksumRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.playpen.core.protocol.Commands.PackageChecksumRequest.class, io.playpen.core.protocol.Commands.PackageChecksumRequest.Builder.class);
+      }
+
+      // Construct using io.playpen.core.protocol.Commands.PackageChecksumRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getP3FieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (p3Builder_ == null) {
+          p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+        } else {
+          p3Builder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumRequest_descriptor;
+      }
+
+      public io.playpen.core.protocol.Commands.PackageChecksumRequest getDefaultInstanceForType() {
+        return io.playpen.core.protocol.Commands.PackageChecksumRequest.getDefaultInstance();
+      }
+
+      public io.playpen.core.protocol.Commands.PackageChecksumRequest build() {
+        io.playpen.core.protocol.Commands.PackageChecksumRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public io.playpen.core.protocol.Commands.PackageChecksumRequest buildPartial() {
+        io.playpen.core.protocol.Commands.PackageChecksumRequest result = new io.playpen.core.protocol.Commands.PackageChecksumRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (p3Builder_ == null) {
+          result.p3_ = p3_;
+        } else {
+          result.p3_ = p3Builder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.playpen.core.protocol.Commands.PackageChecksumRequest) {
+          return mergeFrom((io.playpen.core.protocol.Commands.PackageChecksumRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.playpen.core.protocol.Commands.PackageChecksumRequest other) {
+        if (other == io.playpen.core.protocol.Commands.PackageChecksumRequest.getDefaultInstance()) return this;
+        if (other.hasP3()) {
+          mergeP3(other.getP3());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasP3()) {
+          
+          return false;
+        }
+        if (!getP3().isInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.playpen.core.protocol.Commands.PackageChecksumRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.playpen.core.protocol.Commands.PackageChecksumRequest) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private io.playpen.core.protocol.P3.P3Meta p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder> p3Builder_;
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      public boolean hasP3() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      public io.playpen.core.protocol.P3.P3Meta getP3() {
+        if (p3Builder_ == null) {
+          return p3_;
+        } else {
+          return p3Builder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      public Builder setP3(io.playpen.core.protocol.P3.P3Meta value) {
+        if (p3Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          p3_ = value;
+          onChanged();
+        } else {
+          p3Builder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      public Builder setP3(
+          io.playpen.core.protocol.P3.P3Meta.Builder builderForValue) {
+        if (p3Builder_ == null) {
+          p3_ = builderForValue.build();
+          onChanged();
+        } else {
+          p3Builder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      public Builder mergeP3(io.playpen.core.protocol.P3.P3Meta value) {
+        if (p3Builder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              p3_ != io.playpen.core.protocol.P3.P3Meta.getDefaultInstance()) {
+            p3_ =
+              io.playpen.core.protocol.P3.P3Meta.newBuilder(p3_).mergeFrom(value).buildPartial();
+          } else {
+            p3_ = value;
+          }
+          onChanged();
+        } else {
+          p3Builder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      public Builder clearP3() {
+        if (p3Builder_ == null) {
+          p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+          onChanged();
+        } else {
+          p3Builder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      public io.playpen.core.protocol.P3.P3Meta.Builder getP3Builder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getP3FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      public io.playpen.core.protocol.P3.P3MetaOrBuilder getP3OrBuilder() {
+        if (p3Builder_ != null) {
+          return p3Builder_.getMessageOrBuilder();
+        } else {
+          return p3_;
+        }
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder> 
+          getP3FieldBuilder() {
+        if (p3Builder_ == null) {
+          p3Builder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder>(
+                  getP3(),
+                  getParentForChildren(),
+                  isClean());
+          p3_ = null;
+        }
+        return p3Builder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:io.playpen.core.protocol.PackageChecksumRequest)
+    }
+
+    static {
+      defaultInstance = new PackageChecksumRequest(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.PackageChecksumRequest)
+  }
+
+  public interface PackageChecksumResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:io.playpen.core.protocol.PackageChecksumResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required bool ok = 1;</code>
+     */
+    boolean hasOk();
+    /**
+     * <code>required bool ok = 1;</code>
+     */
+    boolean getOk();
+
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    boolean hasChecksum();
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    java.lang.String getChecksum();
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getChecksumBytes();
+  }
+  /**
+   * Protobuf type {@code io.playpen.core.protocol.PackageChecksumResponse}
+   */
+  public static final class PackageChecksumResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:io.playpen.core.protocol.PackageChecksumResponse)
+      PackageChecksumResponseOrBuilder {
+    // Use PackageChecksumResponse.newBuilder() to construct.
+    private PackageChecksumResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private PackageChecksumResponse(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final PackageChecksumResponse defaultInstance;
+    public static PackageChecksumResponse getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public PackageChecksumResponse getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PackageChecksumResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              ok_ = input.readBool();
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              checksum_ = bs;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.playpen.core.protocol.Commands.PackageChecksumResponse.class, io.playpen.core.protocol.Commands.PackageChecksumResponse.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<PackageChecksumResponse> PARSER =
+        new com.google.protobuf.AbstractParser<PackageChecksumResponse>() {
+      public PackageChecksumResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PackageChecksumResponse(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PackageChecksumResponse> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int OK_FIELD_NUMBER = 1;
+    private boolean ok_;
+    /**
+     * <code>required bool ok = 1;</code>
+     */
+    public boolean hasOk() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bool ok = 1;</code>
+     */
+    public boolean getOk() {
+      return ok_;
+    }
+
+    public static final int CHECKSUM_FIELD_NUMBER = 2;
+    private java.lang.Object checksum_;
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    public boolean hasChecksum() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    public java.lang.String getChecksum() {
+      java.lang.Object ref = checksum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          checksum_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getChecksumBytes() {
+      java.lang.Object ref = checksum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        checksum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private void initFields() {
+      ok_ = false;
+      checksum_ = "";
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasOk()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(1, ok_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getChecksumBytes());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, ok_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getChecksumBytes());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.PackageChecksumResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(io.playpen.core.protocol.Commands.PackageChecksumResponse prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code io.playpen.core.protocol.PackageChecksumResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:io.playpen.core.protocol.PackageChecksumResponse)
+        io.playpen.core.protocol.Commands.PackageChecksumResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.playpen.core.protocol.Commands.PackageChecksumResponse.class, io.playpen.core.protocol.Commands.PackageChecksumResponse.Builder.class);
+      }
+
+      // Construct using io.playpen.core.protocol.Commands.PackageChecksumResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        ok_ = false;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        checksum_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_PackageChecksumResponse_descriptor;
+      }
+
+      public io.playpen.core.protocol.Commands.PackageChecksumResponse getDefaultInstanceForType() {
+        return io.playpen.core.protocol.Commands.PackageChecksumResponse.getDefaultInstance();
+      }
+
+      public io.playpen.core.protocol.Commands.PackageChecksumResponse build() {
+        io.playpen.core.protocol.Commands.PackageChecksumResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public io.playpen.core.protocol.Commands.PackageChecksumResponse buildPartial() {
+        io.playpen.core.protocol.Commands.PackageChecksumResponse result = new io.playpen.core.protocol.Commands.PackageChecksumResponse(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.ok_ = ok_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.checksum_ = checksum_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.playpen.core.protocol.Commands.PackageChecksumResponse) {
+          return mergeFrom((io.playpen.core.protocol.Commands.PackageChecksumResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.playpen.core.protocol.Commands.PackageChecksumResponse other) {
+        if (other == io.playpen.core.protocol.Commands.PackageChecksumResponse.getDefaultInstance()) return this;
+        if (other.hasOk()) {
+          setOk(other.getOk());
+        }
+        if (other.hasChecksum()) {
+          bitField0_ |= 0x00000002;
+          checksum_ = other.checksum_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasOk()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.playpen.core.protocol.Commands.PackageChecksumResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.playpen.core.protocol.Commands.PackageChecksumResponse) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean ok_ ;
+      /**
+       * <code>required bool ok = 1;</code>
+       */
+      public boolean hasOk() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bool ok = 1;</code>
+       */
+      public boolean getOk() {
+        return ok_;
+      }
+      /**
+       * <code>required bool ok = 1;</code>
+       */
+      public Builder setOk(boolean value) {
+        bitField0_ |= 0x00000001;
+        ok_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool ok = 1;</code>
+       */
+      public Builder clearOk() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        ok_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object checksum_ = "";
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public boolean hasChecksum() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public java.lang.String getChecksum() {
+        java.lang.Object ref = checksum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            checksum_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getChecksumBytes() {
+        java.lang.Object ref = checksum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          checksum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public Builder setChecksum(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        checksum_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public Builder clearChecksum() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        checksum_ = getDefaultInstance().getChecksum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public Builder setChecksumBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        checksum_ = value;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:io.playpen.core.protocol.PackageChecksumResponse)
+    }
+
+    static {
+      defaultInstance = new PackageChecksumResponse(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.PackageChecksumResponse)
+  }
+
   public interface DeprovisionOrBuilder extends
       // @@protoc_insertion_point(interface_extends:io.playpen.core.protocol.Deprovision)
       com.google.protobuf.MessageOrBuilder {
@@ -7555,530 +9247,6 @@ public final class Commands {
     }
 
     // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.FreezeServer)
-  }
-
-  public interface ExpireCacheOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:io.playpen.core.protocol.ExpireCache)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-     */
-    boolean hasP3();
-    /**
-     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-     */
-    io.playpen.core.protocol.P3.P3Meta getP3();
-    /**
-     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-     */
-    io.playpen.core.protocol.P3.P3MetaOrBuilder getP3OrBuilder();
-  }
-  /**
-   * Protobuf type {@code io.playpen.core.protocol.ExpireCache}
-   */
-  public static final class ExpireCache extends
-      com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:io.playpen.core.protocol.ExpireCache)
-      ExpireCacheOrBuilder {
-    // Use ExpireCache.newBuilder() to construct.
-    private ExpireCache(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private ExpireCache(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final ExpireCache defaultInstance;
-    public static ExpireCache getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public ExpireCache getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ExpireCache(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              io.playpen.core.protocol.P3.P3Meta.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                subBuilder = p3_.toBuilder();
-              }
-              p3_ = input.readMessage(io.playpen.core.protocol.P3.P3Meta.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(p3_);
-                p3_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000001;
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_ExpireCache_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_ExpireCache_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              io.playpen.core.protocol.Commands.ExpireCache.class, io.playpen.core.protocol.Commands.ExpireCache.Builder.class);
-    }
-
-    public static com.google.protobuf.Parser<ExpireCache> PARSER =
-        new com.google.protobuf.AbstractParser<ExpireCache>() {
-      public ExpireCache parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ExpireCache(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ExpireCache> getParserForType() {
-      return PARSER;
-    }
-
-    private int bitField0_;
-    public static final int P3_FIELD_NUMBER = 1;
-    private io.playpen.core.protocol.P3.P3Meta p3_;
-    /**
-     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-     */
-    public boolean hasP3() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-     */
-    public io.playpen.core.protocol.P3.P3Meta getP3() {
-      return p3_;
-    }
-    /**
-     * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-     */
-    public io.playpen.core.protocol.P3.P3MetaOrBuilder getP3OrBuilder() {
-      return p3_;
-    }
-
-    private void initFields() {
-      p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      if (!hasP3()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getP3().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, p3_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, p3_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static io.playpen.core.protocol.Commands.ExpireCache parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static io.playpen.core.protocol.Commands.ExpireCache parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(io.playpen.core.protocol.Commands.ExpireCache prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code io.playpen.core.protocol.ExpireCache}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:io.playpen.core.protocol.ExpireCache)
-        io.playpen.core.protocol.Commands.ExpireCacheOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_ExpireCache_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_ExpireCache_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                io.playpen.core.protocol.Commands.ExpireCache.class, io.playpen.core.protocol.Commands.ExpireCache.Builder.class);
-      }
-
-      // Construct using io.playpen.core.protocol.Commands.ExpireCache.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getP3FieldBuilder();
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-
-      public Builder clear() {
-        super.clear();
-        if (p3Builder_ == null) {
-          p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
-        } else {
-          p3Builder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_ExpireCache_descriptor;
-      }
-
-      public io.playpen.core.protocol.Commands.ExpireCache getDefaultInstanceForType() {
-        return io.playpen.core.protocol.Commands.ExpireCache.getDefaultInstance();
-      }
-
-      public io.playpen.core.protocol.Commands.ExpireCache build() {
-        io.playpen.core.protocol.Commands.ExpireCache result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public io.playpen.core.protocol.Commands.ExpireCache buildPartial() {
-        io.playpen.core.protocol.Commands.ExpireCache result = new io.playpen.core.protocol.Commands.ExpireCache(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        if (p3Builder_ == null) {
-          result.p3_ = p3_;
-        } else {
-          result.p3_ = p3Builder_.build();
-        }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof io.playpen.core.protocol.Commands.ExpireCache) {
-          return mergeFrom((io.playpen.core.protocol.Commands.ExpireCache)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(io.playpen.core.protocol.Commands.ExpireCache other) {
-        if (other == io.playpen.core.protocol.Commands.ExpireCache.getDefaultInstance()) return this;
-        if (other.hasP3()) {
-          mergeP3(other.getP3());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        if (!hasP3()) {
-          
-          return false;
-        }
-        if (!getP3().isInitialized()) {
-          
-          return false;
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        io.playpen.core.protocol.Commands.ExpireCache parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (io.playpen.core.protocol.Commands.ExpireCache) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private io.playpen.core.protocol.P3.P3Meta p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder> p3Builder_;
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      public boolean hasP3() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      public io.playpen.core.protocol.P3.P3Meta getP3() {
-        if (p3Builder_ == null) {
-          return p3_;
-        } else {
-          return p3Builder_.getMessage();
-        }
-      }
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      public Builder setP3(io.playpen.core.protocol.P3.P3Meta value) {
-        if (p3Builder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          p3_ = value;
-          onChanged();
-        } else {
-          p3Builder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      public Builder setP3(
-          io.playpen.core.protocol.P3.P3Meta.Builder builderForValue) {
-        if (p3Builder_ == null) {
-          p3_ = builderForValue.build();
-          onChanged();
-        } else {
-          p3Builder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      public Builder mergeP3(io.playpen.core.protocol.P3.P3Meta value) {
-        if (p3Builder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              p3_ != io.playpen.core.protocol.P3.P3Meta.getDefaultInstance()) {
-            p3_ =
-              io.playpen.core.protocol.P3.P3Meta.newBuilder(p3_).mergeFrom(value).buildPartial();
-          } else {
-            p3_ = value;
-          }
-          onChanged();
-        } else {
-          p3Builder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      public Builder clearP3() {
-        if (p3Builder_ == null) {
-          p3_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
-          onChanged();
-        } else {
-          p3Builder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      public io.playpen.core.protocol.P3.P3Meta.Builder getP3Builder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return getP3FieldBuilder().getBuilder();
-      }
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      public io.playpen.core.protocol.P3.P3MetaOrBuilder getP3OrBuilder() {
-        if (p3Builder_ != null) {
-          return p3Builder_.getMessageOrBuilder();
-        } else {
-          return p3_;
-        }
-      }
-      /**
-       * <code>required .io.playpen.core.protocol.P3Meta p3 = 1;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder> 
-          getP3FieldBuilder() {
-        if (p3Builder_ == null) {
-          p3Builder_ = new com.google.protobuf.SingleFieldBuilder<
-              io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder>(
-                  getP3(),
-                  getParentForChildren(),
-                  isClean());
-          p3_ = null;
-        }
-        return p3Builder_;
-      }
-
-      // @@protoc_insertion_point(builder_scope:io.playpen.core.protocol.ExpireCache)
-    }
-
-    static {
-      defaultInstance = new ExpireCache(true);
-      defaultInstance.initFields();
-    }
-
-    // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.ExpireCache)
   }
 
   public interface C_CoordinatorListResponseOrBuilder extends
@@ -19715,17 +20883,43 @@ public final class Commands {
     io.playpen.core.protocol.Commands.FreezeServerOrBuilder getFreezeServerOrBuilder();
 
     /**
-     * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+     * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
      */
-    boolean hasExpireCache();
+    boolean hasChecksumRequest();
     /**
-     * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+     * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
      */
-    io.playpen.core.protocol.Commands.ExpireCache getExpireCache();
+    io.playpen.core.protocol.Commands.PackageChecksumRequest getChecksumRequest();
     /**
-     * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+     * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
      */
-    io.playpen.core.protocol.Commands.ExpireCacheOrBuilder getExpireCacheOrBuilder();
+    io.playpen.core.protocol.Commands.PackageChecksumRequestOrBuilder getChecksumRequestOrBuilder();
+
+    /**
+     * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+     */
+    boolean hasChecksumResponse();
+    /**
+     * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+     */
+    io.playpen.core.protocol.Commands.PackageChecksumResponse getChecksumResponse();
+    /**
+     * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+     */
+    io.playpen.core.protocol.Commands.PackageChecksumResponseOrBuilder getChecksumResponseOrBuilder();
+
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+     */
+    boolean hasSplitPackageResponse();
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+     */
+    io.playpen.core.protocol.Commands.SplitPackageResponse getSplitPackageResponse();
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+     */
+    io.playpen.core.protocol.Commands.SplitPackageResponseOrBuilder getSplitPackageResponseOrBuilder();
 
     /**
      * <code>optional .io.playpen.core.protocol.C_CoordinatorListResponse c_coordinatorListResponse = 13;</code>
@@ -19996,6 +21190,7 @@ public final class Commands {
         throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
       int mutable_bitField0_ = 0;
+      int mutable_bitField1_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -20169,7 +21364,7 @@ public final class Commands {
             }
             case 106: {
               io.playpen.core.protocol.Commands.C_CoordinatorListResponse.Builder subBuilder = null;
-              if (((bitField0_ & 0x00004000) == 0x00004000)) {
+              if (((bitField0_ & 0x00010000) == 0x00010000)) {
                 subBuilder = cCoordinatorListResponse_.toBuilder();
               }
               cCoordinatorListResponse_ = input.readMessage(io.playpen.core.protocol.Commands.C_CoordinatorListResponse.PARSER, extensionRegistry);
@@ -20177,12 +21372,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cCoordinatorListResponse_);
                 cCoordinatorListResponse_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00004000;
+              bitField0_ |= 0x00010000;
               break;
             }
             case 114: {
               io.playpen.core.protocol.Commands.C_Provision.Builder subBuilder = null;
-              if (((bitField0_ & 0x00008000) == 0x00008000)) {
+              if (((bitField0_ & 0x00020000) == 0x00020000)) {
                 subBuilder = cProvision_.toBuilder();
               }
               cProvision_ = input.readMessage(io.playpen.core.protocol.Commands.C_Provision.PARSER, extensionRegistry);
@@ -20190,12 +21385,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cProvision_);
                 cProvision_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00008000;
+              bitField0_ |= 0x00020000;
               break;
             }
             case 122: {
               io.playpen.core.protocol.Commands.C_ProvisionResponse.Builder subBuilder = null;
-              if (((bitField0_ & 0x00010000) == 0x00010000)) {
+              if (((bitField0_ & 0x00040000) == 0x00040000)) {
                 subBuilder = cProvisionResponse_.toBuilder();
               }
               cProvisionResponse_ = input.readMessage(io.playpen.core.protocol.Commands.C_ProvisionResponse.PARSER, extensionRegistry);
@@ -20203,12 +21398,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cProvisionResponse_);
                 cProvisionResponse_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00010000;
+              bitField0_ |= 0x00040000;
               break;
             }
             case 130: {
               io.playpen.core.protocol.Commands.C_Deprovision.Builder subBuilder = null;
-              if (((bitField0_ & 0x00020000) == 0x00020000)) {
+              if (((bitField0_ & 0x00080000) == 0x00080000)) {
                 subBuilder = cDeprovision_.toBuilder();
               }
               cDeprovision_ = input.readMessage(io.playpen.core.protocol.Commands.C_Deprovision.PARSER, extensionRegistry);
@@ -20216,12 +21411,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cDeprovision_);
                 cDeprovision_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00020000;
+              bitField0_ |= 0x00080000;
               break;
             }
             case 138: {
               io.playpen.core.protocol.Commands.C_Shutdown.Builder subBuilder = null;
-              if (((bitField0_ & 0x00040000) == 0x00040000)) {
+              if (((bitField0_ & 0x00100000) == 0x00100000)) {
                 subBuilder = cShutdown_.toBuilder();
               }
               cShutdown_ = input.readMessage(io.playpen.core.protocol.Commands.C_Shutdown.PARSER, extensionRegistry);
@@ -20229,12 +21424,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cShutdown_);
                 cShutdown_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00040000;
+              bitField0_ |= 0x00100000;
               break;
             }
             case 146: {
               io.playpen.core.protocol.Commands.C_Promote.Builder subBuilder = null;
-              if (((bitField0_ & 0x00080000) == 0x00080000)) {
+              if (((bitField0_ & 0x00200000) == 0x00200000)) {
                 subBuilder = cPromote_.toBuilder();
               }
               cPromote_ = input.readMessage(io.playpen.core.protocol.Commands.C_Promote.PARSER, extensionRegistry);
@@ -20242,12 +21437,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cPromote_);
                 cPromote_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00080000;
+              bitField0_ |= 0x00200000;
               break;
             }
             case 154: {
               io.playpen.core.protocol.Commands.C_CoordinatorCreated.Builder subBuilder = null;
-              if (((bitField0_ & 0x00200000) == 0x00200000)) {
+              if (((bitField0_ & 0x00800000) == 0x00800000)) {
                 subBuilder = cCoordinatorCreated_.toBuilder();
               }
               cCoordinatorCreated_ = input.readMessage(io.playpen.core.protocol.Commands.C_CoordinatorCreated.PARSER, extensionRegistry);
@@ -20255,12 +21450,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cCoordinatorCreated_);
                 cCoordinatorCreated_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00200000;
+              bitField0_ |= 0x00800000;
               break;
             }
             case 162: {
               io.playpen.core.protocol.Commands.C_SendInput.Builder subBuilder = null;
-              if (((bitField0_ & 0x00400000) == 0x00400000)) {
+              if (((bitField0_ & 0x01000000) == 0x01000000)) {
                 subBuilder = cSendInput_.toBuilder();
               }
               cSendInput_ = input.readMessage(io.playpen.core.protocol.Commands.C_SendInput.PARSER, extensionRegistry);
@@ -20268,12 +21463,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cSendInput_);
                 cSendInput_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00400000;
+              bitField0_ |= 0x01000000;
               break;
             }
             case 170: {
               io.playpen.core.protocol.Commands.C_AttachConsole.Builder subBuilder = null;
-              if (((bitField0_ & 0x00800000) == 0x00800000)) {
+              if (((bitField0_ & 0x02000000) == 0x02000000)) {
                 subBuilder = cAttachConsole_.toBuilder();
               }
               cAttachConsole_ = input.readMessage(io.playpen.core.protocol.Commands.C_AttachConsole.PARSER, extensionRegistry);
@@ -20281,12 +21476,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cAttachConsole_);
                 cAttachConsole_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00800000;
+              bitField0_ |= 0x02000000;
               break;
             }
             case 178: {
               io.playpen.core.protocol.Commands.C_ConsoleMessage.Builder subBuilder = null;
-              if (((bitField0_ & 0x02000000) == 0x02000000)) {
+              if (((bitField0_ & 0x08000000) == 0x08000000)) {
                 subBuilder = cConsoleMessage_.toBuilder();
               }
               cConsoleMessage_ = input.readMessage(io.playpen.core.protocol.Commands.C_ConsoleMessage.PARSER, extensionRegistry);
@@ -20294,7 +21489,7 @@ public final class Commands {
                 subBuilder.mergeFrom(cConsoleMessage_);
                 cConsoleMessage_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x02000000;
+              bitField0_ |= 0x08000000;
               break;
             }
             case 186: {
@@ -20312,7 +21507,7 @@ public final class Commands {
             }
             case 194: {
               io.playpen.core.protocol.Commands.C_FreezeServer.Builder subBuilder = null;
-              if (((bitField0_ & 0x10000000) == 0x10000000)) {
+              if (((bitField0_ & 0x40000000) == 0x40000000)) {
                 subBuilder = cFreezeServer_.toBuilder();
               }
               cFreezeServer_ = input.readMessage(io.playpen.core.protocol.Commands.C_FreezeServer.PARSER, extensionRegistry);
@@ -20320,12 +21515,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cFreezeServer_);
                 cFreezeServer_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x10000000;
+              bitField0_ |= 0x40000000;
               break;
             }
             case 202: {
               io.playpen.core.protocol.Commands.C_UploadPackage.Builder subBuilder = null;
-              if (((bitField0_ & 0x20000000) == 0x20000000)) {
+              if (((bitField0_ & 0x80000000) == 0x80000000)) {
                 subBuilder = cUploadPackage_.toBuilder();
               }
               cUploadPackage_ = input.readMessage(io.playpen.core.protocol.Commands.C_UploadPackage.PARSER, extensionRegistry);
@@ -20333,25 +21528,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cUploadPackage_);
                 cUploadPackage_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x20000000;
-              break;
-            }
-            case 210: {
-              io.playpen.core.protocol.Commands.ExpireCache.Builder subBuilder = null;
-              if (((bitField0_ & 0x00002000) == 0x00002000)) {
-                subBuilder = expireCache_.toBuilder();
-              }
-              expireCache_ = input.readMessage(io.playpen.core.protocol.Commands.ExpireCache.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(expireCache_);
-                expireCache_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00002000;
+              bitField0_ |= 0x80000000;
               break;
             }
             case 218: {
               io.playpen.core.protocol.Commands.C_Ack.Builder subBuilder = null;
-              if (((bitField0_ & 0x40000000) == 0x40000000)) {
+              if (((bitField1_ & 0x00000001) == 0x00000001)) {
                 subBuilder = cAck_.toBuilder();
               }
               cAck_ = input.readMessage(io.playpen.core.protocol.Commands.C_Ack.PARSER, extensionRegistry);
@@ -20359,12 +21541,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cAck_);
                 cAck_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x40000000;
+              bitField1_ |= 0x00000001;
               break;
             }
             case 226: {
               io.playpen.core.protocol.Commands.C_CreateCoordinator.Builder subBuilder = null;
-              if (((bitField0_ & 0x00100000) == 0x00100000)) {
+              if (((bitField0_ & 0x00400000) == 0x00400000)) {
                 subBuilder = cCreateCoordinator_.toBuilder();
               }
               cCreateCoordinator_ = input.readMessage(io.playpen.core.protocol.Commands.C_CreateCoordinator.PARSER, extensionRegistry);
@@ -20372,12 +21554,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cCreateCoordinator_);
                 cCreateCoordinator_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00100000;
+              bitField0_ |= 0x00400000;
               break;
             }
             case 234: {
               io.playpen.core.protocol.Commands.C_ConsoleAttached.Builder subBuilder = null;
-              if (((bitField0_ & 0x01000000) == 0x01000000)) {
+              if (((bitField0_ & 0x04000000) == 0x04000000)) {
                 subBuilder = cConsoleAttached_.toBuilder();
               }
               cConsoleAttached_ = input.readMessage(io.playpen.core.protocol.Commands.C_ConsoleAttached.PARSER, extensionRegistry);
@@ -20385,12 +21567,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cConsoleAttached_);
                 cConsoleAttached_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x01000000;
+              bitField0_ |= 0x04000000;
               break;
             }
             case 242: {
               io.playpen.core.protocol.Commands.C_ConsoleDetached.Builder subBuilder = null;
-              if (((bitField0_ & 0x04000000) == 0x04000000)) {
+              if (((bitField0_ & 0x10000000) == 0x10000000)) {
                 subBuilder = cConsoleDetached_.toBuilder();
               }
               cConsoleDetached_ = input.readMessage(io.playpen.core.protocol.Commands.C_ConsoleDetached.PARSER, extensionRegistry);
@@ -20398,12 +21580,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cConsoleDetached_);
                 cConsoleDetached_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x04000000;
+              bitField0_ |= 0x10000000;
               break;
             }
             case 250: {
               io.playpen.core.protocol.Commands.C_DetachConsole.Builder subBuilder = null;
-              if (((bitField0_ & 0x08000000) == 0x08000000)) {
+              if (((bitField0_ & 0x20000000) == 0x20000000)) {
                 subBuilder = cDetachConsole_.toBuilder();
               }
               cDetachConsole_ = input.readMessage(io.playpen.core.protocol.Commands.C_DetachConsole.PARSER, extensionRegistry);
@@ -20411,12 +21593,12 @@ public final class Commands {
                 subBuilder.mergeFrom(cDetachConsole_);
                 cDetachConsole_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x08000000;
+              bitField0_ |= 0x20000000;
               break;
             }
             case 258: {
               io.playpen.core.protocol.Commands.C_PackageList.Builder subBuilder = null;
-              if (((bitField0_ & 0x80000000) == 0x80000000)) {
+              if (((bitField1_ & 0x00000002) == 0x00000002)) {
                 subBuilder = cPackageList_.toBuilder();
               }
               cPackageList_ = input.readMessage(io.playpen.core.protocol.Commands.C_PackageList.PARSER, extensionRegistry);
@@ -20424,7 +21606,46 @@ public final class Commands {
                 subBuilder.mergeFrom(cPackageList_);
                 cPackageList_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x80000000;
+              bitField1_ |= 0x00000002;
+              break;
+            }
+            case 266: {
+              io.playpen.core.protocol.Commands.PackageChecksumRequest.Builder subBuilder = null;
+              if (((bitField0_ & 0x00002000) == 0x00002000)) {
+                subBuilder = checksumRequest_.toBuilder();
+              }
+              checksumRequest_ = input.readMessage(io.playpen.core.protocol.Commands.PackageChecksumRequest.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(checksumRequest_);
+                checksumRequest_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00002000;
+              break;
+            }
+            case 274: {
+              io.playpen.core.protocol.Commands.PackageChecksumResponse.Builder subBuilder = null;
+              if (((bitField0_ & 0x00004000) == 0x00004000)) {
+                subBuilder = checksumResponse_.toBuilder();
+              }
+              checksumResponse_ = input.readMessage(io.playpen.core.protocol.Commands.PackageChecksumResponse.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(checksumResponse_);
+                checksumResponse_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00004000;
+              break;
+            }
+            case 282: {
+              io.playpen.core.protocol.Commands.SplitPackageResponse.Builder subBuilder = null;
+              if (((bitField0_ & 0x00008000) == 0x00008000)) {
+                subBuilder = splitPackageResponse_.toBuilder();
+              }
+              splitPackageResponse_ = input.readMessage(io.playpen.core.protocol.Commands.SplitPackageResponse.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(splitPackageResponse_);
+                splitPackageResponse_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00008000;
               break;
             }
           }
@@ -20532,9 +21753,17 @@ public final class Commands {
        */
       FREEZE_SERVER(12, 26),
       /**
-       * <code>EXPIRE_CACHE = 29;</code>
+       * <code>PACKAGE_CHECKSUM_REQUEST = 35;</code>
        */
-      EXPIRE_CACHE(13, 29),
+      PACKAGE_CHECKSUM_REQUEST(13, 35),
+      /**
+       * <code>PACKAGE_CHECKSUM_RESPONSE = 36;</code>
+       */
+      PACKAGE_CHECKSUM_RESPONSE(14, 36),
+      /**
+       * <code>SPLIT_PACKAGE_RESPONSE = 37;</code>
+       */
+      SPLIT_PACKAGE_RESPONSE(15, 37),
       /**
        * <code>C_GET_COORDINATOR_LIST = 13;</code>
        *
@@ -20542,31 +21771,31 @@ public final class Commands {
        * Client commands
        * </pre>
        */
-      C_GET_COORDINATOR_LIST(14, 13),
+      C_GET_COORDINATOR_LIST(16, 13),
       /**
        * <code>C_COORDINATOR_LIST_RESPONSE = 14;</code>
        */
-      C_COORDINATOR_LIST_RESPONSE(15, 14),
+      C_COORDINATOR_LIST_RESPONSE(17, 14),
       /**
        * <code>C_PROVISION = 15;</code>
        */
-      C_PROVISION(16, 15),
+      C_PROVISION(18, 15),
       /**
        * <code>C_PROVISION_RESPONSE = 16;</code>
        */
-      C_PROVISION_RESPONSE(17, 16),
+      C_PROVISION_RESPONSE(19, 16),
       /**
        * <code>C_DEPROVISION = 17;</code>
        */
-      C_DEPROVISION(18, 17),
+      C_DEPROVISION(20, 17),
       /**
        * <code>C_SHUTDOWN = 18;</code>
        */
-      C_SHUTDOWN(19, 18),
+      C_SHUTDOWN(21, 18),
       /**
        * <code>C_PROMOTE = 19;</code>
        */
-      C_PROMOTE(20, 19),
+      C_PROMOTE(22, 19),
       /**
        * <code>C_CREATE_COORDINATOR = 20;</code>
        *
@@ -20574,47 +21803,47 @@ public final class Commands {
        * no message body
        * </pre>
        */
-      C_CREATE_COORDINATOR(21, 20),
+      C_CREATE_COORDINATOR(23, 20),
       /**
        * <code>C_COORDINATOR_CREATED = 21;</code>
        */
-      C_COORDINATOR_CREATED(22, 21),
+      C_COORDINATOR_CREATED(24, 21),
       /**
        * <code>C_SEND_INPUT = 22;</code>
        */
-      C_SEND_INPUT(23, 22),
+      C_SEND_INPUT(25, 22),
       /**
        * <code>C_ATTACH_CONSOLE = 23;</code>
        */
-      C_ATTACH_CONSOLE(24, 23),
+      C_ATTACH_CONSOLE(26, 23),
       /**
        * <code>C_CONSOLE_ATTACHED = 31;</code>
        */
-      C_CONSOLE_ATTACHED(25, 31),
+      C_CONSOLE_ATTACHED(27, 31),
       /**
        * <code>C_CONSOLE_MESSAGE = 24;</code>
        */
-      C_CONSOLE_MESSAGE(26, 24),
+      C_CONSOLE_MESSAGE(28, 24),
       /**
        * <code>C_CONSOLE_DETACHED = 32;</code>
        */
-      C_CONSOLE_DETACHED(27, 32),
+      C_CONSOLE_DETACHED(29, 32),
       /**
        * <code>C_DETACH_CONSOLE = 25;</code>
        */
-      C_DETACH_CONSOLE(28, 25),
+      C_DETACH_CONSOLE(30, 25),
       /**
        * <code>C_FREEZE_SERVER = 27;</code>
        */
-      C_FREEZE_SERVER(29, 27),
+      C_FREEZE_SERVER(31, 27),
       /**
        * <code>C_UPLOAD_PACKAGE = 28;</code>
        */
-      C_UPLOAD_PACKAGE(30, 28),
+      C_UPLOAD_PACKAGE(32, 28),
       /**
        * <code>C_ACK = 30;</code>
        */
-      C_ACK(31, 30),
+      C_ACK(33, 30),
       /**
        * <code>C_REQUEST_PACKAGE_LIST = 33;</code>
        *
@@ -20622,11 +21851,11 @@ public final class Commands {
        * no message body
        * </pre>
        */
-      C_REQUEST_PACKAGE_LIST(32, 33),
+      C_REQUEST_PACKAGE_LIST(34, 33),
       /**
        * <code>C_PACKAGE_LIST = 34;</code>
        */
-      C_PACKAGE_LIST(33, 34),
+      C_PACKAGE_LIST(35, 34),
       ;
 
       /**
@@ -20690,9 +21919,17 @@ public final class Commands {
        */
       public static final int FREEZE_SERVER_VALUE = 26;
       /**
-       * <code>EXPIRE_CACHE = 29;</code>
+       * <code>PACKAGE_CHECKSUM_REQUEST = 35;</code>
        */
-      public static final int EXPIRE_CACHE_VALUE = 29;
+      public static final int PACKAGE_CHECKSUM_REQUEST_VALUE = 35;
+      /**
+       * <code>PACKAGE_CHECKSUM_RESPONSE = 36;</code>
+       */
+      public static final int PACKAGE_CHECKSUM_RESPONSE_VALUE = 36;
+      /**
+       * <code>SPLIT_PACKAGE_RESPONSE = 37;</code>
+       */
+      public static final int SPLIT_PACKAGE_RESPONSE_VALUE = 37;
       /**
        * <code>C_GET_COORDINATOR_LIST = 13;</code>
        *
@@ -20804,7 +22041,9 @@ public final class Commands {
           case 11: return CONSOLE_MESSAGE;
           case 12: return DETACH_CONSOLE;
           case 26: return FREEZE_SERVER;
-          case 29: return EXPIRE_CACHE;
+          case 35: return PACKAGE_CHECKSUM_REQUEST;
+          case 36: return PACKAGE_CHECKSUM_RESPONSE;
+          case 37: return SPLIT_PACKAGE_RESPONSE;
           case 13: return C_GET_COORDINATOR_LIST;
           case 14: return C_COORDINATOR_LIST_RESPONSE;
           case 15: return C_PROVISION;
@@ -20877,6 +22116,7 @@ public final class Commands {
     }
 
     private int bitField0_;
+    private int bitField1_;
     public static final int TYPE_FIELD_NUMBER = 1;
     private io.playpen.core.protocol.Commands.BaseCommand.CommandType type_;
     /**
@@ -21144,25 +22384,67 @@ public final class Commands {
       return freezeServer_;
     }
 
-    public static final int EXPIRECACHE_FIELD_NUMBER = 26;
-    private io.playpen.core.protocol.Commands.ExpireCache expireCache_;
+    public static final int CHECKSUMREQUEST_FIELD_NUMBER = 33;
+    private io.playpen.core.protocol.Commands.PackageChecksumRequest checksumRequest_;
     /**
-     * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+     * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
      */
-    public boolean hasExpireCache() {
+    public boolean hasChecksumRequest() {
       return ((bitField0_ & 0x00002000) == 0x00002000);
     }
     /**
-     * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+     * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
      */
-    public io.playpen.core.protocol.Commands.ExpireCache getExpireCache() {
-      return expireCache_;
+    public io.playpen.core.protocol.Commands.PackageChecksumRequest getChecksumRequest() {
+      return checksumRequest_;
     }
     /**
-     * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+     * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
      */
-    public io.playpen.core.protocol.Commands.ExpireCacheOrBuilder getExpireCacheOrBuilder() {
-      return expireCache_;
+    public io.playpen.core.protocol.Commands.PackageChecksumRequestOrBuilder getChecksumRequestOrBuilder() {
+      return checksumRequest_;
+    }
+
+    public static final int CHECKSUMRESPONSE_FIELD_NUMBER = 34;
+    private io.playpen.core.protocol.Commands.PackageChecksumResponse checksumResponse_;
+    /**
+     * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+     */
+    public boolean hasChecksumResponse() {
+      return ((bitField0_ & 0x00004000) == 0x00004000);
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+     */
+    public io.playpen.core.protocol.Commands.PackageChecksumResponse getChecksumResponse() {
+      return checksumResponse_;
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+     */
+    public io.playpen.core.protocol.Commands.PackageChecksumResponseOrBuilder getChecksumResponseOrBuilder() {
+      return checksumResponse_;
+    }
+
+    public static final int SPLITPACKAGERESPONSE_FIELD_NUMBER = 35;
+    private io.playpen.core.protocol.Commands.SplitPackageResponse splitPackageResponse_;
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+     */
+    public boolean hasSplitPackageResponse() {
+      return ((bitField0_ & 0x00008000) == 0x00008000);
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+     */
+    public io.playpen.core.protocol.Commands.SplitPackageResponse getSplitPackageResponse() {
+      return splitPackageResponse_;
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+     */
+    public io.playpen.core.protocol.Commands.SplitPackageResponseOrBuilder getSplitPackageResponseOrBuilder() {
+      return splitPackageResponse_;
     }
 
     public static final int C_COORDINATORLISTRESPONSE_FIELD_NUMBER = 13;
@@ -21171,7 +22453,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_CoordinatorListResponse c_coordinatorListResponse = 13;</code>
      */
     public boolean hasCCoordinatorListResponse() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
+      return ((bitField0_ & 0x00010000) == 0x00010000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_CoordinatorListResponse c_coordinatorListResponse = 13;</code>
@@ -21192,7 +22474,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_Provision c_provision = 14;</code>
      */
     public boolean hasCProvision() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
+      return ((bitField0_ & 0x00020000) == 0x00020000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_Provision c_provision = 14;</code>
@@ -21213,7 +22495,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_ProvisionResponse c_provisionResponse = 15;</code>
      */
     public boolean hasCProvisionResponse() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
+      return ((bitField0_ & 0x00040000) == 0x00040000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_ProvisionResponse c_provisionResponse = 15;</code>
@@ -21234,7 +22516,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_Deprovision c_deprovision = 16;</code>
      */
     public boolean hasCDeprovision() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
+      return ((bitField0_ & 0x00080000) == 0x00080000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_Deprovision c_deprovision = 16;</code>
@@ -21255,7 +22537,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_Shutdown c_shutdown = 17;</code>
      */
     public boolean hasCShutdown() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
+      return ((bitField0_ & 0x00100000) == 0x00100000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_Shutdown c_shutdown = 17;</code>
@@ -21276,7 +22558,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_Promote c_promote = 18;</code>
      */
     public boolean hasCPromote() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
+      return ((bitField0_ & 0x00200000) == 0x00200000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_Promote c_promote = 18;</code>
@@ -21297,7 +22579,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_CreateCoordinator c_createCoordinator = 28;</code>
      */
     public boolean hasCCreateCoordinator() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
+      return ((bitField0_ & 0x00400000) == 0x00400000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_CreateCoordinator c_createCoordinator = 28;</code>
@@ -21318,7 +22600,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_CoordinatorCreated c_coordinatorCreated = 19;</code>
      */
     public boolean hasCCoordinatorCreated() {
-      return ((bitField0_ & 0x00200000) == 0x00200000);
+      return ((bitField0_ & 0x00800000) == 0x00800000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_CoordinatorCreated c_coordinatorCreated = 19;</code>
@@ -21339,7 +22621,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_SendInput c_sendInput = 20;</code>
      */
     public boolean hasCSendInput() {
-      return ((bitField0_ & 0x00400000) == 0x00400000);
+      return ((bitField0_ & 0x01000000) == 0x01000000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_SendInput c_sendInput = 20;</code>
@@ -21360,7 +22642,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_AttachConsole c_attachConsole = 21;</code>
      */
     public boolean hasCAttachConsole() {
-      return ((bitField0_ & 0x00800000) == 0x00800000);
+      return ((bitField0_ & 0x02000000) == 0x02000000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_AttachConsole c_attachConsole = 21;</code>
@@ -21381,7 +22663,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_ConsoleAttached c_consoleAttached = 29;</code>
      */
     public boolean hasCConsoleAttached() {
-      return ((bitField0_ & 0x01000000) == 0x01000000);
+      return ((bitField0_ & 0x04000000) == 0x04000000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_ConsoleAttached c_consoleAttached = 29;</code>
@@ -21402,7 +22684,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_ConsoleMessage c_consoleMessage = 22;</code>
      */
     public boolean hasCConsoleMessage() {
-      return ((bitField0_ & 0x02000000) == 0x02000000);
+      return ((bitField0_ & 0x08000000) == 0x08000000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_ConsoleMessage c_consoleMessage = 22;</code>
@@ -21423,7 +22705,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_ConsoleDetached c_consoleDetached = 30;</code>
      */
     public boolean hasCConsoleDetached() {
-      return ((bitField0_ & 0x04000000) == 0x04000000);
+      return ((bitField0_ & 0x10000000) == 0x10000000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_ConsoleDetached c_consoleDetached = 30;</code>
@@ -21444,7 +22726,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_DetachConsole c_detachConsole = 31;</code>
      */
     public boolean hasCDetachConsole() {
-      return ((bitField0_ & 0x08000000) == 0x08000000);
+      return ((bitField0_ & 0x20000000) == 0x20000000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_DetachConsole c_detachConsole = 31;</code>
@@ -21465,7 +22747,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_FreezeServer c_freezeServer = 24;</code>
      */
     public boolean hasCFreezeServer() {
-      return ((bitField0_ & 0x10000000) == 0x10000000);
+      return ((bitField0_ & 0x40000000) == 0x40000000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_FreezeServer c_freezeServer = 24;</code>
@@ -21486,7 +22768,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_UploadPackage c_uploadPackage = 25;</code>
      */
     public boolean hasCUploadPackage() {
-      return ((bitField0_ & 0x20000000) == 0x20000000);
+      return ((bitField0_ & 0x80000000) == 0x80000000);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_UploadPackage c_uploadPackage = 25;</code>
@@ -21507,7 +22789,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_Ack c_ack = 27;</code>
      */
     public boolean hasCAck() {
-      return ((bitField0_ & 0x40000000) == 0x40000000);
+      return ((bitField1_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_Ack c_ack = 27;</code>
@@ -21528,7 +22810,7 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_PackageList c_packageList = 32;</code>
      */
     public boolean hasCPackageList() {
-      return ((bitField0_ & 0x80000000) == 0x80000000);
+      return ((bitField1_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>optional .io.playpen.core.protocol.C_PackageList c_packageList = 32;</code>
@@ -21557,7 +22839,9 @@ public final class Commands {
       consoleMessage_ = io.playpen.core.protocol.Commands.ConsoleMessage.getDefaultInstance();
       detachConsole_ = io.playpen.core.protocol.Commands.DetachConsole.getDefaultInstance();
       freezeServer_ = io.playpen.core.protocol.Commands.FreezeServer.getDefaultInstance();
-      expireCache_ = io.playpen.core.protocol.Commands.ExpireCache.getDefaultInstance();
+      checksumRequest_ = io.playpen.core.protocol.Commands.PackageChecksumRequest.getDefaultInstance();
+      checksumResponse_ = io.playpen.core.protocol.Commands.PackageChecksumResponse.getDefaultInstance();
+      splitPackageResponse_ = io.playpen.core.protocol.Commands.SplitPackageResponse.getDefaultInstance();
       cCoordinatorListResponse_ = io.playpen.core.protocol.Commands.C_CoordinatorListResponse.getDefaultInstance();
       cProvision_ = io.playpen.core.protocol.Commands.C_Provision.getDefaultInstance();
       cProvisionResponse_ = io.playpen.core.protocol.Commands.C_ProvisionResponse.getDefaultInstance();
@@ -21659,8 +22943,20 @@ public final class Commands {
           return false;
         }
       }
-      if (hasExpireCache()) {
-        if (!getExpireCache().isInitialized()) {
+      if (hasChecksumRequest()) {
+        if (!getChecksumRequest().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasChecksumResponse()) {
+        if (!getChecksumResponse().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasSplitPackageResponse()) {
+        if (!getSplitPackageResponse().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -21798,65 +23094,71 @@ public final class Commands {
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         output.writeMessage(12, detachConsole_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (((bitField0_ & 0x00010000) == 0x00010000)) {
         output.writeMessage(13, cCoordinatorListResponse_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (((bitField0_ & 0x00020000) == 0x00020000)) {
         output.writeMessage(14, cProvision_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (((bitField0_ & 0x00040000) == 0x00040000)) {
         output.writeMessage(15, cProvisionResponse_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (((bitField0_ & 0x00080000) == 0x00080000)) {
         output.writeMessage(16, cDeprovision_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+      if (((bitField0_ & 0x00100000) == 0x00100000)) {
         output.writeMessage(17, cShutdown_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+      if (((bitField0_ & 0x00200000) == 0x00200000)) {
         output.writeMessage(18, cPromote_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+      if (((bitField0_ & 0x00800000) == 0x00800000)) {
         output.writeMessage(19, cCoordinatorCreated_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (((bitField0_ & 0x01000000) == 0x01000000)) {
         output.writeMessage(20, cSendInput_);
       }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
+      if (((bitField0_ & 0x02000000) == 0x02000000)) {
         output.writeMessage(21, cAttachConsole_);
       }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
+      if (((bitField0_ & 0x08000000) == 0x08000000)) {
         output.writeMessage(22, cConsoleMessage_);
       }
       if (((bitField0_ & 0x00001000) == 0x00001000)) {
         output.writeMessage(23, freezeServer_);
       }
-      if (((bitField0_ & 0x10000000) == 0x10000000)) {
+      if (((bitField0_ & 0x40000000) == 0x40000000)) {
         output.writeMessage(24, cFreezeServer_);
       }
-      if (((bitField0_ & 0x20000000) == 0x20000000)) {
+      if (((bitField0_ & 0x80000000) == 0x80000000)) {
         output.writeMessage(25, cUploadPackage_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        output.writeMessage(26, expireCache_);
-      }
-      if (((bitField0_ & 0x40000000) == 0x40000000)) {
+      if (((bitField1_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(27, cAck_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (((bitField0_ & 0x00400000) == 0x00400000)) {
         output.writeMessage(28, cCreateCoordinator_);
       }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
+      if (((bitField0_ & 0x04000000) == 0x04000000)) {
         output.writeMessage(29, cConsoleAttached_);
       }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
+      if (((bitField0_ & 0x10000000) == 0x10000000)) {
         output.writeMessage(30, cConsoleDetached_);
       }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
+      if (((bitField0_ & 0x20000000) == 0x20000000)) {
         output.writeMessage(31, cDetachConsole_);
       }
-      if (((bitField0_ & 0x80000000) == 0x80000000)) {
+      if (((bitField1_ & 0x00000002) == 0x00000002)) {
         output.writeMessage(32, cPackageList_);
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        output.writeMessage(33, checksumRequest_);
+      }
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        output.writeMessage(34, checksumResponse_);
+      }
+      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+        output.writeMessage(35, splitPackageResponse_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -21915,43 +23217,43 @@ public final class Commands {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, detachConsole_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (((bitField0_ & 0x00010000) == 0x00010000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(13, cCoordinatorListResponse_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (((bitField0_ & 0x00020000) == 0x00020000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(14, cProvision_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (((bitField0_ & 0x00040000) == 0x00040000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(15, cProvisionResponse_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (((bitField0_ & 0x00080000) == 0x00080000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(16, cDeprovision_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+      if (((bitField0_ & 0x00100000) == 0x00100000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(17, cShutdown_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+      if (((bitField0_ & 0x00200000) == 0x00200000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(18, cPromote_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+      if (((bitField0_ & 0x00800000) == 0x00800000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(19, cCoordinatorCreated_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (((bitField0_ & 0x01000000) == 0x01000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(20, cSendInput_);
       }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
+      if (((bitField0_ & 0x02000000) == 0x02000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(21, cAttachConsole_);
       }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
+      if (((bitField0_ & 0x08000000) == 0x08000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(22, cConsoleMessage_);
       }
@@ -21959,41 +23261,49 @@ public final class Commands {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(23, freezeServer_);
       }
-      if (((bitField0_ & 0x10000000) == 0x10000000)) {
+      if (((bitField0_ & 0x40000000) == 0x40000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(24, cFreezeServer_);
       }
-      if (((bitField0_ & 0x20000000) == 0x20000000)) {
+      if (((bitField0_ & 0x80000000) == 0x80000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(25, cUploadPackage_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(26, expireCache_);
-      }
-      if (((bitField0_ & 0x40000000) == 0x40000000)) {
+      if (((bitField1_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(27, cAck_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (((bitField0_ & 0x00400000) == 0x00400000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(28, cCreateCoordinator_);
       }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
+      if (((bitField0_ & 0x04000000) == 0x04000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(29, cConsoleAttached_);
       }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
+      if (((bitField0_ & 0x10000000) == 0x10000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(30, cConsoleDetached_);
       }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
+      if (((bitField0_ & 0x20000000) == 0x20000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(31, cDetachConsole_);
       }
-      if (((bitField0_ & 0x80000000) == 0x80000000)) {
+      if (((bitField1_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(32, cPackageList_);
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(33, checksumRequest_);
+      }
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(34, checksumResponse_);
+      }
+      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(35, splitPackageResponse_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -22116,7 +23426,9 @@ public final class Commands {
           getConsoleMessageFieldBuilder();
           getDetachConsoleFieldBuilder();
           getFreezeServerFieldBuilder();
-          getExpireCacheFieldBuilder();
+          getChecksumRequestFieldBuilder();
+          getChecksumResponseFieldBuilder();
+          getSplitPackageResponseFieldBuilder();
           getCCoordinatorListResponseFieldBuilder();
           getCProvisionFieldBuilder();
           getCProvisionResponseFieldBuilder();
@@ -22217,120 +23529,132 @@ public final class Commands {
           freezeServerBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00001000);
-        if (expireCacheBuilder_ == null) {
-          expireCache_ = io.playpen.core.protocol.Commands.ExpireCache.getDefaultInstance();
+        if (checksumRequestBuilder_ == null) {
+          checksumRequest_ = io.playpen.core.protocol.Commands.PackageChecksumRequest.getDefaultInstance();
         } else {
-          expireCacheBuilder_.clear();
+          checksumRequestBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00002000);
+        if (checksumResponseBuilder_ == null) {
+          checksumResponse_ = io.playpen.core.protocol.Commands.PackageChecksumResponse.getDefaultInstance();
+        } else {
+          checksumResponseBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00004000);
+        if (splitPackageResponseBuilder_ == null) {
+          splitPackageResponse_ = io.playpen.core.protocol.Commands.SplitPackageResponse.getDefaultInstance();
+        } else {
+          splitPackageResponseBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00008000);
         if (cCoordinatorListResponseBuilder_ == null) {
           cCoordinatorListResponse_ = io.playpen.core.protocol.Commands.C_CoordinatorListResponse.getDefaultInstance();
         } else {
           cCoordinatorListResponseBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00004000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         if (cProvisionBuilder_ == null) {
           cProvision_ = io.playpen.core.protocol.Commands.C_Provision.getDefaultInstance();
         } else {
           cProvisionBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         if (cProvisionResponseBuilder_ == null) {
           cProvisionResponse_ = io.playpen.core.protocol.Commands.C_ProvisionResponse.getDefaultInstance();
         } else {
           cProvisionResponseBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00010000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         if (cDeprovisionBuilder_ == null) {
           cDeprovision_ = io.playpen.core.protocol.Commands.C_Deprovision.getDefaultInstance();
         } else {
           cDeprovisionBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00080000);
         if (cShutdownBuilder_ == null) {
           cShutdown_ = io.playpen.core.protocol.Commands.C_Shutdown.getDefaultInstance();
         } else {
           cShutdownBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00100000);
         if (cPromoteBuilder_ == null) {
           cPromote_ = io.playpen.core.protocol.Commands.C_Promote.getDefaultInstance();
         } else {
           cPromoteBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00080000);
+        bitField0_ = (bitField0_ & ~0x00200000);
         if (cCreateCoordinatorBuilder_ == null) {
           cCreateCoordinator_ = io.playpen.core.protocol.Commands.C_CreateCoordinator.getDefaultInstance();
         } else {
           cCreateCoordinatorBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00100000);
+        bitField0_ = (bitField0_ & ~0x00400000);
         if (cCoordinatorCreatedBuilder_ == null) {
           cCoordinatorCreated_ = io.playpen.core.protocol.Commands.C_CoordinatorCreated.getDefaultInstance();
         } else {
           cCoordinatorCreatedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00200000);
+        bitField0_ = (bitField0_ & ~0x00800000);
         if (cSendInputBuilder_ == null) {
           cSendInput_ = io.playpen.core.protocol.Commands.C_SendInput.getDefaultInstance();
         } else {
           cSendInputBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00400000);
+        bitField0_ = (bitField0_ & ~0x01000000);
         if (cAttachConsoleBuilder_ == null) {
           cAttachConsole_ = io.playpen.core.protocol.Commands.C_AttachConsole.getDefaultInstance();
         } else {
           cAttachConsoleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00800000);
+        bitField0_ = (bitField0_ & ~0x02000000);
         if (cConsoleAttachedBuilder_ == null) {
           cConsoleAttached_ = io.playpen.core.protocol.Commands.C_ConsoleAttached.getDefaultInstance();
         } else {
           cConsoleAttachedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x01000000);
+        bitField0_ = (bitField0_ & ~0x04000000);
         if (cConsoleMessageBuilder_ == null) {
           cConsoleMessage_ = io.playpen.core.protocol.Commands.C_ConsoleMessage.getDefaultInstance();
         } else {
           cConsoleMessageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x02000000);
+        bitField0_ = (bitField0_ & ~0x08000000);
         if (cConsoleDetachedBuilder_ == null) {
           cConsoleDetached_ = io.playpen.core.protocol.Commands.C_ConsoleDetached.getDefaultInstance();
         } else {
           cConsoleDetachedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x04000000);
+        bitField0_ = (bitField0_ & ~0x10000000);
         if (cDetachConsoleBuilder_ == null) {
           cDetachConsole_ = io.playpen.core.protocol.Commands.C_DetachConsole.getDefaultInstance();
         } else {
           cDetachConsoleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x08000000);
+        bitField0_ = (bitField0_ & ~0x20000000);
         if (cFreezeServerBuilder_ == null) {
           cFreezeServer_ = io.playpen.core.protocol.Commands.C_FreezeServer.getDefaultInstance();
         } else {
           cFreezeServerBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x10000000);
+        bitField0_ = (bitField0_ & ~0x40000000);
         if (cUploadPackageBuilder_ == null) {
           cUploadPackage_ = io.playpen.core.protocol.Commands.C_UploadPackage.getDefaultInstance();
         } else {
           cUploadPackageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x20000000);
+        bitField0_ = (bitField0_ & ~0x80000000);
         if (cAckBuilder_ == null) {
           cAck_ = io.playpen.core.protocol.Commands.C_Ack.getDefaultInstance();
         } else {
           cAckBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x40000000);
+        bitField1_ = (bitField1_ & ~0x00000001);
         if (cPackageListBuilder_ == null) {
           cPackageList_ = io.playpen.core.protocol.Commands.C_PackageList.getDefaultInstance();
         } else {
           cPackageListBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x80000000);
+        bitField1_ = (bitField1_ & ~0x00000002);
         return this;
       }
 
@@ -22358,7 +23682,9 @@ public final class Commands {
       public io.playpen.core.protocol.Commands.BaseCommand buildPartial() {
         io.playpen.core.protocol.Commands.BaseCommand result = new io.playpen.core.protocol.Commands.BaseCommand(this);
         int from_bitField0_ = bitField0_;
+        int from_bitField1_ = bitField1_;
         int to_bitField0_ = 0;
+        int to_bitField1_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
@@ -22462,149 +23788,165 @@ public final class Commands {
         if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
           to_bitField0_ |= 0x00002000;
         }
-        if (expireCacheBuilder_ == null) {
-          result.expireCache_ = expireCache_;
+        if (checksumRequestBuilder_ == null) {
+          result.checksumRequest_ = checksumRequest_;
         } else {
-          result.expireCache_ = expireCacheBuilder_.build();
+          result.checksumRequest_ = checksumRequestBuilder_.build();
         }
         if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
           to_bitField0_ |= 0x00004000;
+        }
+        if (checksumResponseBuilder_ == null) {
+          result.checksumResponse_ = checksumResponse_;
+        } else {
+          result.checksumResponse_ = checksumResponseBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
+          to_bitField0_ |= 0x00008000;
+        }
+        if (splitPackageResponseBuilder_ == null) {
+          result.splitPackageResponse_ = splitPackageResponse_;
+        } else {
+          result.splitPackageResponse_ = splitPackageResponseBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
+          to_bitField0_ |= 0x00010000;
         }
         if (cCoordinatorListResponseBuilder_ == null) {
           result.cCoordinatorListResponse_ = cCoordinatorListResponse_;
         } else {
           result.cCoordinatorListResponse_ = cCoordinatorListResponseBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00008000;
+        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
+          to_bitField0_ |= 0x00020000;
         }
         if (cProvisionBuilder_ == null) {
           result.cProvision_ = cProvision_;
         } else {
           result.cProvision_ = cProvisionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00010000;
+        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
+          to_bitField0_ |= 0x00040000;
         }
         if (cProvisionResponseBuilder_ == null) {
           result.cProvisionResponse_ = cProvisionResponse_;
         } else {
           result.cProvisionResponse_ = cProvisionResponseBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00020000;
+        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+          to_bitField0_ |= 0x00080000;
         }
         if (cDeprovisionBuilder_ == null) {
           result.cDeprovision_ = cDeprovision_;
         } else {
           result.cDeprovision_ = cDeprovisionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00040000;
+        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
+          to_bitField0_ |= 0x00100000;
         }
         if (cShutdownBuilder_ == null) {
           result.cShutdown_ = cShutdown_;
         } else {
           result.cShutdown_ = cShutdownBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00080000;
+        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
+          to_bitField0_ |= 0x00200000;
         }
         if (cPromoteBuilder_ == null) {
           result.cPromote_ = cPromote_;
         } else {
           result.cPromote_ = cPromoteBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00100000;
+        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
+          to_bitField0_ |= 0x00400000;
         }
         if (cCreateCoordinatorBuilder_ == null) {
           result.cCreateCoordinator_ = cCreateCoordinator_;
         } else {
           result.cCreateCoordinator_ = cCreateCoordinatorBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
-          to_bitField0_ |= 0x00200000;
+        if (((from_bitField0_ & 0x00800000) == 0x00800000)) {
+          to_bitField0_ |= 0x00800000;
         }
         if (cCoordinatorCreatedBuilder_ == null) {
           result.cCoordinatorCreated_ = cCoordinatorCreated_;
         } else {
           result.cCoordinatorCreated_ = cCoordinatorCreatedBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
-          to_bitField0_ |= 0x00400000;
+        if (((from_bitField0_ & 0x01000000) == 0x01000000)) {
+          to_bitField0_ |= 0x01000000;
         }
         if (cSendInputBuilder_ == null) {
           result.cSendInput_ = cSendInput_;
         } else {
           result.cSendInput_ = cSendInputBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00800000) == 0x00800000)) {
-          to_bitField0_ |= 0x00800000;
+        if (((from_bitField0_ & 0x02000000) == 0x02000000)) {
+          to_bitField0_ |= 0x02000000;
         }
         if (cAttachConsoleBuilder_ == null) {
           result.cAttachConsole_ = cAttachConsole_;
         } else {
           result.cAttachConsole_ = cAttachConsoleBuilder_.build();
         }
-        if (((from_bitField0_ & 0x01000000) == 0x01000000)) {
-          to_bitField0_ |= 0x01000000;
+        if (((from_bitField0_ & 0x04000000) == 0x04000000)) {
+          to_bitField0_ |= 0x04000000;
         }
         if (cConsoleAttachedBuilder_ == null) {
           result.cConsoleAttached_ = cConsoleAttached_;
         } else {
           result.cConsoleAttached_ = cConsoleAttachedBuilder_.build();
         }
-        if (((from_bitField0_ & 0x02000000) == 0x02000000)) {
-          to_bitField0_ |= 0x02000000;
+        if (((from_bitField0_ & 0x08000000) == 0x08000000)) {
+          to_bitField0_ |= 0x08000000;
         }
         if (cConsoleMessageBuilder_ == null) {
           result.cConsoleMessage_ = cConsoleMessage_;
         } else {
           result.cConsoleMessage_ = cConsoleMessageBuilder_.build();
         }
-        if (((from_bitField0_ & 0x04000000) == 0x04000000)) {
-          to_bitField0_ |= 0x04000000;
+        if (((from_bitField0_ & 0x10000000) == 0x10000000)) {
+          to_bitField0_ |= 0x10000000;
         }
         if (cConsoleDetachedBuilder_ == null) {
           result.cConsoleDetached_ = cConsoleDetached_;
         } else {
           result.cConsoleDetached_ = cConsoleDetachedBuilder_.build();
         }
-        if (((from_bitField0_ & 0x08000000) == 0x08000000)) {
-          to_bitField0_ |= 0x08000000;
+        if (((from_bitField0_ & 0x20000000) == 0x20000000)) {
+          to_bitField0_ |= 0x20000000;
         }
         if (cDetachConsoleBuilder_ == null) {
           result.cDetachConsole_ = cDetachConsole_;
         } else {
           result.cDetachConsole_ = cDetachConsoleBuilder_.build();
         }
-        if (((from_bitField0_ & 0x10000000) == 0x10000000)) {
-          to_bitField0_ |= 0x10000000;
+        if (((from_bitField0_ & 0x40000000) == 0x40000000)) {
+          to_bitField0_ |= 0x40000000;
         }
         if (cFreezeServerBuilder_ == null) {
           result.cFreezeServer_ = cFreezeServer_;
         } else {
           result.cFreezeServer_ = cFreezeServerBuilder_.build();
         }
-        if (((from_bitField0_ & 0x20000000) == 0x20000000)) {
-          to_bitField0_ |= 0x20000000;
+        if (((from_bitField0_ & 0x80000000) == 0x80000000)) {
+          to_bitField0_ |= 0x80000000;
         }
         if (cUploadPackageBuilder_ == null) {
           result.cUploadPackage_ = cUploadPackage_;
         } else {
           result.cUploadPackage_ = cUploadPackageBuilder_.build();
         }
-        if (((from_bitField0_ & 0x40000000) == 0x40000000)) {
-          to_bitField0_ |= 0x40000000;
+        if (((from_bitField1_ & 0x00000001) == 0x00000001)) {
+          to_bitField1_ |= 0x00000001;
         }
         if (cAckBuilder_ == null) {
           result.cAck_ = cAck_;
         } else {
           result.cAck_ = cAckBuilder_.build();
         }
-        if (((from_bitField0_ & 0x80000000) == 0x80000000)) {
-          to_bitField0_ |= 0x80000000;
+        if (((from_bitField1_ & 0x00000002) == 0x00000002)) {
+          to_bitField1_ |= 0x00000002;
         }
         if (cPackageListBuilder_ == null) {
           result.cPackageList_ = cPackageList_;
@@ -22612,6 +23954,7 @@ public final class Commands {
           result.cPackageList_ = cPackageListBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
+        result.bitField1_ = to_bitField1_;
         onBuilt();
         return result;
       }
@@ -22666,8 +24009,14 @@ public final class Commands {
         if (other.hasFreezeServer()) {
           mergeFreezeServer(other.getFreezeServer());
         }
-        if (other.hasExpireCache()) {
-          mergeExpireCache(other.getExpireCache());
+        if (other.hasChecksumRequest()) {
+          mergeChecksumRequest(other.getChecksumRequest());
+        }
+        if (other.hasChecksumResponse()) {
+          mergeChecksumResponse(other.getChecksumResponse());
+        }
+        if (other.hasSplitPackageResponse()) {
+          mergeSplitPackageResponse(other.getSplitPackageResponse());
         }
         if (other.hasCCoordinatorListResponse()) {
           mergeCCoordinatorListResponse(other.getCCoordinatorListResponse());
@@ -22804,8 +24153,20 @@ public final class Commands {
             return false;
           }
         }
-        if (hasExpireCache()) {
-          if (!getExpireCache().isInitialized()) {
+        if (hasChecksumRequest()) {
+          if (!getChecksumRequest().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasChecksumResponse()) {
+          if (!getChecksumResponse().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasSplitPackageResponse()) {
+          if (!getSplitPackageResponse().isInitialized()) {
             
             return false;
           }
@@ -22921,6 +24282,7 @@ public final class Commands {
         return this;
       }
       private int bitField0_;
+      private int bitField1_;
 
       private io.playpen.core.protocol.Commands.BaseCommand.CommandType type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.SYNC;
       /**
@@ -24349,120 +25711,352 @@ public final class Commands {
         return freezeServerBuilder_;
       }
 
-      private io.playpen.core.protocol.Commands.ExpireCache expireCache_ = io.playpen.core.protocol.Commands.ExpireCache.getDefaultInstance();
+      private io.playpen.core.protocol.Commands.PackageChecksumRequest checksumRequest_ = io.playpen.core.protocol.Commands.PackageChecksumRequest.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          io.playpen.core.protocol.Commands.ExpireCache, io.playpen.core.protocol.Commands.ExpireCache.Builder, io.playpen.core.protocol.Commands.ExpireCacheOrBuilder> expireCacheBuilder_;
+          io.playpen.core.protocol.Commands.PackageChecksumRequest, io.playpen.core.protocol.Commands.PackageChecksumRequest.Builder, io.playpen.core.protocol.Commands.PackageChecksumRequestOrBuilder> checksumRequestBuilder_;
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
-      public boolean hasExpireCache() {
+      public boolean hasChecksumRequest() {
         return ((bitField0_ & 0x00002000) == 0x00002000);
       }
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
-      public io.playpen.core.protocol.Commands.ExpireCache getExpireCache() {
-        if (expireCacheBuilder_ == null) {
-          return expireCache_;
+      public io.playpen.core.protocol.Commands.PackageChecksumRequest getChecksumRequest() {
+        if (checksumRequestBuilder_ == null) {
+          return checksumRequest_;
         } else {
-          return expireCacheBuilder_.getMessage();
+          return checksumRequestBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
-      public Builder setExpireCache(io.playpen.core.protocol.Commands.ExpireCache value) {
-        if (expireCacheBuilder_ == null) {
+      public Builder setChecksumRequest(io.playpen.core.protocol.Commands.PackageChecksumRequest value) {
+        if (checksumRequestBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          expireCache_ = value;
+          checksumRequest_ = value;
           onChanged();
         } else {
-          expireCacheBuilder_.setMessage(value);
+          checksumRequestBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
-      public Builder setExpireCache(
-          io.playpen.core.protocol.Commands.ExpireCache.Builder builderForValue) {
-        if (expireCacheBuilder_ == null) {
-          expireCache_ = builderForValue.build();
+      public Builder setChecksumRequest(
+          io.playpen.core.protocol.Commands.PackageChecksumRequest.Builder builderForValue) {
+        if (checksumRequestBuilder_ == null) {
+          checksumRequest_ = builderForValue.build();
           onChanged();
         } else {
-          expireCacheBuilder_.setMessage(builderForValue.build());
+          checksumRequestBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
-      public Builder mergeExpireCache(io.playpen.core.protocol.Commands.ExpireCache value) {
-        if (expireCacheBuilder_ == null) {
+      public Builder mergeChecksumRequest(io.playpen.core.protocol.Commands.PackageChecksumRequest value) {
+        if (checksumRequestBuilder_ == null) {
           if (((bitField0_ & 0x00002000) == 0x00002000) &&
-              expireCache_ != io.playpen.core.protocol.Commands.ExpireCache.getDefaultInstance()) {
-            expireCache_ =
-              io.playpen.core.protocol.Commands.ExpireCache.newBuilder(expireCache_).mergeFrom(value).buildPartial();
+              checksumRequest_ != io.playpen.core.protocol.Commands.PackageChecksumRequest.getDefaultInstance()) {
+            checksumRequest_ =
+              io.playpen.core.protocol.Commands.PackageChecksumRequest.newBuilder(checksumRequest_).mergeFrom(value).buildPartial();
           } else {
-            expireCache_ = value;
+            checksumRequest_ = value;
           }
           onChanged();
         } else {
-          expireCacheBuilder_.mergeFrom(value);
+          checksumRequestBuilder_.mergeFrom(value);
         }
         bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
-      public Builder clearExpireCache() {
-        if (expireCacheBuilder_ == null) {
-          expireCache_ = io.playpen.core.protocol.Commands.ExpireCache.getDefaultInstance();
+      public Builder clearChecksumRequest() {
+        if (checksumRequestBuilder_ == null) {
+          checksumRequest_ = io.playpen.core.protocol.Commands.PackageChecksumRequest.getDefaultInstance();
           onChanged();
         } else {
-          expireCacheBuilder_.clear();
+          checksumRequestBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00002000);
         return this;
       }
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
-      public io.playpen.core.protocol.Commands.ExpireCache.Builder getExpireCacheBuilder() {
+      public io.playpen.core.protocol.Commands.PackageChecksumRequest.Builder getChecksumRequestBuilder() {
         bitField0_ |= 0x00002000;
         onChanged();
-        return getExpireCacheFieldBuilder().getBuilder();
+        return getChecksumRequestFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
-      public io.playpen.core.protocol.Commands.ExpireCacheOrBuilder getExpireCacheOrBuilder() {
-        if (expireCacheBuilder_ != null) {
-          return expireCacheBuilder_.getMessageOrBuilder();
+      public io.playpen.core.protocol.Commands.PackageChecksumRequestOrBuilder getChecksumRequestOrBuilder() {
+        if (checksumRequestBuilder_ != null) {
+          return checksumRequestBuilder_.getMessageOrBuilder();
         } else {
-          return expireCache_;
+          return checksumRequest_;
         }
       }
       /**
-       * <code>optional .io.playpen.core.protocol.ExpireCache expireCache = 26;</code>
+       * <code>optional .io.playpen.core.protocol.PackageChecksumRequest checksumRequest = 33;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          io.playpen.core.protocol.Commands.ExpireCache, io.playpen.core.protocol.Commands.ExpireCache.Builder, io.playpen.core.protocol.Commands.ExpireCacheOrBuilder> 
-          getExpireCacheFieldBuilder() {
-        if (expireCacheBuilder_ == null) {
-          expireCacheBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              io.playpen.core.protocol.Commands.ExpireCache, io.playpen.core.protocol.Commands.ExpireCache.Builder, io.playpen.core.protocol.Commands.ExpireCacheOrBuilder>(
-                  getExpireCache(),
+          io.playpen.core.protocol.Commands.PackageChecksumRequest, io.playpen.core.protocol.Commands.PackageChecksumRequest.Builder, io.playpen.core.protocol.Commands.PackageChecksumRequestOrBuilder> 
+          getChecksumRequestFieldBuilder() {
+        if (checksumRequestBuilder_ == null) {
+          checksumRequestBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.playpen.core.protocol.Commands.PackageChecksumRequest, io.playpen.core.protocol.Commands.PackageChecksumRequest.Builder, io.playpen.core.protocol.Commands.PackageChecksumRequestOrBuilder>(
+                  getChecksumRequest(),
                   getParentForChildren(),
                   isClean());
-          expireCache_ = null;
+          checksumRequest_ = null;
         }
-        return expireCacheBuilder_;
+        return checksumRequestBuilder_;
+      }
+
+      private io.playpen.core.protocol.Commands.PackageChecksumResponse checksumResponse_ = io.playpen.core.protocol.Commands.PackageChecksumResponse.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.Commands.PackageChecksumResponse, io.playpen.core.protocol.Commands.PackageChecksumResponse.Builder, io.playpen.core.protocol.Commands.PackageChecksumResponseOrBuilder> checksumResponseBuilder_;
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      public boolean hasChecksumResponse() {
+        return ((bitField0_ & 0x00004000) == 0x00004000);
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      public io.playpen.core.protocol.Commands.PackageChecksumResponse getChecksumResponse() {
+        if (checksumResponseBuilder_ == null) {
+          return checksumResponse_;
+        } else {
+          return checksumResponseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      public Builder setChecksumResponse(io.playpen.core.protocol.Commands.PackageChecksumResponse value) {
+        if (checksumResponseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          checksumResponse_ = value;
+          onChanged();
+        } else {
+          checksumResponseBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00004000;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      public Builder setChecksumResponse(
+          io.playpen.core.protocol.Commands.PackageChecksumResponse.Builder builderForValue) {
+        if (checksumResponseBuilder_ == null) {
+          checksumResponse_ = builderForValue.build();
+          onChanged();
+        } else {
+          checksumResponseBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00004000;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      public Builder mergeChecksumResponse(io.playpen.core.protocol.Commands.PackageChecksumResponse value) {
+        if (checksumResponseBuilder_ == null) {
+          if (((bitField0_ & 0x00004000) == 0x00004000) &&
+              checksumResponse_ != io.playpen.core.protocol.Commands.PackageChecksumResponse.getDefaultInstance()) {
+            checksumResponse_ =
+              io.playpen.core.protocol.Commands.PackageChecksumResponse.newBuilder(checksumResponse_).mergeFrom(value).buildPartial();
+          } else {
+            checksumResponse_ = value;
+          }
+          onChanged();
+        } else {
+          checksumResponseBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00004000;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      public Builder clearChecksumResponse() {
+        if (checksumResponseBuilder_ == null) {
+          checksumResponse_ = io.playpen.core.protocol.Commands.PackageChecksumResponse.getDefaultInstance();
+          onChanged();
+        } else {
+          checksumResponseBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00004000);
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      public io.playpen.core.protocol.Commands.PackageChecksumResponse.Builder getChecksumResponseBuilder() {
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return getChecksumResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      public io.playpen.core.protocol.Commands.PackageChecksumResponseOrBuilder getChecksumResponseOrBuilder() {
+        if (checksumResponseBuilder_ != null) {
+          return checksumResponseBuilder_.getMessageOrBuilder();
+        } else {
+          return checksumResponse_;
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.PackageChecksumResponse checksumResponse = 34;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.Commands.PackageChecksumResponse, io.playpen.core.protocol.Commands.PackageChecksumResponse.Builder, io.playpen.core.protocol.Commands.PackageChecksumResponseOrBuilder> 
+          getChecksumResponseFieldBuilder() {
+        if (checksumResponseBuilder_ == null) {
+          checksumResponseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.playpen.core.protocol.Commands.PackageChecksumResponse, io.playpen.core.protocol.Commands.PackageChecksumResponse.Builder, io.playpen.core.protocol.Commands.PackageChecksumResponseOrBuilder>(
+                  getChecksumResponse(),
+                  getParentForChildren(),
+                  isClean());
+          checksumResponse_ = null;
+        }
+        return checksumResponseBuilder_;
+      }
+
+      private io.playpen.core.protocol.Commands.SplitPackageResponse splitPackageResponse_ = io.playpen.core.protocol.Commands.SplitPackageResponse.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.Commands.SplitPackageResponse, io.playpen.core.protocol.Commands.SplitPackageResponse.Builder, io.playpen.core.protocol.Commands.SplitPackageResponseOrBuilder> splitPackageResponseBuilder_;
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      public boolean hasSplitPackageResponse() {
+        return ((bitField0_ & 0x00008000) == 0x00008000);
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      public io.playpen.core.protocol.Commands.SplitPackageResponse getSplitPackageResponse() {
+        if (splitPackageResponseBuilder_ == null) {
+          return splitPackageResponse_;
+        } else {
+          return splitPackageResponseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      public Builder setSplitPackageResponse(io.playpen.core.protocol.Commands.SplitPackageResponse value) {
+        if (splitPackageResponseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          splitPackageResponse_ = value;
+          onChanged();
+        } else {
+          splitPackageResponseBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00008000;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      public Builder setSplitPackageResponse(
+          io.playpen.core.protocol.Commands.SplitPackageResponse.Builder builderForValue) {
+        if (splitPackageResponseBuilder_ == null) {
+          splitPackageResponse_ = builderForValue.build();
+          onChanged();
+        } else {
+          splitPackageResponseBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00008000;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      public Builder mergeSplitPackageResponse(io.playpen.core.protocol.Commands.SplitPackageResponse value) {
+        if (splitPackageResponseBuilder_ == null) {
+          if (((bitField0_ & 0x00008000) == 0x00008000) &&
+              splitPackageResponse_ != io.playpen.core.protocol.Commands.SplitPackageResponse.getDefaultInstance()) {
+            splitPackageResponse_ =
+              io.playpen.core.protocol.Commands.SplitPackageResponse.newBuilder(splitPackageResponse_).mergeFrom(value).buildPartial();
+          } else {
+            splitPackageResponse_ = value;
+          }
+          onChanged();
+        } else {
+          splitPackageResponseBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00008000;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      public Builder clearSplitPackageResponse() {
+        if (splitPackageResponseBuilder_ == null) {
+          splitPackageResponse_ = io.playpen.core.protocol.Commands.SplitPackageResponse.getDefaultInstance();
+          onChanged();
+        } else {
+          splitPackageResponseBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00008000);
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      public io.playpen.core.protocol.Commands.SplitPackageResponse.Builder getSplitPackageResponseBuilder() {
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return getSplitPackageResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      public io.playpen.core.protocol.Commands.SplitPackageResponseOrBuilder getSplitPackageResponseOrBuilder() {
+        if (splitPackageResponseBuilder_ != null) {
+          return splitPackageResponseBuilder_.getMessageOrBuilder();
+        } else {
+          return splitPackageResponse_;
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageResponse splitPackageResponse = 35;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.Commands.SplitPackageResponse, io.playpen.core.protocol.Commands.SplitPackageResponse.Builder, io.playpen.core.protocol.Commands.SplitPackageResponseOrBuilder> 
+          getSplitPackageResponseFieldBuilder() {
+        if (splitPackageResponseBuilder_ == null) {
+          splitPackageResponseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.playpen.core.protocol.Commands.SplitPackageResponse, io.playpen.core.protocol.Commands.SplitPackageResponse.Builder, io.playpen.core.protocol.Commands.SplitPackageResponseOrBuilder>(
+                  getSplitPackageResponse(),
+                  getParentForChildren(),
+                  isClean());
+          splitPackageResponse_ = null;
+        }
+        return splitPackageResponseBuilder_;
       }
 
       private io.playpen.core.protocol.Commands.C_CoordinatorListResponse cCoordinatorListResponse_ = io.playpen.core.protocol.Commands.C_CoordinatorListResponse.getDefaultInstance();
@@ -24472,7 +26066,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_CoordinatorListResponse c_coordinatorListResponse = 13;</code>
        */
       public boolean hasCCoordinatorListResponse() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
+        return ((bitField0_ & 0x00010000) == 0x00010000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_CoordinatorListResponse c_coordinatorListResponse = 13;</code>
@@ -24497,7 +26091,7 @@ public final class Commands {
         } else {
           cCoordinatorListResponseBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
@@ -24511,7 +26105,7 @@ public final class Commands {
         } else {
           cCoordinatorListResponseBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
@@ -24519,7 +26113,7 @@ public final class Commands {
        */
       public Builder mergeCCoordinatorListResponse(io.playpen.core.protocol.Commands.C_CoordinatorListResponse value) {
         if (cCoordinatorListResponseBuilder_ == null) {
-          if (((bitField0_ & 0x00004000) == 0x00004000) &&
+          if (((bitField0_ & 0x00010000) == 0x00010000) &&
               cCoordinatorListResponse_ != io.playpen.core.protocol.Commands.C_CoordinatorListResponse.getDefaultInstance()) {
             cCoordinatorListResponse_ =
               io.playpen.core.protocol.Commands.C_CoordinatorListResponse.newBuilder(cCoordinatorListResponse_).mergeFrom(value).buildPartial();
@@ -24530,7 +26124,7 @@ public final class Commands {
         } else {
           cCoordinatorListResponseBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
@@ -24543,14 +26137,14 @@ public final class Commands {
         } else {
           cCoordinatorListResponseBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00004000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_CoordinatorListResponse c_coordinatorListResponse = 13;</code>
        */
       public io.playpen.core.protocol.Commands.C_CoordinatorListResponse.Builder getCCoordinatorListResponseBuilder() {
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00010000;
         onChanged();
         return getCCoordinatorListResponseFieldBuilder().getBuilder();
       }
@@ -24588,7 +26182,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_Provision c_provision = 14;</code>
        */
       public boolean hasCProvision() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
+        return ((bitField0_ & 0x00020000) == 0x00020000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Provision c_provision = 14;</code>
@@ -24613,7 +26207,7 @@ public final class Commands {
         } else {
           cProvisionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
@@ -24627,7 +26221,7 @@ public final class Commands {
         } else {
           cProvisionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
@@ -24635,7 +26229,7 @@ public final class Commands {
        */
       public Builder mergeCProvision(io.playpen.core.protocol.Commands.C_Provision value) {
         if (cProvisionBuilder_ == null) {
-          if (((bitField0_ & 0x00008000) == 0x00008000) &&
+          if (((bitField0_ & 0x00020000) == 0x00020000) &&
               cProvision_ != io.playpen.core.protocol.Commands.C_Provision.getDefaultInstance()) {
             cProvision_ =
               io.playpen.core.protocol.Commands.C_Provision.newBuilder(cProvision_).mergeFrom(value).buildPartial();
@@ -24646,7 +26240,7 @@ public final class Commands {
         } else {
           cProvisionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
@@ -24659,14 +26253,14 @@ public final class Commands {
         } else {
           cProvisionBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Provision c_provision = 14;</code>
        */
       public io.playpen.core.protocol.Commands.C_Provision.Builder getCProvisionBuilder() {
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00020000;
         onChanged();
         return getCProvisionFieldBuilder().getBuilder();
       }
@@ -24704,7 +26298,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_ProvisionResponse c_provisionResponse = 15;</code>
        */
       public boolean hasCProvisionResponse() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
+        return ((bitField0_ & 0x00040000) == 0x00040000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_ProvisionResponse c_provisionResponse = 15;</code>
@@ -24729,7 +26323,7 @@ public final class Commands {
         } else {
           cProvisionResponseBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
@@ -24743,7 +26337,7 @@ public final class Commands {
         } else {
           cProvisionResponseBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
@@ -24751,7 +26345,7 @@ public final class Commands {
        */
       public Builder mergeCProvisionResponse(io.playpen.core.protocol.Commands.C_ProvisionResponse value) {
         if (cProvisionResponseBuilder_ == null) {
-          if (((bitField0_ & 0x00010000) == 0x00010000) &&
+          if (((bitField0_ & 0x00040000) == 0x00040000) &&
               cProvisionResponse_ != io.playpen.core.protocol.Commands.C_ProvisionResponse.getDefaultInstance()) {
             cProvisionResponse_ =
               io.playpen.core.protocol.Commands.C_ProvisionResponse.newBuilder(cProvisionResponse_).mergeFrom(value).buildPartial();
@@ -24762,7 +26356,7 @@ public final class Commands {
         } else {
           cProvisionResponseBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
@@ -24775,14 +26369,14 @@ public final class Commands {
         } else {
           cProvisionResponseBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00010000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_ProvisionResponse c_provisionResponse = 15;</code>
        */
       public io.playpen.core.protocol.Commands.C_ProvisionResponse.Builder getCProvisionResponseBuilder() {
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00040000;
         onChanged();
         return getCProvisionResponseFieldBuilder().getBuilder();
       }
@@ -24820,7 +26414,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_Deprovision c_deprovision = 16;</code>
        */
       public boolean hasCDeprovision() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
+        return ((bitField0_ & 0x00080000) == 0x00080000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Deprovision c_deprovision = 16;</code>
@@ -24845,7 +26439,7 @@ public final class Commands {
         } else {
           cDeprovisionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00080000;
         return this;
       }
       /**
@@ -24859,7 +26453,7 @@ public final class Commands {
         } else {
           cDeprovisionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00080000;
         return this;
       }
       /**
@@ -24867,7 +26461,7 @@ public final class Commands {
        */
       public Builder mergeCDeprovision(io.playpen.core.protocol.Commands.C_Deprovision value) {
         if (cDeprovisionBuilder_ == null) {
-          if (((bitField0_ & 0x00020000) == 0x00020000) &&
+          if (((bitField0_ & 0x00080000) == 0x00080000) &&
               cDeprovision_ != io.playpen.core.protocol.Commands.C_Deprovision.getDefaultInstance()) {
             cDeprovision_ =
               io.playpen.core.protocol.Commands.C_Deprovision.newBuilder(cDeprovision_).mergeFrom(value).buildPartial();
@@ -24878,7 +26472,7 @@ public final class Commands {
         } else {
           cDeprovisionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00080000;
         return this;
       }
       /**
@@ -24891,14 +26485,14 @@ public final class Commands {
         } else {
           cDeprovisionBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00080000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Deprovision c_deprovision = 16;</code>
        */
       public io.playpen.core.protocol.Commands.C_Deprovision.Builder getCDeprovisionBuilder() {
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00080000;
         onChanged();
         return getCDeprovisionFieldBuilder().getBuilder();
       }
@@ -24936,7 +26530,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_Shutdown c_shutdown = 17;</code>
        */
       public boolean hasCShutdown() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
+        return ((bitField0_ & 0x00100000) == 0x00100000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Shutdown c_shutdown = 17;</code>
@@ -24961,7 +26555,7 @@ public final class Commands {
         } else {
           cShutdownBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00100000;
         return this;
       }
       /**
@@ -24975,7 +26569,7 @@ public final class Commands {
         } else {
           cShutdownBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00100000;
         return this;
       }
       /**
@@ -24983,7 +26577,7 @@ public final class Commands {
        */
       public Builder mergeCShutdown(io.playpen.core.protocol.Commands.C_Shutdown value) {
         if (cShutdownBuilder_ == null) {
-          if (((bitField0_ & 0x00040000) == 0x00040000) &&
+          if (((bitField0_ & 0x00100000) == 0x00100000) &&
               cShutdown_ != io.playpen.core.protocol.Commands.C_Shutdown.getDefaultInstance()) {
             cShutdown_ =
               io.playpen.core.protocol.Commands.C_Shutdown.newBuilder(cShutdown_).mergeFrom(value).buildPartial();
@@ -24994,7 +26588,7 @@ public final class Commands {
         } else {
           cShutdownBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00100000;
         return this;
       }
       /**
@@ -25007,14 +26601,14 @@ public final class Commands {
         } else {
           cShutdownBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00100000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Shutdown c_shutdown = 17;</code>
        */
       public io.playpen.core.protocol.Commands.C_Shutdown.Builder getCShutdownBuilder() {
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00100000;
         onChanged();
         return getCShutdownFieldBuilder().getBuilder();
       }
@@ -25052,7 +26646,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_Promote c_promote = 18;</code>
        */
       public boolean hasCPromote() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
+        return ((bitField0_ & 0x00200000) == 0x00200000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Promote c_promote = 18;</code>
@@ -25077,7 +26671,7 @@ public final class Commands {
         } else {
           cPromoteBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00200000;
         return this;
       }
       /**
@@ -25091,7 +26685,7 @@ public final class Commands {
         } else {
           cPromoteBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00200000;
         return this;
       }
       /**
@@ -25099,7 +26693,7 @@ public final class Commands {
        */
       public Builder mergeCPromote(io.playpen.core.protocol.Commands.C_Promote value) {
         if (cPromoteBuilder_ == null) {
-          if (((bitField0_ & 0x00080000) == 0x00080000) &&
+          if (((bitField0_ & 0x00200000) == 0x00200000) &&
               cPromote_ != io.playpen.core.protocol.Commands.C_Promote.getDefaultInstance()) {
             cPromote_ =
               io.playpen.core.protocol.Commands.C_Promote.newBuilder(cPromote_).mergeFrom(value).buildPartial();
@@ -25110,7 +26704,7 @@ public final class Commands {
         } else {
           cPromoteBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00200000;
         return this;
       }
       /**
@@ -25123,14 +26717,14 @@ public final class Commands {
         } else {
           cPromoteBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00080000);
+        bitField0_ = (bitField0_ & ~0x00200000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Promote c_promote = 18;</code>
        */
       public io.playpen.core.protocol.Commands.C_Promote.Builder getCPromoteBuilder() {
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00200000;
         onChanged();
         return getCPromoteFieldBuilder().getBuilder();
       }
@@ -25168,7 +26762,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_CreateCoordinator c_createCoordinator = 28;</code>
        */
       public boolean hasCCreateCoordinator() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
+        return ((bitField0_ & 0x00400000) == 0x00400000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_CreateCoordinator c_createCoordinator = 28;</code>
@@ -25193,7 +26787,7 @@ public final class Commands {
         } else {
           cCreateCoordinatorBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00100000;
+        bitField0_ |= 0x00400000;
         return this;
       }
       /**
@@ -25207,7 +26801,7 @@ public final class Commands {
         } else {
           cCreateCoordinatorBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00100000;
+        bitField0_ |= 0x00400000;
         return this;
       }
       /**
@@ -25215,7 +26809,7 @@ public final class Commands {
        */
       public Builder mergeCCreateCoordinator(io.playpen.core.protocol.Commands.C_CreateCoordinator value) {
         if (cCreateCoordinatorBuilder_ == null) {
-          if (((bitField0_ & 0x00100000) == 0x00100000) &&
+          if (((bitField0_ & 0x00400000) == 0x00400000) &&
               cCreateCoordinator_ != io.playpen.core.protocol.Commands.C_CreateCoordinator.getDefaultInstance()) {
             cCreateCoordinator_ =
               io.playpen.core.protocol.Commands.C_CreateCoordinator.newBuilder(cCreateCoordinator_).mergeFrom(value).buildPartial();
@@ -25226,7 +26820,7 @@ public final class Commands {
         } else {
           cCreateCoordinatorBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00100000;
+        bitField0_ |= 0x00400000;
         return this;
       }
       /**
@@ -25239,14 +26833,14 @@ public final class Commands {
         } else {
           cCreateCoordinatorBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00100000);
+        bitField0_ = (bitField0_ & ~0x00400000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_CreateCoordinator c_createCoordinator = 28;</code>
        */
       public io.playpen.core.protocol.Commands.C_CreateCoordinator.Builder getCCreateCoordinatorBuilder() {
-        bitField0_ |= 0x00100000;
+        bitField0_ |= 0x00400000;
         onChanged();
         return getCCreateCoordinatorFieldBuilder().getBuilder();
       }
@@ -25284,7 +26878,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_CoordinatorCreated c_coordinatorCreated = 19;</code>
        */
       public boolean hasCCoordinatorCreated() {
-        return ((bitField0_ & 0x00200000) == 0x00200000);
+        return ((bitField0_ & 0x00800000) == 0x00800000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_CoordinatorCreated c_coordinatorCreated = 19;</code>
@@ -25309,7 +26903,7 @@ public final class Commands {
         } else {
           cCoordinatorCreatedBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00200000;
+        bitField0_ |= 0x00800000;
         return this;
       }
       /**
@@ -25323,7 +26917,7 @@ public final class Commands {
         } else {
           cCoordinatorCreatedBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00200000;
+        bitField0_ |= 0x00800000;
         return this;
       }
       /**
@@ -25331,7 +26925,7 @@ public final class Commands {
        */
       public Builder mergeCCoordinatorCreated(io.playpen.core.protocol.Commands.C_CoordinatorCreated value) {
         if (cCoordinatorCreatedBuilder_ == null) {
-          if (((bitField0_ & 0x00200000) == 0x00200000) &&
+          if (((bitField0_ & 0x00800000) == 0x00800000) &&
               cCoordinatorCreated_ != io.playpen.core.protocol.Commands.C_CoordinatorCreated.getDefaultInstance()) {
             cCoordinatorCreated_ =
               io.playpen.core.protocol.Commands.C_CoordinatorCreated.newBuilder(cCoordinatorCreated_).mergeFrom(value).buildPartial();
@@ -25342,7 +26936,7 @@ public final class Commands {
         } else {
           cCoordinatorCreatedBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00200000;
+        bitField0_ |= 0x00800000;
         return this;
       }
       /**
@@ -25355,14 +26949,14 @@ public final class Commands {
         } else {
           cCoordinatorCreatedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00200000);
+        bitField0_ = (bitField0_ & ~0x00800000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_CoordinatorCreated c_coordinatorCreated = 19;</code>
        */
       public io.playpen.core.protocol.Commands.C_CoordinatorCreated.Builder getCCoordinatorCreatedBuilder() {
-        bitField0_ |= 0x00200000;
+        bitField0_ |= 0x00800000;
         onChanged();
         return getCCoordinatorCreatedFieldBuilder().getBuilder();
       }
@@ -25400,7 +26994,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_SendInput c_sendInput = 20;</code>
        */
       public boolean hasCSendInput() {
-        return ((bitField0_ & 0x00400000) == 0x00400000);
+        return ((bitField0_ & 0x01000000) == 0x01000000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_SendInput c_sendInput = 20;</code>
@@ -25425,7 +27019,7 @@ public final class Commands {
         } else {
           cSendInputBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x01000000;
         return this;
       }
       /**
@@ -25439,7 +27033,7 @@ public final class Commands {
         } else {
           cSendInputBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x01000000;
         return this;
       }
       /**
@@ -25447,7 +27041,7 @@ public final class Commands {
        */
       public Builder mergeCSendInput(io.playpen.core.protocol.Commands.C_SendInput value) {
         if (cSendInputBuilder_ == null) {
-          if (((bitField0_ & 0x00400000) == 0x00400000) &&
+          if (((bitField0_ & 0x01000000) == 0x01000000) &&
               cSendInput_ != io.playpen.core.protocol.Commands.C_SendInput.getDefaultInstance()) {
             cSendInput_ =
               io.playpen.core.protocol.Commands.C_SendInput.newBuilder(cSendInput_).mergeFrom(value).buildPartial();
@@ -25458,7 +27052,7 @@ public final class Commands {
         } else {
           cSendInputBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x01000000;
         return this;
       }
       /**
@@ -25471,14 +27065,14 @@ public final class Commands {
         } else {
           cSendInputBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00400000);
+        bitField0_ = (bitField0_ & ~0x01000000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_SendInput c_sendInput = 20;</code>
        */
       public io.playpen.core.protocol.Commands.C_SendInput.Builder getCSendInputBuilder() {
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x01000000;
         onChanged();
         return getCSendInputFieldBuilder().getBuilder();
       }
@@ -25516,7 +27110,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_AttachConsole c_attachConsole = 21;</code>
        */
       public boolean hasCAttachConsole() {
-        return ((bitField0_ & 0x00800000) == 0x00800000);
+        return ((bitField0_ & 0x02000000) == 0x02000000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_AttachConsole c_attachConsole = 21;</code>
@@ -25541,7 +27135,7 @@ public final class Commands {
         } else {
           cAttachConsoleBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00800000;
+        bitField0_ |= 0x02000000;
         return this;
       }
       /**
@@ -25555,7 +27149,7 @@ public final class Commands {
         } else {
           cAttachConsoleBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00800000;
+        bitField0_ |= 0x02000000;
         return this;
       }
       /**
@@ -25563,7 +27157,7 @@ public final class Commands {
        */
       public Builder mergeCAttachConsole(io.playpen.core.protocol.Commands.C_AttachConsole value) {
         if (cAttachConsoleBuilder_ == null) {
-          if (((bitField0_ & 0x00800000) == 0x00800000) &&
+          if (((bitField0_ & 0x02000000) == 0x02000000) &&
               cAttachConsole_ != io.playpen.core.protocol.Commands.C_AttachConsole.getDefaultInstance()) {
             cAttachConsole_ =
               io.playpen.core.protocol.Commands.C_AttachConsole.newBuilder(cAttachConsole_).mergeFrom(value).buildPartial();
@@ -25574,7 +27168,7 @@ public final class Commands {
         } else {
           cAttachConsoleBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00800000;
+        bitField0_ |= 0x02000000;
         return this;
       }
       /**
@@ -25587,14 +27181,14 @@ public final class Commands {
         } else {
           cAttachConsoleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00800000);
+        bitField0_ = (bitField0_ & ~0x02000000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_AttachConsole c_attachConsole = 21;</code>
        */
       public io.playpen.core.protocol.Commands.C_AttachConsole.Builder getCAttachConsoleBuilder() {
-        bitField0_ |= 0x00800000;
+        bitField0_ |= 0x02000000;
         onChanged();
         return getCAttachConsoleFieldBuilder().getBuilder();
       }
@@ -25632,7 +27226,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_ConsoleAttached c_consoleAttached = 29;</code>
        */
       public boolean hasCConsoleAttached() {
-        return ((bitField0_ & 0x01000000) == 0x01000000);
+        return ((bitField0_ & 0x04000000) == 0x04000000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_ConsoleAttached c_consoleAttached = 29;</code>
@@ -25657,7 +27251,7 @@ public final class Commands {
         } else {
           cConsoleAttachedBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x01000000;
+        bitField0_ |= 0x04000000;
         return this;
       }
       /**
@@ -25671,7 +27265,7 @@ public final class Commands {
         } else {
           cConsoleAttachedBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x01000000;
+        bitField0_ |= 0x04000000;
         return this;
       }
       /**
@@ -25679,7 +27273,7 @@ public final class Commands {
        */
       public Builder mergeCConsoleAttached(io.playpen.core.protocol.Commands.C_ConsoleAttached value) {
         if (cConsoleAttachedBuilder_ == null) {
-          if (((bitField0_ & 0x01000000) == 0x01000000) &&
+          if (((bitField0_ & 0x04000000) == 0x04000000) &&
               cConsoleAttached_ != io.playpen.core.protocol.Commands.C_ConsoleAttached.getDefaultInstance()) {
             cConsoleAttached_ =
               io.playpen.core.protocol.Commands.C_ConsoleAttached.newBuilder(cConsoleAttached_).mergeFrom(value).buildPartial();
@@ -25690,7 +27284,7 @@ public final class Commands {
         } else {
           cConsoleAttachedBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x01000000;
+        bitField0_ |= 0x04000000;
         return this;
       }
       /**
@@ -25703,14 +27297,14 @@ public final class Commands {
         } else {
           cConsoleAttachedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x01000000);
+        bitField0_ = (bitField0_ & ~0x04000000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_ConsoleAttached c_consoleAttached = 29;</code>
        */
       public io.playpen.core.protocol.Commands.C_ConsoleAttached.Builder getCConsoleAttachedBuilder() {
-        bitField0_ |= 0x01000000;
+        bitField0_ |= 0x04000000;
         onChanged();
         return getCConsoleAttachedFieldBuilder().getBuilder();
       }
@@ -25748,7 +27342,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_ConsoleMessage c_consoleMessage = 22;</code>
        */
       public boolean hasCConsoleMessage() {
-        return ((bitField0_ & 0x02000000) == 0x02000000);
+        return ((bitField0_ & 0x08000000) == 0x08000000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_ConsoleMessage c_consoleMessage = 22;</code>
@@ -25773,7 +27367,7 @@ public final class Commands {
         } else {
           cConsoleMessageBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x02000000;
+        bitField0_ |= 0x08000000;
         return this;
       }
       /**
@@ -25787,7 +27381,7 @@ public final class Commands {
         } else {
           cConsoleMessageBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x02000000;
+        bitField0_ |= 0x08000000;
         return this;
       }
       /**
@@ -25795,7 +27389,7 @@ public final class Commands {
        */
       public Builder mergeCConsoleMessage(io.playpen.core.protocol.Commands.C_ConsoleMessage value) {
         if (cConsoleMessageBuilder_ == null) {
-          if (((bitField0_ & 0x02000000) == 0x02000000) &&
+          if (((bitField0_ & 0x08000000) == 0x08000000) &&
               cConsoleMessage_ != io.playpen.core.protocol.Commands.C_ConsoleMessage.getDefaultInstance()) {
             cConsoleMessage_ =
               io.playpen.core.protocol.Commands.C_ConsoleMessage.newBuilder(cConsoleMessage_).mergeFrom(value).buildPartial();
@@ -25806,7 +27400,7 @@ public final class Commands {
         } else {
           cConsoleMessageBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x02000000;
+        bitField0_ |= 0x08000000;
         return this;
       }
       /**
@@ -25819,14 +27413,14 @@ public final class Commands {
         } else {
           cConsoleMessageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x02000000);
+        bitField0_ = (bitField0_ & ~0x08000000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_ConsoleMessage c_consoleMessage = 22;</code>
        */
       public io.playpen.core.protocol.Commands.C_ConsoleMessage.Builder getCConsoleMessageBuilder() {
-        bitField0_ |= 0x02000000;
+        bitField0_ |= 0x08000000;
         onChanged();
         return getCConsoleMessageFieldBuilder().getBuilder();
       }
@@ -25864,7 +27458,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_ConsoleDetached c_consoleDetached = 30;</code>
        */
       public boolean hasCConsoleDetached() {
-        return ((bitField0_ & 0x04000000) == 0x04000000);
+        return ((bitField0_ & 0x10000000) == 0x10000000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_ConsoleDetached c_consoleDetached = 30;</code>
@@ -25889,7 +27483,7 @@ public final class Commands {
         } else {
           cConsoleDetachedBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x04000000;
+        bitField0_ |= 0x10000000;
         return this;
       }
       /**
@@ -25903,7 +27497,7 @@ public final class Commands {
         } else {
           cConsoleDetachedBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x04000000;
+        bitField0_ |= 0x10000000;
         return this;
       }
       /**
@@ -25911,7 +27505,7 @@ public final class Commands {
        */
       public Builder mergeCConsoleDetached(io.playpen.core.protocol.Commands.C_ConsoleDetached value) {
         if (cConsoleDetachedBuilder_ == null) {
-          if (((bitField0_ & 0x04000000) == 0x04000000) &&
+          if (((bitField0_ & 0x10000000) == 0x10000000) &&
               cConsoleDetached_ != io.playpen.core.protocol.Commands.C_ConsoleDetached.getDefaultInstance()) {
             cConsoleDetached_ =
               io.playpen.core.protocol.Commands.C_ConsoleDetached.newBuilder(cConsoleDetached_).mergeFrom(value).buildPartial();
@@ -25922,7 +27516,7 @@ public final class Commands {
         } else {
           cConsoleDetachedBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x04000000;
+        bitField0_ |= 0x10000000;
         return this;
       }
       /**
@@ -25935,14 +27529,14 @@ public final class Commands {
         } else {
           cConsoleDetachedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x04000000);
+        bitField0_ = (bitField0_ & ~0x10000000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_ConsoleDetached c_consoleDetached = 30;</code>
        */
       public io.playpen.core.protocol.Commands.C_ConsoleDetached.Builder getCConsoleDetachedBuilder() {
-        bitField0_ |= 0x04000000;
+        bitField0_ |= 0x10000000;
         onChanged();
         return getCConsoleDetachedFieldBuilder().getBuilder();
       }
@@ -25980,7 +27574,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_DetachConsole c_detachConsole = 31;</code>
        */
       public boolean hasCDetachConsole() {
-        return ((bitField0_ & 0x08000000) == 0x08000000);
+        return ((bitField0_ & 0x20000000) == 0x20000000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_DetachConsole c_detachConsole = 31;</code>
@@ -26005,7 +27599,7 @@ public final class Commands {
         } else {
           cDetachConsoleBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x08000000;
+        bitField0_ |= 0x20000000;
         return this;
       }
       /**
@@ -26019,7 +27613,7 @@ public final class Commands {
         } else {
           cDetachConsoleBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x08000000;
+        bitField0_ |= 0x20000000;
         return this;
       }
       /**
@@ -26027,7 +27621,7 @@ public final class Commands {
        */
       public Builder mergeCDetachConsole(io.playpen.core.protocol.Commands.C_DetachConsole value) {
         if (cDetachConsoleBuilder_ == null) {
-          if (((bitField0_ & 0x08000000) == 0x08000000) &&
+          if (((bitField0_ & 0x20000000) == 0x20000000) &&
               cDetachConsole_ != io.playpen.core.protocol.Commands.C_DetachConsole.getDefaultInstance()) {
             cDetachConsole_ =
               io.playpen.core.protocol.Commands.C_DetachConsole.newBuilder(cDetachConsole_).mergeFrom(value).buildPartial();
@@ -26038,7 +27632,7 @@ public final class Commands {
         } else {
           cDetachConsoleBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x08000000;
+        bitField0_ |= 0x20000000;
         return this;
       }
       /**
@@ -26051,14 +27645,14 @@ public final class Commands {
         } else {
           cDetachConsoleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x08000000);
+        bitField0_ = (bitField0_ & ~0x20000000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_DetachConsole c_detachConsole = 31;</code>
        */
       public io.playpen.core.protocol.Commands.C_DetachConsole.Builder getCDetachConsoleBuilder() {
-        bitField0_ |= 0x08000000;
+        bitField0_ |= 0x20000000;
         onChanged();
         return getCDetachConsoleFieldBuilder().getBuilder();
       }
@@ -26096,7 +27690,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_FreezeServer c_freezeServer = 24;</code>
        */
       public boolean hasCFreezeServer() {
-        return ((bitField0_ & 0x10000000) == 0x10000000);
+        return ((bitField0_ & 0x40000000) == 0x40000000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_FreezeServer c_freezeServer = 24;</code>
@@ -26121,7 +27715,7 @@ public final class Commands {
         } else {
           cFreezeServerBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x10000000;
+        bitField0_ |= 0x40000000;
         return this;
       }
       /**
@@ -26135,7 +27729,7 @@ public final class Commands {
         } else {
           cFreezeServerBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x10000000;
+        bitField0_ |= 0x40000000;
         return this;
       }
       /**
@@ -26143,7 +27737,7 @@ public final class Commands {
        */
       public Builder mergeCFreezeServer(io.playpen.core.protocol.Commands.C_FreezeServer value) {
         if (cFreezeServerBuilder_ == null) {
-          if (((bitField0_ & 0x10000000) == 0x10000000) &&
+          if (((bitField0_ & 0x40000000) == 0x40000000) &&
               cFreezeServer_ != io.playpen.core.protocol.Commands.C_FreezeServer.getDefaultInstance()) {
             cFreezeServer_ =
               io.playpen.core.protocol.Commands.C_FreezeServer.newBuilder(cFreezeServer_).mergeFrom(value).buildPartial();
@@ -26154,7 +27748,7 @@ public final class Commands {
         } else {
           cFreezeServerBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x10000000;
+        bitField0_ |= 0x40000000;
         return this;
       }
       /**
@@ -26167,14 +27761,14 @@ public final class Commands {
         } else {
           cFreezeServerBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x10000000);
+        bitField0_ = (bitField0_ & ~0x40000000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_FreezeServer c_freezeServer = 24;</code>
        */
       public io.playpen.core.protocol.Commands.C_FreezeServer.Builder getCFreezeServerBuilder() {
-        bitField0_ |= 0x10000000;
+        bitField0_ |= 0x40000000;
         onChanged();
         return getCFreezeServerFieldBuilder().getBuilder();
       }
@@ -26212,7 +27806,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_UploadPackage c_uploadPackage = 25;</code>
        */
       public boolean hasCUploadPackage() {
-        return ((bitField0_ & 0x20000000) == 0x20000000);
+        return ((bitField0_ & 0x80000000) == 0x80000000);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_UploadPackage c_uploadPackage = 25;</code>
@@ -26237,7 +27831,7 @@ public final class Commands {
         } else {
           cUploadPackageBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x20000000;
+        bitField0_ |= 0x80000000;
         return this;
       }
       /**
@@ -26251,7 +27845,7 @@ public final class Commands {
         } else {
           cUploadPackageBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x20000000;
+        bitField0_ |= 0x80000000;
         return this;
       }
       /**
@@ -26259,7 +27853,7 @@ public final class Commands {
        */
       public Builder mergeCUploadPackage(io.playpen.core.protocol.Commands.C_UploadPackage value) {
         if (cUploadPackageBuilder_ == null) {
-          if (((bitField0_ & 0x20000000) == 0x20000000) &&
+          if (((bitField0_ & 0x80000000) == 0x80000000) &&
               cUploadPackage_ != io.playpen.core.protocol.Commands.C_UploadPackage.getDefaultInstance()) {
             cUploadPackage_ =
               io.playpen.core.protocol.Commands.C_UploadPackage.newBuilder(cUploadPackage_).mergeFrom(value).buildPartial();
@@ -26270,7 +27864,7 @@ public final class Commands {
         } else {
           cUploadPackageBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x20000000;
+        bitField0_ |= 0x80000000;
         return this;
       }
       /**
@@ -26283,14 +27877,14 @@ public final class Commands {
         } else {
           cUploadPackageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x20000000);
+        bitField0_ = (bitField0_ & ~0x80000000);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_UploadPackage c_uploadPackage = 25;</code>
        */
       public io.playpen.core.protocol.Commands.C_UploadPackage.Builder getCUploadPackageBuilder() {
-        bitField0_ |= 0x20000000;
+        bitField0_ |= 0x80000000;
         onChanged();
         return getCUploadPackageFieldBuilder().getBuilder();
       }
@@ -26328,7 +27922,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_Ack c_ack = 27;</code>
        */
       public boolean hasCAck() {
-        return ((bitField0_ & 0x40000000) == 0x40000000);
+        return ((bitField1_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Ack c_ack = 27;</code>
@@ -26353,7 +27947,7 @@ public final class Commands {
         } else {
           cAckBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x40000000;
+        bitField1_ |= 0x00000001;
         return this;
       }
       /**
@@ -26367,7 +27961,7 @@ public final class Commands {
         } else {
           cAckBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x40000000;
+        bitField1_ |= 0x00000001;
         return this;
       }
       /**
@@ -26375,7 +27969,7 @@ public final class Commands {
        */
       public Builder mergeCAck(io.playpen.core.protocol.Commands.C_Ack value) {
         if (cAckBuilder_ == null) {
-          if (((bitField0_ & 0x40000000) == 0x40000000) &&
+          if (((bitField1_ & 0x00000001) == 0x00000001) &&
               cAck_ != io.playpen.core.protocol.Commands.C_Ack.getDefaultInstance()) {
             cAck_ =
               io.playpen.core.protocol.Commands.C_Ack.newBuilder(cAck_).mergeFrom(value).buildPartial();
@@ -26386,7 +27980,7 @@ public final class Commands {
         } else {
           cAckBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x40000000;
+        bitField1_ |= 0x00000001;
         return this;
       }
       /**
@@ -26399,14 +27993,14 @@ public final class Commands {
         } else {
           cAckBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x40000000);
+        bitField1_ = (bitField1_ & ~0x00000001);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_Ack c_ack = 27;</code>
        */
       public io.playpen.core.protocol.Commands.C_Ack.Builder getCAckBuilder() {
-        bitField0_ |= 0x40000000;
+        bitField1_ |= 0x00000001;
         onChanged();
         return getCAckFieldBuilder().getBuilder();
       }
@@ -26444,7 +28038,7 @@ public final class Commands {
        * <code>optional .io.playpen.core.protocol.C_PackageList c_packageList = 32;</code>
        */
       public boolean hasCPackageList() {
-        return ((bitField0_ & 0x80000000) == 0x80000000);
+        return ((bitField1_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_PackageList c_packageList = 32;</code>
@@ -26469,7 +28063,7 @@ public final class Commands {
         } else {
           cPackageListBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x80000000;
+        bitField1_ |= 0x00000002;
         return this;
       }
       /**
@@ -26483,7 +28077,7 @@ public final class Commands {
         } else {
           cPackageListBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x80000000;
+        bitField1_ |= 0x00000002;
         return this;
       }
       /**
@@ -26491,7 +28085,7 @@ public final class Commands {
        */
       public Builder mergeCPackageList(io.playpen.core.protocol.Commands.C_PackageList value) {
         if (cPackageListBuilder_ == null) {
-          if (((bitField0_ & 0x80000000) == 0x80000000) &&
+          if (((bitField1_ & 0x00000002) == 0x00000002) &&
               cPackageList_ != io.playpen.core.protocol.Commands.C_PackageList.getDefaultInstance()) {
             cPackageList_ =
               io.playpen.core.protocol.Commands.C_PackageList.newBuilder(cPackageList_).mergeFrom(value).buildPartial();
@@ -26502,7 +28096,7 @@ public final class Commands {
         } else {
           cPackageListBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x80000000;
+        bitField1_ |= 0x00000002;
         return this;
       }
       /**
@@ -26515,14 +28109,14 @@ public final class Commands {
         } else {
           cPackageListBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x80000000);
+        bitField1_ = (bitField1_ & ~0x00000002);
         return this;
       }
       /**
        * <code>optional .io.playpen.core.protocol.C_PackageList c_packageList = 32;</code>
        */
       public io.playpen.core.protocol.Commands.C_PackageList.Builder getCPackageListBuilder() {
-        bitField0_ |= 0x80000000;
+        bitField1_ |= 0x00000002;
         onChanged();
         return getCPackageListFieldBuilder().getBuilder();
       }
@@ -26590,6 +28184,21 @@ public final class Commands {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_io_playpen_core_protocol_PackageResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_io_playpen_core_protocol_SplitPackageResponse_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_io_playpen_core_protocol_SplitPackageResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_io_playpen_core_protocol_PackageChecksumRequest_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_io_playpen_core_protocol_PackageChecksumRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_io_playpen_core_protocol_PackageChecksumResponse_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_io_playpen_core_protocol_PackageChecksumResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_io_playpen_core_protocol_Deprovision_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -26624,11 +28233,6 @@ public final class Commands {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_io_playpen_core_protocol_FreezeServer_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_io_playpen_core_protocol_ExpireCache_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_io_playpen_core_protocol_ExpireCache_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_io_playpen_core_protocol_C_CoordinatorListResponse_descriptor;
   private static
@@ -26745,115 +28349,125 @@ public final class Commands {
       "\002p3\030\001 \002(\0132 .io.playpen.core.protocol.P3M",
       "eta\"R\n\017PackageResponse\022\n\n\002ok\030\001 \002(\010\0223\n\004da" +
       "ta\030\002 \001(\0132%.io.playpen.core.protocol.Pack" +
-      "ageData\"1\n\013Deprovision\022\014\n\004uuid\030\001 \002(\t\022\024\n\005" +
-      "force\030\002 \002(\010:\005false\"\036\n\016ServerShutdown\022\014\n\004" +
-      "uuid\030\001 \002(\t\"&\n\tSendInput\022\n\n\002id\030\001 \002(\t\022\r\n\005i" +
-      "nput\030\002 \002(\t\"4\n\rAttachConsole\022\020\n\010serverId\030" +
-      "\001 \002(\t\022\021\n\tconsoleId\030\002 \002(\t\"2\n\016ConsoleMessa" +
-      "ge\022\021\n\tconsoleId\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\"\"\n\r" +
-      "DetachConsole\022\021\n\tconsoleId\030\001 \002(\t\"\034\n\014Free" +
-      "zeServer\022\014\n\004uuid\030\001 \002(\t\";\n\013ExpireCache\022,\n",
-      "\002p3\030\001 \002(\0132 .io.playpen.core.protocol.P3M" +
-      "eta\"]\n\031C_CoordinatorListResponse\022@\n\014coor" +
-      "dinators\030\001 \003(\0132*.io.playpen.core.protoco" +
-      "l.LocalCoordinator\"\234\001\n\013C_Provision\022,\n\002p3" +
-      "\030\001 \002(\0132 .io.playpen.core.protocol.P3Meta" +
-      "\022\023\n\013coordinator\030\002 \001(\t\022\022\n\nserverName\030\003 \001(" +
-      "\t\0226\n\nproperties\030\004 \003(\0132\".io.playpen.core." +
-      "protocol.Property\"J\n\023C_ProvisionResponse" +
-      "\022\n\n\002ok\030\001 \002(\010\022\025\n\rcoordinatorId\030\002 \001(\t\022\020\n\010s" +
-      "erverId\030\003 \001(\t\"N\n\rC_Deprovision\022\025\n\rcoordi",
-      "natorId\030\001 \002(\t\022\020\n\010serverId\030\002 \002(\t\022\024\n\005force" +
-      "\030\003 \002(\010:\005false\"\032\n\nC_Shutdown\022\014\n\004uuid\030\001 \002(" +
-      "\t\"9\n\tC_Promote\022,\n\002p3\030\001 \002(\0132 .io.playpen." +
-      "core.protocol.P3Meta\"&\n\023C_CreateCoordina" +
-      "tor\022\017\n\007keyName\030\001 \001(\t\"1\n\024C_CoordinatorCre" +
-      "ated\022\014\n\004uuid\030\001 \002(\t\022\013\n\003key\030\002 \002(\t\"E\n\013C_Sen" +
-      "dInput\022\025\n\rcoordinatorId\030\001 \002(\t\022\020\n\010serverI" +
-      "d\030\002 \002(\t\022\r\n\005input\030\003 \002(\t\":\n\017C_AttachConsol" +
-      "e\022\025\n\rcoordinatorId\030\001 \002(\t\022\020\n\010serverId\030\002 \002" +
-      "(\t\"&\n\021C_ConsoleAttached\022\021\n\tconsoleId\030\001 \002",
-      "(\t\"4\n\020C_ConsoleMessage\022\r\n\005value\030\001 \002(\t\022\021\n" +
-      "\tconsoleId\030\002 \002(\t\"B\n\021C_ConsoleDetached\022\021\n" +
-      "\tconsoleId\030\001 \002(\t\022\032\n\013useServerId\030\002 \002(\010:\005f" +
-      "alse\"$\n\017C_DetachConsole\022\021\n\tconsoleId\030\001 \001" +
-      "(\t\"9\n\016C_FreezeServer\022\025\n\rcoordinatorId\030\001 " +
-      "\002(\t\022\020\n\010serverId\030\002 \002(\t\"F\n\017C_UploadPackage" +
-      "\0223\n\004data\030\001 \002(\0132%.io.playpen.core.protoco" +
-      "l.PackageData\"\027\n\005C_Ack\022\016\n\006result\030\001 \001(\t\"C" +
-      "\n\rC_PackageList\0222\n\010packages\030\001 \003(\0132 .io.p" +
-      "laypen.core.protocol.P3Meta\"\374\025\n\013BaseComm",
-      "and\022?\n\004type\030\001 \002(\01621.io.playpen.core.prot" +
-      "ocol.BaseCommand.CommandType\022,\n\004sync\030\002 \001" +
-      "(\0132\036.io.playpen.core.protocol.Sync\0226\n\tpr" +
-      "ovision\030\003 \001(\0132#.io.playpen.core.protocol" +
-      ".Provision\022F\n\021provisionResponse\030\004 \001(\0132+." +
-      "io.playpen.core.protocol.ProvisionRespon" +
-      "se\022@\n\016packageRequest\030\005 \001(\0132(.io.playpen." +
-      "core.protocol.PackageRequest\022B\n\017packageR" +
-      "esponse\030\006 \001(\0132).io.playpen.core.protocol" +
-      ".PackageResponse\022:\n\013deprovision\030\007 \001(\0132%.",
-      "io.playpen.core.protocol.Deprovision\022@\n\016" +
-      "serverShutdown\030\010 \001(\0132(.io.playpen.core.p" +
-      "rotocol.ServerShutdown\0226\n\tsendInput\030\t \001(" +
-      "\0132#.io.playpen.core.protocol.SendInput\022>" +
-      "\n\rattachConsole\030\n \001(\0132\'.io.playpen.core." +
-      "protocol.AttachConsole\022@\n\016consoleMessage" +
-      "\030\013 \001(\0132(.io.playpen.core.protocol.Consol" +
-      "eMessage\022>\n\rdetachConsole\030\014 \001(\0132\'.io.pla" +
-      "ypen.core.protocol.DetachConsole\022<\n\014free" +
-      "zeServer\030\027 \001(\0132&.io.playpen.core.protoco",
-      "l.FreezeServer\022:\n\013expireCache\030\032 \001(\0132%.io" +
-      ".playpen.core.protocol.ExpireCache\022V\n\031c_" +
-      "coordinatorListResponse\030\r \001(\01323.io.playp" +
-      "en.core.protocol.C_CoordinatorListRespon" +
-      "se\022:\n\013c_provision\030\016 \001(\0132%.io.playpen.cor" +
-      "e.protocol.C_Provision\022J\n\023c_provisionRes" +
-      "ponse\030\017 \001(\0132-.io.playpen.core.protocol.C" +
-      "_ProvisionResponse\022>\n\rc_deprovision\030\020 \001(" +
-      "\0132\'.io.playpen.core.protocol.C_Deprovisi" +
-      "on\0228\n\nc_shutdown\030\021 \001(\0132$.io.playpen.core",
-      ".protocol.C_Shutdown\0226\n\tc_promote\030\022 \001(\0132" +
-      "#.io.playpen.core.protocol.C_Promote\022J\n\023" +
-      "c_createCoordinator\030\034 \001(\0132-.io.playpen.c" +
-      "ore.protocol.C_CreateCoordinator\022L\n\024c_co" +
-      "ordinatorCreated\030\023 \001(\0132..io.playpen.core" +
-      ".protocol.C_CoordinatorCreated\022:\n\013c_send" +
-      "Input\030\024 \001(\0132%.io.playpen.core.protocol.C" +
-      "_SendInput\022B\n\017c_attachConsole\030\025 \001(\0132).io" +
-      ".playpen.core.protocol.C_AttachConsole\022F" +
-      "\n\021c_consoleAttached\030\035 \001(\0132+.io.playpen.c",
-      "ore.protocol.C_ConsoleAttached\022D\n\020c_cons" +
-      "oleMessage\030\026 \001(\0132*.io.playpen.core.proto" +
-      "col.C_ConsoleMessage\022F\n\021c_consoleDetache" +
-      "d\030\036 \001(\0132+.io.playpen.core.protocol.C_Con" +
-      "soleDetached\022B\n\017c_detachConsole\030\037 \001(\0132)." +
-      "io.playpen.core.protocol.C_DetachConsole" +
-      "\022@\n\016c_freezeServer\030\030 \001(\0132(.io.playpen.co" +
-      "re.protocol.C_FreezeServer\022B\n\017c_uploadPa" +
-      "ckage\030\031 \001(\0132).io.playpen.core.protocol.C" +
-      "_UploadPackage\022.\n\005c_ack\030\033 \001(\0132\037.io.playp",
-      "en.core.protocol.C_Ack\022>\n\rc_packageList\030" +
-      "  \001(\0132\'.io.playpen.core.protocol.C_Packa" +
-      "geList\"\311\005\n\013CommandType\022\010\n\004SYNC\020\001\022\r\n\tPROV" +
-      "ISION\020\002\022\026\n\022PROVISION_RESPONSE\020\003\022\023\n\017PACKA" +
-      "GE_REQUEST\020\004\022\024\n\020PACKAGE_RESPONSE\020\005\022\017\n\013DE" +
-      "PROVISION\020\006\022\023\n\017SERVER_SHUTDOWN\020\007\022\014\n\010SHUT" +
-      "DOWN\020\010\022\016\n\nSEND_INPUT\020\t\022\022\n\016ATTACH_CONSOLE" +
-      "\020\n\022\023\n\017CONSOLE_MESSAGE\020\013\022\022\n\016DETACH_CONSOL" +
-      "E\020\014\022\021\n\rFREEZE_SERVER\020\032\022\020\n\014EXPIRE_CACHE\020\035" +
-      "\022\032\n\026C_GET_COORDINATOR_LIST\020\r\022\037\n\033C_COORDI",
-      "NATOR_LIST_RESPONSE\020\016\022\017\n\013C_PROVISION\020\017\022\030" +
-      "\n\024C_PROVISION_RESPONSE\020\020\022\021\n\rC_DEPROVISIO" +
-      "N\020\021\022\016\n\nC_SHUTDOWN\020\022\022\r\n\tC_PROMOTE\020\023\022\030\n\024C_" +
-      "CREATE_COORDINATOR\020\024\022\031\n\025C_COORDINATOR_CR" +
-      "EATED\020\025\022\020\n\014C_SEND_INPUT\020\026\022\024\n\020C_ATTACH_CO" +
-      "NSOLE\020\027\022\026\n\022C_CONSOLE_ATTACHED\020\037\022\025\n\021C_CON" +
-      "SOLE_MESSAGE\020\030\022\026\n\022C_CONSOLE_DETACHED\020 \022\024" +
-      "\n\020C_DETACH_CONSOLE\020\031\022\023\n\017C_FREEZE_SERVER\020" +
-      "\033\022\024\n\020C_UPLOAD_PACKAGE\020\034\022\t\n\005C_ACK\020\036\022\032\n\026C_" +
-      "REQUEST_PACKAGE_LIST\020!\022\022\n\016C_PACKAGE_LIST",
-      "\020\"B\nB\010Commands"
+      "ageData\"\\\n\024SplitPackageResponse\022\n\n\002ok\030\001 " +
+      "\002(\010\0228\n\004data\030\002 \001(\0132*.io.playpen.core.prot" +
+      "ocol.SplitPackageData\"F\n\026PackageChecksum" +
+      "Request\022,\n\002p3\030\001 \002(\0132 .io.playpen.core.pr" +
+      "otocol.P3Meta\"7\n\027PackageChecksumResponse" +
+      "\022\n\n\002ok\030\001 \002(\010\022\020\n\010checksum\030\002 \001(\t\"1\n\013Deprov" +
+      "ision\022\014\n\004uuid\030\001 \002(\t\022\024\n\005force\030\002 \002(\010:\005fals" +
+      "e\"\036\n\016ServerShutdown\022\014\n\004uuid\030\001 \002(\t\"&\n\tSen",
+      "dInput\022\n\n\002id\030\001 \002(\t\022\r\n\005input\030\002 \002(\t\"4\n\rAtt" +
+      "achConsole\022\020\n\010serverId\030\001 \002(\t\022\021\n\tconsoleI" +
+      "d\030\002 \002(\t\"2\n\016ConsoleMessage\022\021\n\tconsoleId\030\001" +
+      " \002(\t\022\r\n\005value\030\002 \002(\t\"\"\n\rDetachConsole\022\021\n\t" +
+      "consoleId\030\001 \002(\t\"\034\n\014FreezeServer\022\014\n\004uuid\030" +
+      "\001 \002(\t\"]\n\031C_CoordinatorListResponse\022@\n\014co" +
+      "ordinators\030\001 \003(\0132*.io.playpen.core.proto" +
+      "col.LocalCoordinator\"\234\001\n\013C_Provision\022,\n\002" +
+      "p3\030\001 \002(\0132 .io.playpen.core.protocol.P3Me" +
+      "ta\022\023\n\013coordinator\030\002 \001(\t\022\022\n\nserverName\030\003 ",
+      "\001(\t\0226\n\nproperties\030\004 \003(\0132\".io.playpen.cor" +
+      "e.protocol.Property\"J\n\023C_ProvisionRespon" +
+      "se\022\n\n\002ok\030\001 \002(\010\022\025\n\rcoordinatorId\030\002 \001(\t\022\020\n" +
+      "\010serverId\030\003 \001(\t\"N\n\rC_Deprovision\022\025\n\rcoor" +
+      "dinatorId\030\001 \002(\t\022\020\n\010serverId\030\002 \002(\t\022\024\n\005for" +
+      "ce\030\003 \002(\010:\005false\"\032\n\nC_Shutdown\022\014\n\004uuid\030\001 " +
+      "\002(\t\"9\n\tC_Promote\022,\n\002p3\030\001 \002(\0132 .io.plaype" +
+      "n.core.protocol.P3Meta\"&\n\023C_CreateCoordi" +
+      "nator\022\017\n\007keyName\030\001 \001(\t\"1\n\024C_CoordinatorC" +
+      "reated\022\014\n\004uuid\030\001 \002(\t\022\013\n\003key\030\002 \002(\t\"E\n\013C_S",
+      "endInput\022\025\n\rcoordinatorId\030\001 \002(\t\022\020\n\010serve" +
+      "rId\030\002 \002(\t\022\r\n\005input\030\003 \002(\t\":\n\017C_AttachCons" +
+      "ole\022\025\n\rcoordinatorId\030\001 \002(\t\022\020\n\010serverId\030\002" +
+      " \002(\t\"&\n\021C_ConsoleAttached\022\021\n\tconsoleId\030\001" +
+      " \002(\t\"4\n\020C_ConsoleMessage\022\r\n\005value\030\001 \002(\t\022" +
+      "\021\n\tconsoleId\030\002 \002(\t\"B\n\021C_ConsoleDetached\022" +
+      "\021\n\tconsoleId\030\001 \002(\t\022\032\n\013useServerId\030\002 \002(\010:" +
+      "\005false\"$\n\017C_DetachConsole\022\021\n\tconsoleId\030\001" +
+      " \001(\t\"9\n\016C_FreezeServer\022\025\n\rcoordinatorId\030" +
+      "\001 \002(\t\022\020\n\010serverId\030\002 \002(\t\"F\n\017C_UploadPacka",
+      "ge\0223\n\004data\030\001 \002(\0132%.io.playpen.core.proto" +
+      "col.PackageData\"\027\n\005C_Ack\022\016\n\006result\030\001 \001(\t" +
+      "\"C\n\rC_PackageList\0222\n\010packages\030\001 \003(\0132 .io" +
+      ".playpen.core.protocol.P3Meta\"\355\027\n\013BaseCo" +
+      "mmand\022?\n\004type\030\001 \002(\01621.io.playpen.core.pr" +
+      "otocol.BaseCommand.CommandType\022,\n\004sync\030\002" +
+      " \001(\0132\036.io.playpen.core.protocol.Sync\0226\n\t" +
+      "provision\030\003 \001(\0132#.io.playpen.core.protoc" +
+      "ol.Provision\022F\n\021provisionResponse\030\004 \001(\0132" +
+      "+.io.playpen.core.protocol.ProvisionResp",
+      "onse\022@\n\016packageRequest\030\005 \001(\0132(.io.plaype" +
+      "n.core.protocol.PackageRequest\022B\n\017packag" +
+      "eResponse\030\006 \001(\0132).io.playpen.core.protoc" +
+      "ol.PackageResponse\022:\n\013deprovision\030\007 \001(\0132" +
+      "%.io.playpen.core.protocol.Deprovision\022@" +
+      "\n\016serverShutdown\030\010 \001(\0132(.io.playpen.core" +
+      ".protocol.ServerShutdown\0226\n\tsendInput\030\t " +
+      "\001(\0132#.io.playpen.core.protocol.SendInput" +
+      "\022>\n\rattachConsole\030\n \001(\0132\'.io.playpen.cor" +
+      "e.protocol.AttachConsole\022@\n\016consoleMessa",
+      "ge\030\013 \001(\0132(.io.playpen.core.protocol.Cons" +
+      "oleMessage\022>\n\rdetachConsole\030\014 \001(\0132\'.io.p" +
+      "laypen.core.protocol.DetachConsole\022<\n\014fr" +
+      "eezeServer\030\027 \001(\0132&.io.playpen.core.proto" +
+      "col.FreezeServer\022I\n\017checksumRequest\030! \001(" +
+      "\01320.io.playpen.core.protocol.PackageChec" +
+      "ksumRequest\022K\n\020checksumResponse\030\" \001(\01321." +
+      "io.playpen.core.protocol.PackageChecksum" +
+      "Response\022L\n\024splitPackageResponse\030# \001(\0132." +
+      ".io.playpen.core.protocol.SplitPackageRe",
+      "sponse\022V\n\031c_coordinatorListResponse\030\r \001(" +
+      "\01323.io.playpen.core.protocol.C_Coordinat" +
+      "orListResponse\022:\n\013c_provision\030\016 \001(\0132%.io" +
+      ".playpen.core.protocol.C_Provision\022J\n\023c_" +
+      "provisionResponse\030\017 \001(\0132-.io.playpen.cor" +
+      "e.protocol.C_ProvisionResponse\022>\n\rc_depr" +
+      "ovision\030\020 \001(\0132\'.io.playpen.core.protocol" +
+      ".C_Deprovision\0228\n\nc_shutdown\030\021 \001(\0132$.io." +
+      "playpen.core.protocol.C_Shutdown\0226\n\tc_pr" +
+      "omote\030\022 \001(\0132#.io.playpen.core.protocol.C",
+      "_Promote\022J\n\023c_createCoordinator\030\034 \001(\0132-." +
+      "io.playpen.core.protocol.C_CreateCoordin" +
+      "ator\022L\n\024c_coordinatorCreated\030\023 \001(\0132..io." +
+      "playpen.core.protocol.C_CoordinatorCreat" +
+      "ed\022:\n\013c_sendInput\030\024 \001(\0132%.io.playpen.cor" +
+      "e.protocol.C_SendInput\022B\n\017c_attachConsol" +
+      "e\030\025 \001(\0132).io.playpen.core.protocol.C_Att" +
+      "achConsole\022F\n\021c_consoleAttached\030\035 \001(\0132+." +
+      "io.playpen.core.protocol.C_ConsoleAttach" +
+      "ed\022D\n\020c_consoleMessage\030\026 \001(\0132*.io.plaype",
+      "n.core.protocol.C_ConsoleMessage\022F\n\021c_co" +
+      "nsoleDetached\030\036 \001(\0132+.io.playpen.core.pr" +
+      "otocol.C_ConsoleDetached\022B\n\017c_detachCons" +
+      "ole\030\037 \001(\0132).io.playpen.core.protocol.C_D" +
+      "etachConsole\022@\n\016c_freezeServer\030\030 \001(\0132(.i" +
+      "o.playpen.core.protocol.C_FreezeServer\022B" +
+      "\n\017c_uploadPackage\030\031 \001(\0132).io.playpen.cor" +
+      "e.protocol.C_UploadPackage\022.\n\005c_ack\030\033 \001(" +
+      "\0132\037.io.playpen.core.protocol.C_Ack\022>\n\rc_" +
+      "packageList\030  \001(\0132\'.io.playpen.core.prot",
+      "ocol.C_PackageList\"\220\006\n\013CommandType\022\010\n\004SY" +
+      "NC\020\001\022\r\n\tPROVISION\020\002\022\026\n\022PROVISION_RESPONS" +
+      "E\020\003\022\023\n\017PACKAGE_REQUEST\020\004\022\024\n\020PACKAGE_RESP" +
+      "ONSE\020\005\022\017\n\013DEPROVISION\020\006\022\023\n\017SERVER_SHUTDO" +
+      "WN\020\007\022\014\n\010SHUTDOWN\020\010\022\016\n\nSEND_INPUT\020\t\022\022\n\016AT" +
+      "TACH_CONSOLE\020\n\022\023\n\017CONSOLE_MESSAGE\020\013\022\022\n\016D" +
+      "ETACH_CONSOLE\020\014\022\021\n\rFREEZE_SERVER\020\032\022\034\n\030PA" +
+      "CKAGE_CHECKSUM_REQUEST\020#\022\035\n\031PACKAGE_CHEC" +
+      "KSUM_RESPONSE\020$\022\032\n\026SPLIT_PACKAGE_RESPONS" +
+      "E\020%\022\032\n\026C_GET_COORDINATOR_LIST\020\r\022\037\n\033C_COO",
+      "RDINATOR_LIST_RESPONSE\020\016\022\017\n\013C_PROVISION\020" +
+      "\017\022\030\n\024C_PROVISION_RESPONSE\020\020\022\021\n\rC_DEPROVI" +
+      "SION\020\021\022\016\n\nC_SHUTDOWN\020\022\022\r\n\tC_PROMOTE\020\023\022\030\n" +
+      "\024C_CREATE_COORDINATOR\020\024\022\031\n\025C_COORDINATOR" +
+      "_CREATED\020\025\022\020\n\014C_SEND_INPUT\020\026\022\024\n\020C_ATTACH" +
+      "_CONSOLE\020\027\022\026\n\022C_CONSOLE_ATTACHED\020\037\022\025\n\021C_" +
+      "CONSOLE_MESSAGE\020\030\022\026\n\022C_CONSOLE_DETACHED\020" +
+      " \022\024\n\020C_DETACH_CONSOLE\020\031\022\023\n\017C_FREEZE_SERV" +
+      "ER\020\033\022\024\n\020C_UPLOAD_PACKAGE\020\034\022\t\n\005C_ACK\020\036\022\032\n" +
+      "\026C_REQUEST_PACKAGE_LIST\020!\022\022\n\016C_PACKAGE_L",
+      "IST\020\"B\nB\010Commands"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -26899,168 +28513,180 @@ public final class Commands {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_PackageResponse_descriptor,
         new java.lang.String[] { "Ok", "Data", });
-    internal_static_io_playpen_core_protocol_Deprovision_descriptor =
+    internal_static_io_playpen_core_protocol_SplitPackageResponse_descriptor =
       getDescriptor().getMessageTypes().get(5);
+    internal_static_io_playpen_core_protocol_SplitPackageResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_io_playpen_core_protocol_SplitPackageResponse_descriptor,
+        new java.lang.String[] { "Ok", "Data", });
+    internal_static_io_playpen_core_protocol_PackageChecksumRequest_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_io_playpen_core_protocol_PackageChecksumRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_io_playpen_core_protocol_PackageChecksumRequest_descriptor,
+        new java.lang.String[] { "P3", });
+    internal_static_io_playpen_core_protocol_PackageChecksumResponse_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_io_playpen_core_protocol_PackageChecksumResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_io_playpen_core_protocol_PackageChecksumResponse_descriptor,
+        new java.lang.String[] { "Ok", "Checksum", });
+    internal_static_io_playpen_core_protocol_Deprovision_descriptor =
+      getDescriptor().getMessageTypes().get(8);
     internal_static_io_playpen_core_protocol_Deprovision_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_Deprovision_descriptor,
         new java.lang.String[] { "Uuid", "Force", });
     internal_static_io_playpen_core_protocol_ServerShutdown_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_io_playpen_core_protocol_ServerShutdown_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_ServerShutdown_descriptor,
         new java.lang.String[] { "Uuid", });
     internal_static_io_playpen_core_protocol_SendInput_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_io_playpen_core_protocol_SendInput_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_SendInput_descriptor,
         new java.lang.String[] { "Id", "Input", });
     internal_static_io_playpen_core_protocol_AttachConsole_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_io_playpen_core_protocol_AttachConsole_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_AttachConsole_descriptor,
         new java.lang.String[] { "ServerId", "ConsoleId", });
     internal_static_io_playpen_core_protocol_ConsoleMessage_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_io_playpen_core_protocol_ConsoleMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_ConsoleMessage_descriptor,
         new java.lang.String[] { "ConsoleId", "Value", });
     internal_static_io_playpen_core_protocol_DetachConsole_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_io_playpen_core_protocol_DetachConsole_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_DetachConsole_descriptor,
         new java.lang.String[] { "ConsoleId", });
     internal_static_io_playpen_core_protocol_FreezeServer_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_io_playpen_core_protocol_FreezeServer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_FreezeServer_descriptor,
         new java.lang.String[] { "Uuid", });
-    internal_static_io_playpen_core_protocol_ExpireCache_descriptor =
-      getDescriptor().getMessageTypes().get(12);
-    internal_static_io_playpen_core_protocol_ExpireCache_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_io_playpen_core_protocol_ExpireCache_descriptor,
-        new java.lang.String[] { "P3", });
     internal_static_io_playpen_core_protocol_C_CoordinatorListResponse_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_io_playpen_core_protocol_C_CoordinatorListResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_CoordinatorListResponse_descriptor,
         new java.lang.String[] { "Coordinators", });
     internal_static_io_playpen_core_protocol_C_Provision_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_io_playpen_core_protocol_C_Provision_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_Provision_descriptor,
         new java.lang.String[] { "P3", "Coordinator", "ServerName", "Properties", });
     internal_static_io_playpen_core_protocol_C_ProvisionResponse_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_io_playpen_core_protocol_C_ProvisionResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_ProvisionResponse_descriptor,
         new java.lang.String[] { "Ok", "CoordinatorId", "ServerId", });
     internal_static_io_playpen_core_protocol_C_Deprovision_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_io_playpen_core_protocol_C_Deprovision_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_Deprovision_descriptor,
         new java.lang.String[] { "CoordinatorId", "ServerId", "Force", });
     internal_static_io_playpen_core_protocol_C_Shutdown_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_io_playpen_core_protocol_C_Shutdown_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_Shutdown_descriptor,
         new java.lang.String[] { "Uuid", });
     internal_static_io_playpen_core_protocol_C_Promote_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_io_playpen_core_protocol_C_Promote_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_Promote_descriptor,
         new java.lang.String[] { "P3", });
     internal_static_io_playpen_core_protocol_C_CreateCoordinator_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_io_playpen_core_protocol_C_CreateCoordinator_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_CreateCoordinator_descriptor,
         new java.lang.String[] { "KeyName", });
     internal_static_io_playpen_core_protocol_C_CoordinatorCreated_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_io_playpen_core_protocol_C_CoordinatorCreated_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_CoordinatorCreated_descriptor,
         new java.lang.String[] { "Uuid", "Key", });
     internal_static_io_playpen_core_protocol_C_SendInput_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_io_playpen_core_protocol_C_SendInput_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_SendInput_descriptor,
         new java.lang.String[] { "CoordinatorId", "ServerId", "Input", });
     internal_static_io_playpen_core_protocol_C_AttachConsole_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_io_playpen_core_protocol_C_AttachConsole_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_AttachConsole_descriptor,
         new java.lang.String[] { "CoordinatorId", "ServerId", });
     internal_static_io_playpen_core_protocol_C_ConsoleAttached_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_io_playpen_core_protocol_C_ConsoleAttached_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_ConsoleAttached_descriptor,
         new java.lang.String[] { "ConsoleId", });
     internal_static_io_playpen_core_protocol_C_ConsoleMessage_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_io_playpen_core_protocol_C_ConsoleMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_ConsoleMessage_descriptor,
         new java.lang.String[] { "Value", "ConsoleId", });
     internal_static_io_playpen_core_protocol_C_ConsoleDetached_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_io_playpen_core_protocol_C_ConsoleDetached_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_ConsoleDetached_descriptor,
         new java.lang.String[] { "ConsoleId", "UseServerId", });
     internal_static_io_playpen_core_protocol_C_DetachConsole_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_io_playpen_core_protocol_C_DetachConsole_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_DetachConsole_descriptor,
         new java.lang.String[] { "ConsoleId", });
     internal_static_io_playpen_core_protocol_C_FreezeServer_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(29);
     internal_static_io_playpen_core_protocol_C_FreezeServer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_FreezeServer_descriptor,
         new java.lang.String[] { "CoordinatorId", "ServerId", });
     internal_static_io_playpen_core_protocol_C_UploadPackage_descriptor =
-      getDescriptor().getMessageTypes().get(28);
+      getDescriptor().getMessageTypes().get(30);
     internal_static_io_playpen_core_protocol_C_UploadPackage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_UploadPackage_descriptor,
         new java.lang.String[] { "Data", });
     internal_static_io_playpen_core_protocol_C_Ack_descriptor =
-      getDescriptor().getMessageTypes().get(29);
+      getDescriptor().getMessageTypes().get(31);
     internal_static_io_playpen_core_protocol_C_Ack_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_Ack_descriptor,
         new java.lang.String[] { "Result", });
     internal_static_io_playpen_core_protocol_C_PackageList_descriptor =
-      getDescriptor().getMessageTypes().get(30);
+      getDescriptor().getMessageTypes().get(32);
     internal_static_io_playpen_core_protocol_C_PackageList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_PackageList_descriptor,
         new java.lang.String[] { "Packages", });
     internal_static_io_playpen_core_protocol_BaseCommand_descriptor =
-      getDescriptor().getMessageTypes().get(31);
+      getDescriptor().getMessageTypes().get(33);
     internal_static_io_playpen_core_protocol_BaseCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_BaseCommand_descriptor,
-        new java.lang.String[] { "Type", "Sync", "Provision", "ProvisionResponse", "PackageRequest", "PackageResponse", "Deprovision", "ServerShutdown", "SendInput", "AttachConsole", "ConsoleMessage", "DetachConsole", "FreezeServer", "ExpireCache", "CCoordinatorListResponse", "CProvision", "CProvisionResponse", "CDeprovision", "CShutdown", "CPromote", "CCreateCoordinator", "CCoordinatorCreated", "CSendInput", "CAttachConsole", "CConsoleAttached", "CConsoleMessage", "CConsoleDetached", "CDetachConsole", "CFreezeServer", "CUploadPackage", "CAck", "CPackageList", });
+        new java.lang.String[] { "Type", "Sync", "Provision", "ProvisionResponse", "PackageRequest", "PackageResponse", "Deprovision", "ServerShutdown", "SendInput", "AttachConsole", "ConsoleMessage", "DetachConsole", "FreezeServer", "ChecksumRequest", "ChecksumResponse", "SplitPackageResponse", "CCoordinatorListResponse", "CProvision", "CProvisionResponse", "CDeprovision", "CShutdown", "CPromote", "CCreateCoordinator", "CCoordinatorCreated", "CSendInput", "CAttachConsole", "CConsoleAttached", "CConsoleMessage", "CConsoleDetached", "CDetachConsole", "CFreezeServer", "CUploadPackage", "CAck", "CPackageList", });
     io.playpen.core.protocol.Coordinator.getDescriptor();
     io.playpen.core.protocol.P3.getDescriptor();
   }

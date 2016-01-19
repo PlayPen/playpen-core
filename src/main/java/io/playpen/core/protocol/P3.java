@@ -785,6 +785,20 @@ public final class P3 {
     io.playpen.core.protocol.P3.P3MetaOrBuilder getMetaOrBuilder();
 
     /**
+     * <code>required string checksum = 3;</code>
+     */
+    boolean hasChecksum();
+    /**
+     * <code>required string checksum = 3;</code>
+     */
+    java.lang.String getChecksum();
+    /**
+     * <code>required string checksum = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getChecksumBytes();
+
+    /**
      * <code>required bytes data = 2;</code>
      */
     boolean hasData();
@@ -859,8 +873,14 @@ public final class P3 {
               break;
             }
             case 18: {
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               data_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              checksum_ = bs;
               break;
             }
           }
@@ -924,13 +944,55 @@ public final class P3 {
       return meta_;
     }
 
+    public static final int CHECKSUM_FIELD_NUMBER = 3;
+    private java.lang.Object checksum_;
+    /**
+     * <code>required string checksum = 3;</code>
+     */
+    public boolean hasChecksum() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string checksum = 3;</code>
+     */
+    public java.lang.String getChecksum() {
+      java.lang.Object ref = checksum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          checksum_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string checksum = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getChecksumBytes() {
+      java.lang.Object ref = checksum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        checksum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int DATA_FIELD_NUMBER = 2;
     private com.google.protobuf.ByteString data_;
     /**
      * <code>required bytes data = 2;</code>
      */
     public boolean hasData() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>required bytes data = 2;</code>
@@ -941,6 +1003,7 @@ public final class P3 {
 
     private void initFields() {
       meta_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+      checksum_ = "";
       data_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
@@ -950,6 +1013,10 @@ public final class P3 {
       if (isInitialized == 0) return false;
 
       if (!hasMeta()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasChecksum()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -971,8 +1038,11 @@ public final class P3 {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(1, meta_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBytes(2, data_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(3, getChecksumBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -987,9 +1057,13 @@ public final class P3 {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, meta_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, data_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getChecksumBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1115,8 +1189,10 @@ public final class P3 {
           metaBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
-        data_ = com.google.protobuf.ByteString.EMPTY;
+        checksum_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -1156,6 +1232,10 @@ public final class P3 {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
+        result.checksum_ = checksum_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
         result.data_ = data_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -1176,6 +1256,11 @@ public final class P3 {
         if (other.hasMeta()) {
           mergeMeta(other.getMeta());
         }
+        if (other.hasChecksum()) {
+          bitField0_ |= 0x00000002;
+          checksum_ = other.checksum_;
+          onChanged();
+        }
         if (other.hasData()) {
           setData(other.getData());
         }
@@ -1185,6 +1270,10 @@ public final class P3 {
 
       public final boolean isInitialized() {
         if (!hasMeta()) {
+          
+          return false;
+        }
+        if (!hasChecksum()) {
           
           return false;
         }
@@ -1334,12 +1423,88 @@ public final class P3 {
         return metaBuilder_;
       }
 
+      private java.lang.Object checksum_ = "";
+      /**
+       * <code>required string checksum = 3;</code>
+       */
+      public boolean hasChecksum() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string checksum = 3;</code>
+       */
+      public java.lang.String getChecksum() {
+        java.lang.Object ref = checksum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            checksum_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string checksum = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getChecksumBytes() {
+        java.lang.Object ref = checksum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          checksum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string checksum = 3;</code>
+       */
+      public Builder setChecksum(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        checksum_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string checksum = 3;</code>
+       */
+      public Builder clearChecksum() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        checksum_ = getDefaultInstance().getChecksum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string checksum = 3;</code>
+       */
+      public Builder setChecksumBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        checksum_ = value;
+        onChanged();
+        return this;
+      }
+
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>required bytes data = 2;</code>
        */
       public boolean hasData() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>required bytes data = 2;</code>
@@ -1354,7 +1519,7 @@ public final class P3 {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  bitField0_ |= 0x00000004;
         data_ = value;
         onChanged();
         return this;
@@ -1363,7 +1528,7 @@ public final class P3 {
        * <code>required bytes data = 2;</code>
        */
       public Builder clearData() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         data_ = getDefaultInstance().getData();
         onChanged();
         return this;
@@ -1380,6 +1545,1010 @@ public final class P3 {
     // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.PackageData)
   }
 
+  public interface SplitPackageDataOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:io.playpen.core.protocol.SplitPackageData)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+     */
+    boolean hasMeta();
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+     */
+    io.playpen.core.protocol.P3.P3Meta getMeta();
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+     */
+    io.playpen.core.protocol.P3.P3MetaOrBuilder getMetaOrBuilder();
+
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    boolean hasChecksum();
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    java.lang.String getChecksum();
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getChecksumBytes();
+
+    /**
+     * <code>required bool endOfFile = 3;</code>
+     */
+    boolean hasEndOfFile();
+    /**
+     * <code>required bool endOfFile = 3;</code>
+     */
+    boolean getEndOfFile();
+
+    /**
+     * <code>optional uint32 chunkCount = 4;</code>
+     */
+    boolean hasChunkCount();
+    /**
+     * <code>optional uint32 chunkCount = 4;</code>
+     */
+    int getChunkCount();
+
+    /**
+     * <code>optional uint32 chunkId = 5;</code>
+     */
+    boolean hasChunkId();
+    /**
+     * <code>optional uint32 chunkId = 5;</code>
+     */
+    int getChunkId();
+
+    /**
+     * <code>optional bytes data = 6;</code>
+     */
+    boolean hasData();
+    /**
+     * <code>optional bytes data = 6;</code>
+     */
+    com.google.protobuf.ByteString getData();
+  }
+  /**
+   * Protobuf type {@code io.playpen.core.protocol.SplitPackageData}
+   */
+  public static final class SplitPackageData extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:io.playpen.core.protocol.SplitPackageData)
+      SplitPackageDataOrBuilder {
+    // Use SplitPackageData.newBuilder() to construct.
+    private SplitPackageData(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private SplitPackageData(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final SplitPackageData defaultInstance;
+    public static SplitPackageData getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public SplitPackageData getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SplitPackageData(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              io.playpen.core.protocol.P3.P3Meta.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = meta_.toBuilder();
+              }
+              meta_ = input.readMessage(io.playpen.core.protocol.P3.P3Meta.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(meta_);
+                meta_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              checksum_ = bs;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              endOfFile_ = input.readBool();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              chunkCount_ = input.readUInt32();
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
+              chunkId_ = input.readUInt32();
+              break;
+            }
+            case 50: {
+              bitField0_ |= 0x00000020;
+              data_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.playpen.core.protocol.P3.internal_static_io_playpen_core_protocol_SplitPackageData_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.playpen.core.protocol.P3.internal_static_io_playpen_core_protocol_SplitPackageData_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.playpen.core.protocol.P3.SplitPackageData.class, io.playpen.core.protocol.P3.SplitPackageData.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<SplitPackageData> PARSER =
+        new com.google.protobuf.AbstractParser<SplitPackageData>() {
+      public SplitPackageData parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SplitPackageData(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SplitPackageData> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int META_FIELD_NUMBER = 1;
+    private io.playpen.core.protocol.P3.P3Meta meta_;
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+     */
+    public boolean hasMeta() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+     */
+    public io.playpen.core.protocol.P3.P3Meta getMeta() {
+      return meta_;
+    }
+    /**
+     * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+     */
+    public io.playpen.core.protocol.P3.P3MetaOrBuilder getMetaOrBuilder() {
+      return meta_;
+    }
+
+    public static final int CHECKSUM_FIELD_NUMBER = 2;
+    private java.lang.Object checksum_;
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    public boolean hasChecksum() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    public java.lang.String getChecksum() {
+      java.lang.Object ref = checksum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          checksum_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string checksum = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getChecksumBytes() {
+      java.lang.Object ref = checksum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        checksum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ENDOFFILE_FIELD_NUMBER = 3;
+    private boolean endOfFile_;
+    /**
+     * <code>required bool endOfFile = 3;</code>
+     */
+    public boolean hasEndOfFile() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required bool endOfFile = 3;</code>
+     */
+    public boolean getEndOfFile() {
+      return endOfFile_;
+    }
+
+    public static final int CHUNKCOUNT_FIELD_NUMBER = 4;
+    private int chunkCount_;
+    /**
+     * <code>optional uint32 chunkCount = 4;</code>
+     */
+    public boolean hasChunkCount() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional uint32 chunkCount = 4;</code>
+     */
+    public int getChunkCount() {
+      return chunkCount_;
+    }
+
+    public static final int CHUNKID_FIELD_NUMBER = 5;
+    private int chunkId_;
+    /**
+     * <code>optional uint32 chunkId = 5;</code>
+     */
+    public boolean hasChunkId() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional uint32 chunkId = 5;</code>
+     */
+    public int getChunkId() {
+      return chunkId_;
+    }
+
+    public static final int DATA_FIELD_NUMBER = 6;
+    private com.google.protobuf.ByteString data_;
+    /**
+     * <code>optional bytes data = 6;</code>
+     */
+    public boolean hasData() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional bytes data = 6;</code>
+     */
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    private void initFields() {
+      meta_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+      checksum_ = "";
+      endOfFile_ = false;
+      chunkCount_ = 0;
+      chunkId_ = 0;
+      data_ = com.google.protobuf.ByteString.EMPTY;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasMeta()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasEndOfFile()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getMeta().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, meta_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getChecksumBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(3, endOfFile_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeUInt32(4, chunkCount_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeUInt32(5, chunkId_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, data_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, meta_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getChecksumBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, endOfFile_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(4, chunkCount_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(5, chunkId_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, data_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static io.playpen.core.protocol.P3.SplitPackageData parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.P3.SplitPackageData parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(io.playpen.core.protocol.P3.SplitPackageData prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code io.playpen.core.protocol.SplitPackageData}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:io.playpen.core.protocol.SplitPackageData)
+        io.playpen.core.protocol.P3.SplitPackageDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.playpen.core.protocol.P3.internal_static_io_playpen_core_protocol_SplitPackageData_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.playpen.core.protocol.P3.internal_static_io_playpen_core_protocol_SplitPackageData_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.playpen.core.protocol.P3.SplitPackageData.class, io.playpen.core.protocol.P3.SplitPackageData.Builder.class);
+      }
+
+      // Construct using io.playpen.core.protocol.P3.SplitPackageData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getMetaFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (metaBuilder_ == null) {
+          meta_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+        } else {
+          metaBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        checksum_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        endOfFile_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        chunkCount_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        chunkId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.playpen.core.protocol.P3.internal_static_io_playpen_core_protocol_SplitPackageData_descriptor;
+      }
+
+      public io.playpen.core.protocol.P3.SplitPackageData getDefaultInstanceForType() {
+        return io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+      }
+
+      public io.playpen.core.protocol.P3.SplitPackageData build() {
+        io.playpen.core.protocol.P3.SplitPackageData result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public io.playpen.core.protocol.P3.SplitPackageData buildPartial() {
+        io.playpen.core.protocol.P3.SplitPackageData result = new io.playpen.core.protocol.P3.SplitPackageData(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (metaBuilder_ == null) {
+          result.meta_ = meta_;
+        } else {
+          result.meta_ = metaBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.checksum_ = checksum_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.endOfFile_ = endOfFile_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.chunkCount_ = chunkCount_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.chunkId_ = chunkId_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.data_ = data_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.playpen.core.protocol.P3.SplitPackageData) {
+          return mergeFrom((io.playpen.core.protocol.P3.SplitPackageData)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.playpen.core.protocol.P3.SplitPackageData other) {
+        if (other == io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance()) return this;
+        if (other.hasMeta()) {
+          mergeMeta(other.getMeta());
+        }
+        if (other.hasChecksum()) {
+          bitField0_ |= 0x00000002;
+          checksum_ = other.checksum_;
+          onChanged();
+        }
+        if (other.hasEndOfFile()) {
+          setEndOfFile(other.getEndOfFile());
+        }
+        if (other.hasChunkCount()) {
+          setChunkCount(other.getChunkCount());
+        }
+        if (other.hasChunkId()) {
+          setChunkId(other.getChunkId());
+        }
+        if (other.hasData()) {
+          setData(other.getData());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasMeta()) {
+          
+          return false;
+        }
+        if (!hasEndOfFile()) {
+          
+          return false;
+        }
+        if (!getMeta().isInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.playpen.core.protocol.P3.SplitPackageData parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.playpen.core.protocol.P3.SplitPackageData) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private io.playpen.core.protocol.P3.P3Meta meta_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder> metaBuilder_;
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      public boolean hasMeta() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      public io.playpen.core.protocol.P3.P3Meta getMeta() {
+        if (metaBuilder_ == null) {
+          return meta_;
+        } else {
+          return metaBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      public Builder setMeta(io.playpen.core.protocol.P3.P3Meta value) {
+        if (metaBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          meta_ = value;
+          onChanged();
+        } else {
+          metaBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      public Builder setMeta(
+          io.playpen.core.protocol.P3.P3Meta.Builder builderForValue) {
+        if (metaBuilder_ == null) {
+          meta_ = builderForValue.build();
+          onChanged();
+        } else {
+          metaBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      public Builder mergeMeta(io.playpen.core.protocol.P3.P3Meta value) {
+        if (metaBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              meta_ != io.playpen.core.protocol.P3.P3Meta.getDefaultInstance()) {
+            meta_ =
+              io.playpen.core.protocol.P3.P3Meta.newBuilder(meta_).mergeFrom(value).buildPartial();
+          } else {
+            meta_ = value;
+          }
+          onChanged();
+        } else {
+          metaBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      public Builder clearMeta() {
+        if (metaBuilder_ == null) {
+          meta_ = io.playpen.core.protocol.P3.P3Meta.getDefaultInstance();
+          onChanged();
+        } else {
+          metaBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      public io.playpen.core.protocol.P3.P3Meta.Builder getMetaBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getMetaFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      public io.playpen.core.protocol.P3.P3MetaOrBuilder getMetaOrBuilder() {
+        if (metaBuilder_ != null) {
+          return metaBuilder_.getMessageOrBuilder();
+        } else {
+          return meta_;
+        }
+      }
+      /**
+       * <code>required .io.playpen.core.protocol.P3Meta meta = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder> 
+          getMetaFieldBuilder() {
+        if (metaBuilder_ == null) {
+          metaBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.playpen.core.protocol.P3.P3Meta, io.playpen.core.protocol.P3.P3Meta.Builder, io.playpen.core.protocol.P3.P3MetaOrBuilder>(
+                  getMeta(),
+                  getParentForChildren(),
+                  isClean());
+          meta_ = null;
+        }
+        return metaBuilder_;
+      }
+
+      private java.lang.Object checksum_ = "";
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public boolean hasChecksum() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public java.lang.String getChecksum() {
+        java.lang.Object ref = checksum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            checksum_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getChecksumBytes() {
+        java.lang.Object ref = checksum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          checksum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public Builder setChecksum(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        checksum_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public Builder clearChecksum() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        checksum_ = getDefaultInstance().getChecksum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string checksum = 2;</code>
+       */
+      public Builder setChecksumBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        checksum_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean endOfFile_ ;
+      /**
+       * <code>required bool endOfFile = 3;</code>
+       */
+      public boolean hasEndOfFile() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required bool endOfFile = 3;</code>
+       */
+      public boolean getEndOfFile() {
+        return endOfFile_;
+      }
+      /**
+       * <code>required bool endOfFile = 3;</code>
+       */
+      public Builder setEndOfFile(boolean value) {
+        bitField0_ |= 0x00000004;
+        endOfFile_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool endOfFile = 3;</code>
+       */
+      public Builder clearEndOfFile() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        endOfFile_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int chunkCount_ ;
+      /**
+       * <code>optional uint32 chunkCount = 4;</code>
+       */
+      public boolean hasChunkCount() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional uint32 chunkCount = 4;</code>
+       */
+      public int getChunkCount() {
+        return chunkCount_;
+      }
+      /**
+       * <code>optional uint32 chunkCount = 4;</code>
+       */
+      public Builder setChunkCount(int value) {
+        bitField0_ |= 0x00000008;
+        chunkCount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint32 chunkCount = 4;</code>
+       */
+      public Builder clearChunkCount() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        chunkCount_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int chunkId_ ;
+      /**
+       * <code>optional uint32 chunkId = 5;</code>
+       */
+      public boolean hasChunkId() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional uint32 chunkId = 5;</code>
+       */
+      public int getChunkId() {
+        return chunkId_;
+      }
+      /**
+       * <code>optional uint32 chunkId = 5;</code>
+       */
+      public Builder setChunkId(int value) {
+        bitField0_ |= 0x00000010;
+        chunkId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint32 chunkId = 5;</code>
+       */
+      public Builder clearChunkId() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        chunkId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes data = 6;</code>
+       */
+      public boolean hasData() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional bytes data = 6;</code>
+       */
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <code>optional bytes data = 6;</code>
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        data_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes data = 6;</code>
+       */
+      public Builder clearData() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:io.playpen.core.protocol.SplitPackageData)
+    }
+
+    static {
+      defaultInstance = new SplitPackageData(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.SplitPackageData)
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_io_playpen_core_protocol_P3Meta_descriptor;
   private static
@@ -1390,6 +2559,11 @@ public final class P3 {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_io_playpen_core_protocol_PackageData_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_io_playpen_core_protocol_SplitPackageData_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_io_playpen_core_protocol_SplitPackageData_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1401,9 +2575,13 @@ public final class P3 {
     java.lang.String[] descriptorData = {
       "\n\010p3.proto\022\030io.playpen.core.protocol\">\n\006" +
       "P3Meta\022\n\n\002id\030\001 \002(\t\022\017\n\007version\030\002 \002(\t\022\027\n\010p" +
-      "romoted\030\003 \001(\010:\005false\"K\n\013PackageData\022.\n\004m" +
+      "romoted\030\003 \001(\010:\005false\"]\n\013PackageData\022.\n\004m" +
       "eta\030\001 \002(\0132 .io.playpen.core.protocol.P3M" +
-      "eta\022\014\n\004data\030\002 \002(\014B\004B\002P3"
+      "eta\022\020\n\010checksum\030\003 \002(\t\022\014\n\004data\030\002 \002(\014\"\232\001\n\020" +
+      "SplitPackageData\022.\n\004meta\030\001 \002(\0132 .io.play" +
+      "pen.core.protocol.P3Meta\022\020\n\010checksum\030\002 \001" +
+      "(\t\022\021\n\tendOfFile\030\003 \002(\010\022\022\n\nchunkCount\030\004 \001(" +
+      "\r\022\017\n\007chunkId\030\005 \001(\r\022\014\n\004data\030\006 \001(\014B\004B\002P3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1428,7 +2606,13 @@ public final class P3 {
     internal_static_io_playpen_core_protocol_PackageData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_PackageData_descriptor,
-        new java.lang.String[] { "Meta", "Data", });
+        new java.lang.String[] { "Meta", "Checksum", "Data", });
+    internal_static_io_playpen_core_protocol_SplitPackageData_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_io_playpen_core_protocol_SplitPackageData_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_io_playpen_core_protocol_SplitPackageData_descriptor,
+        new java.lang.String[] { "Meta", "Checksum", "EndOfFile", "ChunkCount", "ChunkId", "Data", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

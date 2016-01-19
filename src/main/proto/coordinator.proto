@@ -18,6 +18,7 @@ message Server {
     required P3Meta p3 = 1;
     required string uuid = 2;
     optional string name = 3;
+    optional bool active = 5 [default = true];
     repeated Property properties = 4;
 }
 
