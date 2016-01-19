@@ -22,4 +22,10 @@ public class Server {
     private XProcess process;
 
     private boolean freezeOnShutdown = false;
+
+    public String getSafeName() {
+        if (name != null)
+            return name;
+        return uuid;
+    }
 }

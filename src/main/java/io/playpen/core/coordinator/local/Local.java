@@ -82,6 +82,9 @@ public class Local extends PlayPen {
     private boolean enabled = true;
 
     @Getter
+    private boolean useNameForLogs = true;
+
+    @Getter
     private Channel channel = null;
 
     private boolean shuttingDown = false;
@@ -169,6 +172,7 @@ public class Local extends PlayPen {
             key = config.getString("key");
             coordIp = InetAddress.getByName(config.getString("coord-ip"));
             coordPort = config.getInt("coord-port");
+            useNameForLogs = config.getBoolean("use-name-for-logs");
 
             JSONObject res = config.getJSONObject("resources");
             for(String key : res.keySet()) {
@@ -327,10 +331,13 @@ public class Local extends PlayPen {
         if(server.isFreezeOnShutdown()) {
             log.info("Server " + id + " is freezing...");
             try {
-                File dest = Paths.get(Bootstrap.getHomeDir().getPath(), "frozen", server.getUuid()).toFile();
+                File dest = Paths.get(Bootstrap.getHomeDir().getPath(), "frozen", (useNameForLogs ? server.getSafeName() : server.getUuid())).toFile();
+                if (dest.exists())
+                    FileUtils.deleteDirectory(dest);
                 FileUtils.copyDirectory(new File(server.getLocalPath()), dest);
 
-                FileUtils.copyFile(Paths.get(Bootstrap.getHomeDir().getPath(), "server-logs", server.getUuid() + ".log").toFile(),
+                FileUtils.copyFile(Paths.get(Bootstrap.getHomeDir().getPath(), "server-logs",
+                        (useNameForLogs ? server.getName() : server.getUuid()) + ".log").toFile(),
                         Paths.get(dest.getPath(), "playpen_server.log").toFile());
             }
             catch(IOException e) {

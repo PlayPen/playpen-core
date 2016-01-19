@@ -7,5 +7,6 @@
   "coord-port": 25501,
   "resources": {},
   "attributes": [],
-  "strings": {}
+  "strings": {},
+  "use-name-for-logs": true
 }

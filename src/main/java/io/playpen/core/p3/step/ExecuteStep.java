@@ -1,6 +1,7 @@
 package io.playpen.core.p3.step;
 
 import io.playpen.core.Bootstrap;
+import io.playpen.core.coordinator.local.Local;
 import io.playpen.core.coordinator.local.Server;
 import io.playpen.core.p3.IPackageStep;
 import io.playpen.core.p3.P3Package;
@@ -74,7 +75,8 @@ public class ExecuteStep implements IPackageStep {
             server.setProcess(proc);
 
             try {
-                proc.addListener(new FileProcessListener(Paths.get(Bootstrap.getHomeDir().getPath(), "server-logs", server.getUuid() + ".log").toFile()));
+                proc.addListener(new FileProcessListener(Paths.get(Bootstrap.getHomeDir().getPath(), "server-logs",
+                        (Local.get().isUseNameForLogs() ? server.getSafeName() : server.getUuid()) + ".log").toFile()));
             }
             catch(IOException e) {
                 log.warn("Unable to create log for server, no logging of console output will be done");
