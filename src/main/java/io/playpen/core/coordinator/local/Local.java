@@ -959,8 +959,6 @@ public class Local extends PlayPen {
             "temp",
             "split-" + data.getChunkId() + "-" + info.getId() + ".p3");
 
-        log.info("Writing received package chunk #" + data.getChunkId() + " for " + response.getData().getMeta().getId() + " (" + response.getData().getMeta().getVersion() + ") to temp");
-
         // append data
         try (OutputStream output = Files.newOutputStream(tmpDest, StandardOpenOption.CREATE_NEW)) {
             response.getData().getData().writeTo(output);
@@ -1355,10 +1353,10 @@ public class Local extends PlayPen {
                 }
             }
 
-            log.info("Waiting up to 800 seconds for package download");
+            log.info("Waiting up to 240 seconds for package download");
 
             try {
-                latch.await(800, TimeUnit.SECONDS);
+                latch.await(240, TimeUnit.SECONDS);
             }
             catch(InterruptedException e) {
                 log.error("Interrupted while waiting for package download");

@@ -1875,9 +1875,7 @@ public class Network extends PlayPen {
                 Bootstrap.getHomeDir().getPath(),
                 "temp",
                 "split-" + data.getChunkId() + "-" + info.getId() + ".p3");
-
-        log.info("Writing received package chunk #" + data.getChunkId() + " for " + command.getData().getMeta().getId() + " (" + command.getData().getMeta().getVersion() + ") to temp");
-
+        
         // append data
         try (OutputStream output = Files.newOutputStream(tmpDest, StandardOpenOption.CREATE_NEW)) {
             command.getData().getData().writeTo(output);
