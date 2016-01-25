@@ -300,6 +300,19 @@ public class PackageManager {
         }
     }
 
+    public Map<String, String> buildProperties(P3Package initialP3) {
+        Map<String, String> props = new HashMap<>();
+        List<P3Package> chain = resolveDependencyChain(initialP3);
+        if (chain == null)
+            return props;
+
+        for (P3Package p3 : chain) {
+            props.putAll(p3.getStrings());
+        }
+
+        return props;
+    }
+
     public boolean execute(ExecutionType type, P3Package initialP3, File destination, Map<String, String> properties, Object user) {
         log.info("Executing " + type + " " + initialP3.getId() + " (" + initialP3.getVersion() + ")");
         PackageContext ctx = new PackageContext();
@@ -314,7 +327,6 @@ public class PackageManager {
 
         for(P3Package p3 : ctx.getDependencyChain()) {
             ctx.getResources().putAll(p3.getResources());
-            ctx.getProperties().putAll(p3.getStrings());
         }
 
         ctx.getProperties().putAll(properties);

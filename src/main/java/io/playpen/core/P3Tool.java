@@ -19,7 +19,7 @@ import java.util.Map;
 public class P3Tool {
     public static void run(String[] args) {
         if(args.length < 2) {
-            System.err.println("playpen p3 <inspect/pack/provision> [arguments...]");
+            System.err.println("playpen p3 <inspect/pack> [arguments...]");
             return;
         }
 
@@ -30,10 +30,6 @@ public class P3Tool {
 
             case "pack":
                 pack(args);
-                break;
-
-            case "provision":
-                provision(args);
                 break;
         }
     }
@@ -201,63 +197,6 @@ public class P3Tool {
         }
 
         System.out.println("Finished packing!");
-    }
-
-    private static void provision(String[] args) {
-        if(args.length < 4) {
-            System.err.println("playpen p3 provision <package> <directory> [properties...]");
-            return;
-        }
-
-        File p3File = new File(args[2]);
-        if(!p3File.exists() || !p3File.isFile()) {
-            System.err.println("Package doesn't exist or isn't a file");
-            return;
-        }
-
-        File destination = new File(args[3]);
-        if(destination.exists()) {
-            System.err.println("Destination already exists!");
-            return;
-        }
-
-        destination.mkdirs();
-
-        PackageManager pm = new PackageManager();
-        Initialization.packageManager(pm);
-        pm.addPackageResolver(new LocalRepositoryResolver(new File(".")));
-
-        P3Package p3 = null;
-        try {
-            p3 = pm.readPackage(p3File);
-        }
-        catch(PackageException e) {
-            System.err.println("Unable to read package");
-            e.printStackTrace(System.err);
-            return;
-        }
-
-        Map<String, String> properties = new HashMap<>();
-
-        if (args.length > 4) {
-            for (int i = 4; i < args.length; i += 2) {
-                String key = args[i];
-
-                if (i + 1 > args.length) {
-                    System.err.println(key + " does not have a value. Make sure a value isn't missing.");
-                    return;
-                }
-
-                properties.put(key, args[i + 1]);
-            }
-        }
-
-        if(!pm.execute(ExecutionType.PROVISION, p3, destination, properties, null)) {
-            System.err.println("Unable to provision package");
-            return;
-        }
-
-        System.out.println("Finished provisioning!");
     }
 
     private P3Tool() {}

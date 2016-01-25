@@ -557,10 +557,10 @@ public class Local extends PlayPen {
         server.setP3(p3);
         server.setUuid(uuid);
         server.setName(name);
-        server.getProperties().putAll(properties);
         server.setLocalPath(destination.toString());
 
         server.getProperties().putAll(localStrings);
+        server.getProperties().putAll(properties);
 
         if(properties.containsKey("frozen") && "true".equalsIgnoreCase(properties.get("frozen"))) {
             server.setFreezeOnShutdown(true);

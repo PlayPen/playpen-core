@@ -510,7 +510,11 @@ public class Network extends PlayPen {
 
     public ProvisionResult provision(P3Package p3, String serverName, Map<String, String> properties, String target) {
         log.info("Provision requested for " + p3.getId() + " at " + p3.getVersion() + " on coordinator " + target + " with server name " + serverName);
-        return sendProvision(target, p3, serverName, properties);
+        Map<String, String> newProps = new HashMap<>();
+        newProps.putAll(packageManager.buildProperties(p3));
+        newProps.putAll(properties);
+
+        return sendProvision(target, p3, serverName, newProps);
     }
 
     public boolean deprovision(String target, String serverId) {
@@ -1374,6 +1378,7 @@ public class Network extends PlayPen {
         log.info("Attempting provision at client's request of " + p3.getId() + " at " + p3.getVersion());
 
         Map<String, String> properties = new HashMap<>();
+
         for(Coordinator.Property prop : request.getPropertiesList()) {
             properties.put(prop.getName(), prop.getValue());
         }
