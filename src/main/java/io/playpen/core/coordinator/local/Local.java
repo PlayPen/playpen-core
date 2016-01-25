@@ -1355,10 +1355,10 @@ public class Local extends PlayPen {
                 }
             }
 
-            log.info("Waiting up to 240 seconds for package download");
+            log.info("Waiting up to 800 seconds for package download");
 
             try {
-                latch.await(240, TimeUnit.SECONDS);
+                latch.await(800, TimeUnit.SECONDS);
             }
             catch(InterruptedException e) {
                 log.error("Interrupted while waiting for package download");
