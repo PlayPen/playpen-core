@@ -628,6 +628,10 @@ public class Network extends PlayPen {
         }
 
         Map<String, String> fullProps = new HashMap<>();
+
+        if (name != null)
+            fullProps.put("server_name", name);
+
         if(properties != null) {
             fullProps.putAll(properties);
         }
@@ -1875,7 +1879,7 @@ public class Network extends PlayPen {
                 Bootstrap.getHomeDir().getPath(),
                 "temp",
                 "split-" + data.getChunkId() + "-" + info.getId() + ".p3");
-        
+
         // append data
         try (OutputStream output = Files.newOutputStream(tmpDest, StandardOpenOption.CREATE_NEW)) {
             command.getData().getData().writeTo(output);
