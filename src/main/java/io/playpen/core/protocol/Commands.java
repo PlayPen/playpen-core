@@ -19549,6 +19549,526 @@ public final class Commands {
     // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.C_UploadPackage)
   }
 
+  public interface C_UploadSplitPackageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:io.playpen.core.protocol.C_UploadSplitPackage)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    boolean hasData();
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    io.playpen.core.protocol.P3.SplitPackageData getData();
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    io.playpen.core.protocol.P3.SplitPackageDataOrBuilder getDataOrBuilder();
+  }
+  /**
+   * Protobuf type {@code io.playpen.core.protocol.C_UploadSplitPackage}
+   */
+  public static final class C_UploadSplitPackage extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:io.playpen.core.protocol.C_UploadSplitPackage)
+      C_UploadSplitPackageOrBuilder {
+    // Use C_UploadSplitPackage.newBuilder() to construct.
+    private C_UploadSplitPackage(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private C_UploadSplitPackage(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final C_UploadSplitPackage defaultInstance;
+    public static C_UploadSplitPackage getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public C_UploadSplitPackage getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private C_UploadSplitPackage(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 18: {
+              io.playpen.core.protocol.P3.SplitPackageData.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = data_.toBuilder();
+              }
+              data_ = input.readMessage(io.playpen.core.protocol.P3.SplitPackageData.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(data_);
+                data_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_C_UploadSplitPackage_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_C_UploadSplitPackage_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.playpen.core.protocol.Commands.C_UploadSplitPackage.class, io.playpen.core.protocol.Commands.C_UploadSplitPackage.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<C_UploadSplitPackage> PARSER =
+        new com.google.protobuf.AbstractParser<C_UploadSplitPackage>() {
+      public C_UploadSplitPackage parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new C_UploadSplitPackage(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<C_UploadSplitPackage> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int DATA_FIELD_NUMBER = 2;
+    private io.playpen.core.protocol.P3.SplitPackageData data_;
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    public boolean hasData() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    public io.playpen.core.protocol.P3.SplitPackageData getData() {
+      return data_;
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+     */
+    public io.playpen.core.protocol.P3.SplitPackageDataOrBuilder getDataOrBuilder() {
+      return data_;
+    }
+
+    private void initFields() {
+      data_ = io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (hasData()) {
+        if (!getData().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(2, data_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, data_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static io.playpen.core.protocol.Commands.C_UploadSplitPackage parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(io.playpen.core.protocol.Commands.C_UploadSplitPackage prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code io.playpen.core.protocol.C_UploadSplitPackage}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:io.playpen.core.protocol.C_UploadSplitPackage)
+        io.playpen.core.protocol.Commands.C_UploadSplitPackageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_C_UploadSplitPackage_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_C_UploadSplitPackage_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.playpen.core.protocol.Commands.C_UploadSplitPackage.class, io.playpen.core.protocol.Commands.C_UploadSplitPackage.Builder.class);
+      }
+
+      // Construct using io.playpen.core.protocol.Commands.C_UploadSplitPackage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getDataFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (dataBuilder_ == null) {
+          data_ = io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+        } else {
+          dataBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.playpen.core.protocol.Commands.internal_static_io_playpen_core_protocol_C_UploadSplitPackage_descriptor;
+      }
+
+      public io.playpen.core.protocol.Commands.C_UploadSplitPackage getDefaultInstanceForType() {
+        return io.playpen.core.protocol.Commands.C_UploadSplitPackage.getDefaultInstance();
+      }
+
+      public io.playpen.core.protocol.Commands.C_UploadSplitPackage build() {
+        io.playpen.core.protocol.Commands.C_UploadSplitPackage result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public io.playpen.core.protocol.Commands.C_UploadSplitPackage buildPartial() {
+        io.playpen.core.protocol.Commands.C_UploadSplitPackage result = new io.playpen.core.protocol.Commands.C_UploadSplitPackage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (dataBuilder_ == null) {
+          result.data_ = data_;
+        } else {
+          result.data_ = dataBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.playpen.core.protocol.Commands.C_UploadSplitPackage) {
+          return mergeFrom((io.playpen.core.protocol.Commands.C_UploadSplitPackage)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.playpen.core.protocol.Commands.C_UploadSplitPackage other) {
+        if (other == io.playpen.core.protocol.Commands.C_UploadSplitPackage.getDefaultInstance()) return this;
+        if (other.hasData()) {
+          mergeData(other.getData());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (hasData()) {
+          if (!getData().isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.playpen.core.protocol.Commands.C_UploadSplitPackage parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.playpen.core.protocol.Commands.C_UploadSplitPackage) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private io.playpen.core.protocol.P3.SplitPackageData data_ = io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.P3.SplitPackageData, io.playpen.core.protocol.P3.SplitPackageData.Builder, io.playpen.core.protocol.P3.SplitPackageDataOrBuilder> dataBuilder_;
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public boolean hasData() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public io.playpen.core.protocol.P3.SplitPackageData getData() {
+        if (dataBuilder_ == null) {
+          return data_;
+        } else {
+          return dataBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public Builder setData(io.playpen.core.protocol.P3.SplitPackageData value) {
+        if (dataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          data_ = value;
+          onChanged();
+        } else {
+          dataBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public Builder setData(
+          io.playpen.core.protocol.P3.SplitPackageData.Builder builderForValue) {
+        if (dataBuilder_ == null) {
+          data_ = builderForValue.build();
+          onChanged();
+        } else {
+          dataBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public Builder mergeData(io.playpen.core.protocol.P3.SplitPackageData value) {
+        if (dataBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              data_ != io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance()) {
+            data_ =
+              io.playpen.core.protocol.P3.SplitPackageData.newBuilder(data_).mergeFrom(value).buildPartial();
+          } else {
+            data_ = value;
+          }
+          onChanged();
+        } else {
+          dataBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public Builder clearData() {
+        if (dataBuilder_ == null) {
+          data_ = io.playpen.core.protocol.P3.SplitPackageData.getDefaultInstance();
+          onChanged();
+        } else {
+          dataBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public io.playpen.core.protocol.P3.SplitPackageData.Builder getDataBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getDataFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      public io.playpen.core.protocol.P3.SplitPackageDataOrBuilder getDataOrBuilder() {
+        if (dataBuilder_ != null) {
+          return dataBuilder_.getMessageOrBuilder();
+        } else {
+          return data_;
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.SplitPackageData data = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.P3.SplitPackageData, io.playpen.core.protocol.P3.SplitPackageData.Builder, io.playpen.core.protocol.P3.SplitPackageDataOrBuilder> 
+          getDataFieldBuilder() {
+        if (dataBuilder_ == null) {
+          dataBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.playpen.core.protocol.P3.SplitPackageData, io.playpen.core.protocol.P3.SplitPackageData.Builder, io.playpen.core.protocol.P3.SplitPackageDataOrBuilder>(
+                  getData(),
+                  getParentForChildren(),
+                  isClean());
+          data_ = null;
+        }
+        return dataBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:io.playpen.core.protocol.C_UploadSplitPackage)
+    }
+
+    static {
+      defaultInstance = new C_UploadSplitPackage(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:io.playpen.core.protocol.C_UploadSplitPackage)
+  }
+
   public interface C_AckOrBuilder extends
       // @@protoc_insertion_point(interface_extends:io.playpen.core.protocol.C_Ack)
       com.google.protobuf.MessageOrBuilder {
@@ -21154,6 +21674,19 @@ public final class Commands {
      * <code>optional .io.playpen.core.protocol.C_PackageList c_packageList = 32;</code>
      */
     io.playpen.core.protocol.Commands.C_PackageListOrBuilder getCPackageListOrBuilder();
+
+    /**
+     * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+     */
+    boolean hasCUploadSplitPackage();
+    /**
+     * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+     */
+    io.playpen.core.protocol.Commands.C_UploadSplitPackage getCUploadSplitPackage();
+    /**
+     * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+     */
+    io.playpen.core.protocol.Commands.C_UploadSplitPackageOrBuilder getCUploadSplitPackageOrBuilder();
   }
   /**
    * Protobuf type {@code io.playpen.core.protocol.BaseCommand}
@@ -21648,6 +22181,19 @@ public final class Commands {
               bitField0_ |= 0x00008000;
               break;
             }
+            case 298: {
+              io.playpen.core.protocol.Commands.C_UploadSplitPackage.Builder subBuilder = null;
+              if (((bitField1_ & 0x00000004) == 0x00000004)) {
+                subBuilder = cUploadSplitPackage_.toBuilder();
+              }
+              cUploadSplitPackage_ = input.readMessage(io.playpen.core.protocol.Commands.C_UploadSplitPackage.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(cUploadSplitPackage_);
+                cUploadSplitPackage_ = subBuilder.buildPartial();
+              }
+              bitField1_ |= 0x00000004;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -21693,37 +22239,41 @@ public final class Commands {
     public enum CommandType
         implements com.google.protobuf.ProtocolMessageEnum {
       /**
-       * <code>SYNC = 1;</code>
+       * <code>NOOP = 0;</code>
        *
        * <pre>
        * Coordination commands
        * </pre>
        */
-      SYNC(0, 1),
+      NOOP(0, 0),
+      /**
+       * <code>SYNC = 1;</code>
+       */
+      SYNC(1, 1),
       /**
        * <code>PROVISION = 2;</code>
        */
-      PROVISION(1, 2),
+      PROVISION(2, 2),
       /**
        * <code>PROVISION_RESPONSE = 3;</code>
        */
-      PROVISION_RESPONSE(2, 3),
+      PROVISION_RESPONSE(3, 3),
       /**
        * <code>PACKAGE_REQUEST = 4;</code>
        */
-      PACKAGE_REQUEST(3, 4),
+      PACKAGE_REQUEST(4, 4),
       /**
        * <code>PACKAGE_RESPONSE = 5;</code>
        */
-      PACKAGE_RESPONSE(4, 5),
+      PACKAGE_RESPONSE(5, 5),
       /**
        * <code>DEPROVISION = 6;</code>
        */
-      DEPROVISION(5, 6),
+      DEPROVISION(6, 6),
       /**
        * <code>SERVER_SHUTDOWN = 7;</code>
        */
-      SERVER_SHUTDOWN(6, 7),
+      SERVER_SHUTDOWN(7, 7),
       /**
        * <code>SHUTDOWN = 8;</code>
        *
@@ -21731,39 +22281,39 @@ public final class Commands {
        * no message body
        * </pre>
        */
-      SHUTDOWN(7, 8),
+      SHUTDOWN(8, 8),
       /**
        * <code>SEND_INPUT = 9;</code>
        */
-      SEND_INPUT(8, 9),
+      SEND_INPUT(9, 9),
       /**
        * <code>ATTACH_CONSOLE = 10;</code>
        */
-      ATTACH_CONSOLE(9, 10),
+      ATTACH_CONSOLE(10, 10),
       /**
        * <code>CONSOLE_MESSAGE = 11;</code>
        */
-      CONSOLE_MESSAGE(10, 11),
+      CONSOLE_MESSAGE(11, 11),
       /**
        * <code>DETACH_CONSOLE = 12;</code>
        */
-      DETACH_CONSOLE(11, 12),
+      DETACH_CONSOLE(12, 12),
       /**
        * <code>FREEZE_SERVER = 26;</code>
        */
-      FREEZE_SERVER(12, 26),
+      FREEZE_SERVER(13, 26),
       /**
        * <code>PACKAGE_CHECKSUM_REQUEST = 35;</code>
        */
-      PACKAGE_CHECKSUM_REQUEST(13, 35),
+      PACKAGE_CHECKSUM_REQUEST(14, 35),
       /**
        * <code>PACKAGE_CHECKSUM_RESPONSE = 36;</code>
        */
-      PACKAGE_CHECKSUM_RESPONSE(14, 36),
+      PACKAGE_CHECKSUM_RESPONSE(15, 36),
       /**
        * <code>SPLIT_PACKAGE_RESPONSE = 37;</code>
        */
-      SPLIT_PACKAGE_RESPONSE(15, 37),
+      SPLIT_PACKAGE_RESPONSE(16, 37),
       /**
        * <code>C_GET_COORDINATOR_LIST = 13;</code>
        *
@@ -21771,31 +22321,31 @@ public final class Commands {
        * Client commands
        * </pre>
        */
-      C_GET_COORDINATOR_LIST(16, 13),
+      C_GET_COORDINATOR_LIST(17, 13),
       /**
        * <code>C_COORDINATOR_LIST_RESPONSE = 14;</code>
        */
-      C_COORDINATOR_LIST_RESPONSE(17, 14),
+      C_COORDINATOR_LIST_RESPONSE(18, 14),
       /**
        * <code>C_PROVISION = 15;</code>
        */
-      C_PROVISION(18, 15),
+      C_PROVISION(19, 15),
       /**
        * <code>C_PROVISION_RESPONSE = 16;</code>
        */
-      C_PROVISION_RESPONSE(19, 16),
+      C_PROVISION_RESPONSE(20, 16),
       /**
        * <code>C_DEPROVISION = 17;</code>
        */
-      C_DEPROVISION(20, 17),
+      C_DEPROVISION(21, 17),
       /**
        * <code>C_SHUTDOWN = 18;</code>
        */
-      C_SHUTDOWN(21, 18),
+      C_SHUTDOWN(22, 18),
       /**
        * <code>C_PROMOTE = 19;</code>
        */
-      C_PROMOTE(22, 19),
+      C_PROMOTE(23, 19),
       /**
        * <code>C_CREATE_COORDINATOR = 20;</code>
        *
@@ -21803,47 +22353,51 @@ public final class Commands {
        * no message body
        * </pre>
        */
-      C_CREATE_COORDINATOR(23, 20),
+      C_CREATE_COORDINATOR(24, 20),
       /**
        * <code>C_COORDINATOR_CREATED = 21;</code>
        */
-      C_COORDINATOR_CREATED(24, 21),
+      C_COORDINATOR_CREATED(25, 21),
       /**
        * <code>C_SEND_INPUT = 22;</code>
        */
-      C_SEND_INPUT(25, 22),
+      C_SEND_INPUT(26, 22),
       /**
        * <code>C_ATTACH_CONSOLE = 23;</code>
        */
-      C_ATTACH_CONSOLE(26, 23),
+      C_ATTACH_CONSOLE(27, 23),
       /**
        * <code>C_CONSOLE_ATTACHED = 31;</code>
        */
-      C_CONSOLE_ATTACHED(27, 31),
+      C_CONSOLE_ATTACHED(28, 31),
       /**
        * <code>C_CONSOLE_MESSAGE = 24;</code>
        */
-      C_CONSOLE_MESSAGE(28, 24),
+      C_CONSOLE_MESSAGE(29, 24),
       /**
        * <code>C_CONSOLE_DETACHED = 32;</code>
        */
-      C_CONSOLE_DETACHED(29, 32),
+      C_CONSOLE_DETACHED(30, 32),
       /**
        * <code>C_DETACH_CONSOLE = 25;</code>
        */
-      C_DETACH_CONSOLE(30, 25),
+      C_DETACH_CONSOLE(31, 25),
       /**
        * <code>C_FREEZE_SERVER = 27;</code>
        */
-      C_FREEZE_SERVER(31, 27),
+      C_FREEZE_SERVER(32, 27),
       /**
        * <code>C_UPLOAD_PACKAGE = 28;</code>
        */
-      C_UPLOAD_PACKAGE(32, 28),
+      C_UPLOAD_PACKAGE(33, 28),
+      /**
+       * <code>C_UPLOAD_SPLIT_PACKAGE = 38;</code>
+       */
+      C_UPLOAD_SPLIT_PACKAGE(34, 38),
       /**
        * <code>C_ACK = 30;</code>
        */
-      C_ACK(33, 30),
+      C_ACK(35, 30),
       /**
        * <code>C_REQUEST_PACKAGE_LIST = 33;</code>
        *
@@ -21851,19 +22405,23 @@ public final class Commands {
        * no message body
        * </pre>
        */
-      C_REQUEST_PACKAGE_LIST(34, 33),
+      C_REQUEST_PACKAGE_LIST(36, 33),
       /**
        * <code>C_PACKAGE_LIST = 34;</code>
        */
-      C_PACKAGE_LIST(35, 34),
+      C_PACKAGE_LIST(37, 34),
       ;
 
       /**
-       * <code>SYNC = 1;</code>
+       * <code>NOOP = 0;</code>
        *
        * <pre>
        * Coordination commands
        * </pre>
+       */
+      public static final int NOOP_VALUE = 0;
+      /**
+       * <code>SYNC = 1;</code>
        */
       public static final int SYNC_VALUE = 1;
       /**
@@ -22007,6 +22565,10 @@ public final class Commands {
        */
       public static final int C_UPLOAD_PACKAGE_VALUE = 28;
       /**
+       * <code>C_UPLOAD_SPLIT_PACKAGE = 38;</code>
+       */
+      public static final int C_UPLOAD_SPLIT_PACKAGE_VALUE = 38;
+      /**
        * <code>C_ACK = 30;</code>
        */
       public static final int C_ACK_VALUE = 30;
@@ -22028,6 +22590,7 @@ public final class Commands {
 
       public static CommandType valueOf(int value) {
         switch (value) {
+          case 0: return NOOP;
           case 1: return SYNC;
           case 2: return PROVISION;
           case 3: return PROVISION_RESPONSE;
@@ -22061,6 +22624,7 @@ public final class Commands {
           case 25: return C_DETACH_CONSOLE;
           case 27: return C_FREEZE_SERVER;
           case 28: return C_UPLOAD_PACKAGE;
+          case 38: return C_UPLOAD_SPLIT_PACKAGE;
           case 30: return C_ACK;
           case 33: return C_REQUEST_PACKAGE_LIST;
           case 34: return C_PACKAGE_LIST;
@@ -22825,8 +23389,29 @@ public final class Commands {
       return cPackageList_;
     }
 
+    public static final int C_UPLOADSPLITPACKAGE_FIELD_NUMBER = 37;
+    private io.playpen.core.protocol.Commands.C_UploadSplitPackage cUploadSplitPackage_;
+    /**
+     * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+     */
+    public boolean hasCUploadSplitPackage() {
+      return ((bitField1_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+     */
+    public io.playpen.core.protocol.Commands.C_UploadSplitPackage getCUploadSplitPackage() {
+      return cUploadSplitPackage_;
+    }
+    /**
+     * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+     */
+    public io.playpen.core.protocol.Commands.C_UploadSplitPackageOrBuilder getCUploadSplitPackageOrBuilder() {
+      return cUploadSplitPackage_;
+    }
+
     private void initFields() {
-      type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.SYNC;
+      type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.NOOP;
       sync_ = io.playpen.core.protocol.Commands.Sync.getDefaultInstance();
       provision_ = io.playpen.core.protocol.Commands.Provision.getDefaultInstance();
       provisionResponse_ = io.playpen.core.protocol.Commands.ProvisionResponse.getDefaultInstance();
@@ -22860,6 +23445,7 @@ public final class Commands {
       cUploadPackage_ = io.playpen.core.protocol.Commands.C_UploadPackage.getDefaultInstance();
       cAck_ = io.playpen.core.protocol.Commands.C_Ack.getDefaultInstance();
       cPackageList_ = io.playpen.core.protocol.Commands.C_PackageList.getDefaultInstance();
+      cUploadSplitPackage_ = io.playpen.core.protocol.Commands.C_UploadSplitPackage.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -23051,6 +23637,12 @@ public final class Commands {
           return false;
         }
       }
+      if (hasCUploadSplitPackage()) {
+        if (!getCUploadSplitPackage().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -23159,6 +23751,9 @@ public final class Commands {
       }
       if (((bitField0_ & 0x00008000) == 0x00008000)) {
         output.writeMessage(35, splitPackageResponse_);
+      }
+      if (((bitField1_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(37, cUploadSplitPackage_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -23305,6 +23900,10 @@ public final class Commands {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(35, splitPackageResponse_);
       }
+      if (((bitField1_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(37, cUploadSplitPackage_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
@@ -23447,6 +24046,7 @@ public final class Commands {
           getCUploadPackageFieldBuilder();
           getCAckFieldBuilder();
           getCPackageListFieldBuilder();
+          getCUploadSplitPackageFieldBuilder();
         }
       }
       private static Builder create() {
@@ -23455,7 +24055,7 @@ public final class Commands {
 
       public Builder clear() {
         super.clear();
-        type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.SYNC;
+        type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.NOOP;
         bitField0_ = (bitField0_ & ~0x00000001);
         if (syncBuilder_ == null) {
           sync_ = io.playpen.core.protocol.Commands.Sync.getDefaultInstance();
@@ -23655,6 +24255,12 @@ public final class Commands {
           cPackageListBuilder_.clear();
         }
         bitField1_ = (bitField1_ & ~0x00000002);
+        if (cUploadSplitPackageBuilder_ == null) {
+          cUploadSplitPackage_ = io.playpen.core.protocol.Commands.C_UploadSplitPackage.getDefaultInstance();
+        } else {
+          cUploadSplitPackageBuilder_.clear();
+        }
+        bitField1_ = (bitField1_ & ~0x00000004);
         return this;
       }
 
@@ -23953,6 +24559,14 @@ public final class Commands {
         } else {
           result.cPackageList_ = cPackageListBuilder_.build();
         }
+        if (((from_bitField1_ & 0x00000004) == 0x00000004)) {
+          to_bitField1_ |= 0x00000004;
+        }
+        if (cUploadSplitPackageBuilder_ == null) {
+          result.cUploadSplitPackage_ = cUploadSplitPackage_;
+        } else {
+          result.cUploadSplitPackage_ = cUploadSplitPackageBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         result.bitField1_ = to_bitField1_;
         onBuilt();
@@ -24071,6 +24685,9 @@ public final class Commands {
         }
         if (other.hasCPackageList()) {
           mergeCPackageList(other.getCPackageList());
+        }
+        if (other.hasCUploadSplitPackage()) {
+          mergeCUploadSplitPackage(other.getCUploadSplitPackage());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -24261,6 +24878,12 @@ public final class Commands {
             return false;
           }
         }
+        if (hasCUploadSplitPackage()) {
+          if (!getCUploadSplitPackage().isInitialized()) {
+            
+            return false;
+          }
+        }
         return true;
       }
 
@@ -24284,7 +24907,7 @@ public final class Commands {
       private int bitField0_;
       private int bitField1_;
 
-      private io.playpen.core.protocol.Commands.BaseCommand.CommandType type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.SYNC;
+      private io.playpen.core.protocol.Commands.BaseCommand.CommandType type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.NOOP;
       /**
        * <code>required .io.playpen.core.protocol.BaseCommand.CommandType type = 1;</code>
        */
@@ -24314,7 +24937,7 @@ public final class Commands {
        */
       public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.SYNC;
+        type_ = io.playpen.core.protocol.Commands.BaseCommand.CommandType.NOOP;
         onChanged();
         return this;
       }
@@ -28147,6 +28770,122 @@ public final class Commands {
         return cPackageListBuilder_;
       }
 
+      private io.playpen.core.protocol.Commands.C_UploadSplitPackage cUploadSplitPackage_ = io.playpen.core.protocol.Commands.C_UploadSplitPackage.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.Commands.C_UploadSplitPackage, io.playpen.core.protocol.Commands.C_UploadSplitPackage.Builder, io.playpen.core.protocol.Commands.C_UploadSplitPackageOrBuilder> cUploadSplitPackageBuilder_;
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      public boolean hasCUploadSplitPackage() {
+        return ((bitField1_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      public io.playpen.core.protocol.Commands.C_UploadSplitPackage getCUploadSplitPackage() {
+        if (cUploadSplitPackageBuilder_ == null) {
+          return cUploadSplitPackage_;
+        } else {
+          return cUploadSplitPackageBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      public Builder setCUploadSplitPackage(io.playpen.core.protocol.Commands.C_UploadSplitPackage value) {
+        if (cUploadSplitPackageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          cUploadSplitPackage_ = value;
+          onChanged();
+        } else {
+          cUploadSplitPackageBuilder_.setMessage(value);
+        }
+        bitField1_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      public Builder setCUploadSplitPackage(
+          io.playpen.core.protocol.Commands.C_UploadSplitPackage.Builder builderForValue) {
+        if (cUploadSplitPackageBuilder_ == null) {
+          cUploadSplitPackage_ = builderForValue.build();
+          onChanged();
+        } else {
+          cUploadSplitPackageBuilder_.setMessage(builderForValue.build());
+        }
+        bitField1_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      public Builder mergeCUploadSplitPackage(io.playpen.core.protocol.Commands.C_UploadSplitPackage value) {
+        if (cUploadSplitPackageBuilder_ == null) {
+          if (((bitField1_ & 0x00000004) == 0x00000004) &&
+              cUploadSplitPackage_ != io.playpen.core.protocol.Commands.C_UploadSplitPackage.getDefaultInstance()) {
+            cUploadSplitPackage_ =
+              io.playpen.core.protocol.Commands.C_UploadSplitPackage.newBuilder(cUploadSplitPackage_).mergeFrom(value).buildPartial();
+          } else {
+            cUploadSplitPackage_ = value;
+          }
+          onChanged();
+        } else {
+          cUploadSplitPackageBuilder_.mergeFrom(value);
+        }
+        bitField1_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      public Builder clearCUploadSplitPackage() {
+        if (cUploadSplitPackageBuilder_ == null) {
+          cUploadSplitPackage_ = io.playpen.core.protocol.Commands.C_UploadSplitPackage.getDefaultInstance();
+          onChanged();
+        } else {
+          cUploadSplitPackageBuilder_.clear();
+        }
+        bitField1_ = (bitField1_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      public io.playpen.core.protocol.Commands.C_UploadSplitPackage.Builder getCUploadSplitPackageBuilder() {
+        bitField1_ |= 0x00000004;
+        onChanged();
+        return getCUploadSplitPackageFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      public io.playpen.core.protocol.Commands.C_UploadSplitPackageOrBuilder getCUploadSplitPackageOrBuilder() {
+        if (cUploadSplitPackageBuilder_ != null) {
+          return cUploadSplitPackageBuilder_.getMessageOrBuilder();
+        } else {
+          return cUploadSplitPackage_;
+        }
+      }
+      /**
+       * <code>optional .io.playpen.core.protocol.C_UploadSplitPackage c_uploadSplitPackage = 37;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.playpen.core.protocol.Commands.C_UploadSplitPackage, io.playpen.core.protocol.Commands.C_UploadSplitPackage.Builder, io.playpen.core.protocol.Commands.C_UploadSplitPackageOrBuilder> 
+          getCUploadSplitPackageFieldBuilder() {
+        if (cUploadSplitPackageBuilder_ == null) {
+          cUploadSplitPackageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.playpen.core.protocol.Commands.C_UploadSplitPackage, io.playpen.core.protocol.Commands.C_UploadSplitPackage.Builder, io.playpen.core.protocol.Commands.C_UploadSplitPackageOrBuilder>(
+                  getCUploadSplitPackage(),
+                  getParentForChildren(),
+                  isClean());
+          cUploadSplitPackage_ = null;
+        }
+        return cUploadSplitPackageBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:io.playpen.core.protocol.BaseCommand)
     }
 
@@ -28314,6 +29053,11 @@ public final class Commands {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_io_playpen_core_protocol_C_UploadPackage_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_io_playpen_core_protocol_C_UploadSplitPackage_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_io_playpen_core_protocol_C_UploadSplitPackage_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_io_playpen_core_protocol_C_Ack_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -28388,86 +29132,91 @@ public final class Commands {
       " \001(\t\"9\n\016C_FreezeServer\022\025\n\rcoordinatorId\030" +
       "\001 \002(\t\022\020\n\010serverId\030\002 \002(\t\"F\n\017C_UploadPacka",
       "ge\0223\n\004data\030\001 \002(\0132%.io.playpen.core.proto" +
-      "col.PackageData\"\027\n\005C_Ack\022\016\n\006result\030\001 \001(\t" +
-      "\"C\n\rC_PackageList\0222\n\010packages\030\001 \003(\0132 .io" +
-      ".playpen.core.protocol.P3Meta\"\355\027\n\013BaseCo" +
-      "mmand\022?\n\004type\030\001 \002(\01621.io.playpen.core.pr" +
-      "otocol.BaseCommand.CommandType\022,\n\004sync\030\002" +
-      " \001(\0132\036.io.playpen.core.protocol.Sync\0226\n\t" +
-      "provision\030\003 \001(\0132#.io.playpen.core.protoc" +
-      "ol.Provision\022F\n\021provisionResponse\030\004 \001(\0132" +
-      "+.io.playpen.core.protocol.ProvisionResp",
-      "onse\022@\n\016packageRequest\030\005 \001(\0132(.io.plaype" +
-      "n.core.protocol.PackageRequest\022B\n\017packag" +
-      "eResponse\030\006 \001(\0132).io.playpen.core.protoc" +
-      "ol.PackageResponse\022:\n\013deprovision\030\007 \001(\0132" +
-      "%.io.playpen.core.protocol.Deprovision\022@" +
-      "\n\016serverShutdown\030\010 \001(\0132(.io.playpen.core" +
-      ".protocol.ServerShutdown\0226\n\tsendInput\030\t " +
-      "\001(\0132#.io.playpen.core.protocol.SendInput" +
-      "\022>\n\rattachConsole\030\n \001(\0132\'.io.playpen.cor" +
-      "e.protocol.AttachConsole\022@\n\016consoleMessa",
-      "ge\030\013 \001(\0132(.io.playpen.core.protocol.Cons" +
-      "oleMessage\022>\n\rdetachConsole\030\014 \001(\0132\'.io.p" +
-      "laypen.core.protocol.DetachConsole\022<\n\014fr" +
-      "eezeServer\030\027 \001(\0132&.io.playpen.core.proto" +
-      "col.FreezeServer\022I\n\017checksumRequest\030! \001(" +
-      "\01320.io.playpen.core.protocol.PackageChec" +
-      "ksumRequest\022K\n\020checksumResponse\030\" \001(\01321." +
-      "io.playpen.core.protocol.PackageChecksum" +
-      "Response\022L\n\024splitPackageResponse\030# \001(\0132." +
-      ".io.playpen.core.protocol.SplitPackageRe",
-      "sponse\022V\n\031c_coordinatorListResponse\030\r \001(" +
-      "\01323.io.playpen.core.protocol.C_Coordinat" +
-      "orListResponse\022:\n\013c_provision\030\016 \001(\0132%.io" +
-      ".playpen.core.protocol.C_Provision\022J\n\023c_" +
-      "provisionResponse\030\017 \001(\0132-.io.playpen.cor" +
-      "e.protocol.C_ProvisionResponse\022>\n\rc_depr" +
-      "ovision\030\020 \001(\0132\'.io.playpen.core.protocol" +
-      ".C_Deprovision\0228\n\nc_shutdown\030\021 \001(\0132$.io." +
-      "playpen.core.protocol.C_Shutdown\0226\n\tc_pr" +
-      "omote\030\022 \001(\0132#.io.playpen.core.protocol.C",
-      "_Promote\022J\n\023c_createCoordinator\030\034 \001(\0132-." +
-      "io.playpen.core.protocol.C_CreateCoordin" +
-      "ator\022L\n\024c_coordinatorCreated\030\023 \001(\0132..io." +
-      "playpen.core.protocol.C_CoordinatorCreat" +
-      "ed\022:\n\013c_sendInput\030\024 \001(\0132%.io.playpen.cor" +
-      "e.protocol.C_SendInput\022B\n\017c_attachConsol" +
-      "e\030\025 \001(\0132).io.playpen.core.protocol.C_Att" +
-      "achConsole\022F\n\021c_consoleAttached\030\035 \001(\0132+." +
-      "io.playpen.core.protocol.C_ConsoleAttach" +
-      "ed\022D\n\020c_consoleMessage\030\026 \001(\0132*.io.plaype",
-      "n.core.protocol.C_ConsoleMessage\022F\n\021c_co" +
-      "nsoleDetached\030\036 \001(\0132+.io.playpen.core.pr" +
-      "otocol.C_ConsoleDetached\022B\n\017c_detachCons" +
-      "ole\030\037 \001(\0132).io.playpen.core.protocol.C_D" +
-      "etachConsole\022@\n\016c_freezeServer\030\030 \001(\0132(.i" +
-      "o.playpen.core.protocol.C_FreezeServer\022B" +
-      "\n\017c_uploadPackage\030\031 \001(\0132).io.playpen.cor" +
-      "e.protocol.C_UploadPackage\022.\n\005c_ack\030\033 \001(" +
-      "\0132\037.io.playpen.core.protocol.C_Ack\022>\n\rc_" +
-      "packageList\030  \001(\0132\'.io.playpen.core.prot",
-      "ocol.C_PackageList\"\220\006\n\013CommandType\022\010\n\004SY" +
-      "NC\020\001\022\r\n\tPROVISION\020\002\022\026\n\022PROVISION_RESPONS" +
-      "E\020\003\022\023\n\017PACKAGE_REQUEST\020\004\022\024\n\020PACKAGE_RESP" +
-      "ONSE\020\005\022\017\n\013DEPROVISION\020\006\022\023\n\017SERVER_SHUTDO" +
-      "WN\020\007\022\014\n\010SHUTDOWN\020\010\022\016\n\nSEND_INPUT\020\t\022\022\n\016AT" +
-      "TACH_CONSOLE\020\n\022\023\n\017CONSOLE_MESSAGE\020\013\022\022\n\016D" +
-      "ETACH_CONSOLE\020\014\022\021\n\rFREEZE_SERVER\020\032\022\034\n\030PA" +
-      "CKAGE_CHECKSUM_REQUEST\020#\022\035\n\031PACKAGE_CHEC" +
-      "KSUM_RESPONSE\020$\022\032\n\026SPLIT_PACKAGE_RESPONS" +
-      "E\020%\022\032\n\026C_GET_COORDINATOR_LIST\020\r\022\037\n\033C_COO",
-      "RDINATOR_LIST_RESPONSE\020\016\022\017\n\013C_PROVISION\020" +
-      "\017\022\030\n\024C_PROVISION_RESPONSE\020\020\022\021\n\rC_DEPROVI" +
-      "SION\020\021\022\016\n\nC_SHUTDOWN\020\022\022\r\n\tC_PROMOTE\020\023\022\030\n" +
-      "\024C_CREATE_COORDINATOR\020\024\022\031\n\025C_COORDINATOR" +
-      "_CREATED\020\025\022\020\n\014C_SEND_INPUT\020\026\022\024\n\020C_ATTACH" +
-      "_CONSOLE\020\027\022\026\n\022C_CONSOLE_ATTACHED\020\037\022\025\n\021C_" +
-      "CONSOLE_MESSAGE\020\030\022\026\n\022C_CONSOLE_DETACHED\020" +
-      " \022\024\n\020C_DETACH_CONSOLE\020\031\022\023\n\017C_FREEZE_SERV" +
-      "ER\020\033\022\024\n\020C_UPLOAD_PACKAGE\020\034\022\t\n\005C_ACK\020\036\022\032\n" +
-      "\026C_REQUEST_PACKAGE_LIST\020!\022\022\n\016C_PACKAGE_L",
-      "IST\020\"B\nB\010Commands"
+      "col.PackageData\"P\n\024C_UploadSplitPackage\022" +
+      "8\n\004data\030\002 \001(\0132*.io.playpen.core.protocol" +
+      ".SplitPackageData\"\027\n\005C_Ack\022\016\n\006result\030\001 \001" +
+      "(\t\"C\n\rC_PackageList\0222\n\010packages\030\001 \003(\0132 ." +
+      "io.playpen.core.protocol.P3Meta\"\341\030\n\013Base" +
+      "Command\022?\n\004type\030\001 \002(\01621.io.playpen.core." +
+      "protocol.BaseCommand.CommandType\022,\n\004sync" +
+      "\030\002 \001(\0132\036.io.playpen.core.protocol.Sync\0226" +
+      "\n\tprovision\030\003 \001(\0132#.io.playpen.core.prot",
+      "ocol.Provision\022F\n\021provisionResponse\030\004 \001(" +
+      "\0132+.io.playpen.core.protocol.ProvisionRe" +
+      "sponse\022@\n\016packageRequest\030\005 \001(\0132(.io.play" +
+      "pen.core.protocol.PackageRequest\022B\n\017pack" +
+      "ageResponse\030\006 \001(\0132).io.playpen.core.prot" +
+      "ocol.PackageResponse\022:\n\013deprovision\030\007 \001(" +
+      "\0132%.io.playpen.core.protocol.Deprovision" +
+      "\022@\n\016serverShutdown\030\010 \001(\0132(.io.playpen.co" +
+      "re.protocol.ServerShutdown\0226\n\tsendInput\030" +
+      "\t \001(\0132#.io.playpen.core.protocol.SendInp",
+      "ut\022>\n\rattachConsole\030\n \001(\0132\'.io.playpen.c" +
+      "ore.protocol.AttachConsole\022@\n\016consoleMes" +
+      "sage\030\013 \001(\0132(.io.playpen.core.protocol.Co" +
+      "nsoleMessage\022>\n\rdetachConsole\030\014 \001(\0132\'.io" +
+      ".playpen.core.protocol.DetachConsole\022<\n\014" +
+      "freezeServer\030\027 \001(\0132&.io.playpen.core.pro" +
+      "tocol.FreezeServer\022I\n\017checksumRequest\030! " +
+      "\001(\01320.io.playpen.core.protocol.PackageCh" +
+      "ecksumRequest\022K\n\020checksumResponse\030\" \001(\0132" +
+      "1.io.playpen.core.protocol.PackageChecks",
+      "umResponse\022L\n\024splitPackageResponse\030# \001(\013" +
+      "2..io.playpen.core.protocol.SplitPackage" +
+      "Response\022V\n\031c_coordinatorListResponse\030\r " +
+      "\001(\01323.io.playpen.core.protocol.C_Coordin" +
+      "atorListResponse\022:\n\013c_provision\030\016 \001(\0132%." +
+      "io.playpen.core.protocol.C_Provision\022J\n\023" +
+      "c_provisionResponse\030\017 \001(\0132-.io.playpen.c" +
+      "ore.protocol.C_ProvisionResponse\022>\n\rc_de" +
+      "provision\030\020 \001(\0132\'.io.playpen.core.protoc" +
+      "ol.C_Deprovision\0228\n\nc_shutdown\030\021 \001(\0132$.i",
+      "o.playpen.core.protocol.C_Shutdown\0226\n\tc_" +
+      "promote\030\022 \001(\0132#.io.playpen.core.protocol" +
+      ".C_Promote\022J\n\023c_createCoordinator\030\034 \001(\0132" +
+      "-.io.playpen.core.protocol.C_CreateCoord" +
+      "inator\022L\n\024c_coordinatorCreated\030\023 \001(\0132..i" +
+      "o.playpen.core.protocol.C_CoordinatorCre" +
+      "ated\022:\n\013c_sendInput\030\024 \001(\0132%.io.playpen.c" +
+      "ore.protocol.C_SendInput\022B\n\017c_attachCons" +
+      "ole\030\025 \001(\0132).io.playpen.core.protocol.C_A" +
+      "ttachConsole\022F\n\021c_consoleAttached\030\035 \001(\0132",
+      "+.io.playpen.core.protocol.C_ConsoleAtta" +
+      "ched\022D\n\020c_consoleMessage\030\026 \001(\0132*.io.play" +
+      "pen.core.protocol.C_ConsoleMessage\022F\n\021c_" +
+      "consoleDetached\030\036 \001(\0132+.io.playpen.core." +
+      "protocol.C_ConsoleDetached\022B\n\017c_detachCo" +
+      "nsole\030\037 \001(\0132).io.playpen.core.protocol.C" +
+      "_DetachConsole\022@\n\016c_freezeServer\030\030 \001(\0132(" +
+      ".io.playpen.core.protocol.C_FreezeServer" +
+      "\022B\n\017c_uploadPackage\030\031 \001(\0132).io.playpen.c" +
+      "ore.protocol.C_UploadPackage\022.\n\005c_ack\030\033 ",
+      "\001(\0132\037.io.playpen.core.protocol.C_Ack\022>\n\r" +
+      "c_packageList\030  \001(\0132\'.io.playpen.core.pr" +
+      "otocol.C_PackageList\022L\n\024c_uploadSplitPac" +
+      "kage\030% \001(\0132..io.playpen.core.protocol.C_" +
+      "UploadSplitPackage\"\266\006\n\013CommandType\022\010\n\004NO" +
+      "OP\020\000\022\010\n\004SYNC\020\001\022\r\n\tPROVISION\020\002\022\026\n\022PROVISI" +
+      "ON_RESPONSE\020\003\022\023\n\017PACKAGE_REQUEST\020\004\022\024\n\020PA" +
+      "CKAGE_RESPONSE\020\005\022\017\n\013DEPROVISION\020\006\022\023\n\017SER" +
+      "VER_SHUTDOWN\020\007\022\014\n\010SHUTDOWN\020\010\022\016\n\nSEND_INP" +
+      "UT\020\t\022\022\n\016ATTACH_CONSOLE\020\n\022\023\n\017CONSOLE_MESS",
+      "AGE\020\013\022\022\n\016DETACH_CONSOLE\020\014\022\021\n\rFREEZE_SERV" +
+      "ER\020\032\022\034\n\030PACKAGE_CHECKSUM_REQUEST\020#\022\035\n\031PA" +
+      "CKAGE_CHECKSUM_RESPONSE\020$\022\032\n\026SPLIT_PACKA" +
+      "GE_RESPONSE\020%\022\032\n\026C_GET_COORDINATOR_LIST\020" +
+      "\r\022\037\n\033C_COORDINATOR_LIST_RESPONSE\020\016\022\017\n\013C_" +
+      "PROVISION\020\017\022\030\n\024C_PROVISION_RESPONSE\020\020\022\021\n" +
+      "\rC_DEPROVISION\020\021\022\016\n\nC_SHUTDOWN\020\022\022\r\n\tC_PR" +
+      "OMOTE\020\023\022\030\n\024C_CREATE_COORDINATOR\020\024\022\031\n\025C_C" +
+      "OORDINATOR_CREATED\020\025\022\020\n\014C_SEND_INPUT\020\026\022\024" +
+      "\n\020C_ATTACH_CONSOLE\020\027\022\026\n\022C_CONSOLE_ATTACH",
+      "ED\020\037\022\025\n\021C_CONSOLE_MESSAGE\020\030\022\026\n\022C_CONSOLE" +
+      "_DETACHED\020 \022\024\n\020C_DETACH_CONSOLE\020\031\022\023\n\017C_F" +
+      "REEZE_SERVER\020\033\022\024\n\020C_UPLOAD_PACKAGE\020\034\022\032\n\026" +
+      "C_UPLOAD_SPLIT_PACKAGE\020&\022\t\n\005C_ACK\020\036\022\032\n\026C" +
+      "_REQUEST_PACKAGE_LIST\020!\022\022\n\016C_PACKAGE_LIS" +
+      "T\020\"B\nB\010Commands"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -28669,24 +29418,30 @@ public final class Commands {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_UploadPackage_descriptor,
         new java.lang.String[] { "Data", });
-    internal_static_io_playpen_core_protocol_C_Ack_descriptor =
+    internal_static_io_playpen_core_protocol_C_UploadSplitPackage_descriptor =
       getDescriptor().getMessageTypes().get(31);
+    internal_static_io_playpen_core_protocol_C_UploadSplitPackage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_io_playpen_core_protocol_C_UploadSplitPackage_descriptor,
+        new java.lang.String[] { "Data", });
+    internal_static_io_playpen_core_protocol_C_Ack_descriptor =
+      getDescriptor().getMessageTypes().get(32);
     internal_static_io_playpen_core_protocol_C_Ack_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_Ack_descriptor,
         new java.lang.String[] { "Result", });
     internal_static_io_playpen_core_protocol_C_PackageList_descriptor =
-      getDescriptor().getMessageTypes().get(32);
+      getDescriptor().getMessageTypes().get(33);
     internal_static_io_playpen_core_protocol_C_PackageList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_PackageList_descriptor,
         new java.lang.String[] { "Packages", });
     internal_static_io_playpen_core_protocol_BaseCommand_descriptor =
-      getDescriptor().getMessageTypes().get(33);
+      getDescriptor().getMessageTypes().get(34);
     internal_static_io_playpen_core_protocol_BaseCommand_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_BaseCommand_descriptor,
-        new java.lang.String[] { "Type", "Sync", "Provision", "ProvisionResponse", "PackageRequest", "PackageResponse", "Deprovision", "ServerShutdown", "SendInput", "AttachConsole", "ConsoleMessage", "DetachConsole", "FreezeServer", "ChecksumRequest", "ChecksumResponse", "SplitPackageResponse", "CCoordinatorListResponse", "CProvision", "CProvisionResponse", "CDeprovision", "CShutdown", "CPromote", "CCreateCoordinator", "CCoordinatorCreated", "CSendInput", "CAttachConsole", "CConsoleAttached", "CConsoleMessage", "CConsoleDetached", "CDetachConsole", "CFreezeServer", "CUploadPackage", "CAck", "CPackageList", });
+        new java.lang.String[] { "Type", "Sync", "Provision", "ProvisionResponse", "PackageRequest", "PackageResponse", "Deprovision", "ServerShutdown", "SendInput", "AttachConsole", "ConsoleMessage", "DetachConsole", "FreezeServer", "ChecksumRequest", "ChecksumResponse", "SplitPackageResponse", "CCoordinatorListResponse", "CProvision", "CProvisionResponse", "CDeprovision", "CShutdown", "CPromote", "CCreateCoordinator", "CCoordinatorCreated", "CSendInput", "CAttachConsole", "CConsoleAttached", "CConsoleMessage", "CConsoleDetached", "CDetachConsole", "CFreezeServer", "CUploadPackage", "CAck", "CPackageList", "CUploadSplitPackage", });
     io.playpen.core.protocol.Coordinator.getDescriptor();
     io.playpen.core.protocol.P3.getDescriptor();
   }

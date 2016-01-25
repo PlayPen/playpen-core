@@ -37,11 +37,10 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.nio.channels.FileChannel;
 import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 
 @Log4j2
 public class Network extends PlayPen {
@@ -72,6 +71,9 @@ public class Network extends PlayPen {
 
     @Getter
     private int packageSizeSplit = -1;
+
+    private final Object chunkLock = new Object();
+    private Map<P3Package.P3PackageInfo, Semaphore> packageChunkLocks = new ConcurrentHashMap<>();
 
     @Getter
     private NioEventLoopGroup eventLoopGroup = null;
@@ -341,6 +343,9 @@ public class Network extends PlayPen {
                 log.error("Network coordinator cannot process command " + command.getType());
                 return false;
 
+            case NOOP:
+                return true;
+
             case SYNC:
                 return processSync(command.getSync(), info, from);
 
@@ -395,6 +400,9 @@ public class Network extends PlayPen {
 
             case C_UPLOAD_PACKAGE:
                 return c_processUploadPackage(command.getCUploadPackage(), info, from);
+
+            case C_UPLOAD_SPLIT_PACKAGE:
+                return c_processUploadSplitPackage(command.getCUploadSplitPackage(), info, from);
 
             case C_REQUEST_PACKAGE_LIST:
                 return c_processRequestPackageList(info, from);
@@ -1717,11 +1725,13 @@ public class Network extends PlayPen {
             checksum = AuthUtils.createPackageChecksum(tmpDest.toString());
         } catch (IOException e) {
             log.error("Unable to generate checksum from downloaded package at " + tmpDest, e);
+            c_sendAck("Unable to generate checksum from downloaded package at " + tmpDest, from);
             return false;
         }
 
         if (!checksum.equals(command.getData().getChecksum())) {
             log.error("Checksum mismatch! Expected: " + command.getData().getChecksum() + ", got: " + checksum);
+            c_sendAck("Checksum mismatch! Expected: " + command.getData().getChecksum() + ", got: " + checksum, from);
             return false;
         }
 
@@ -1744,6 +1754,147 @@ public class Network extends PlayPen {
         getPackageManager().getPackageCache().remove(p3info);
 
         c_sendAck("Successfully received package " + p3info.getId() + " (" + p3info.getVersion() + ")", from);
+
+        return true;
+    }
+
+    protected boolean c_processUploadSplitPackage(Commands.C_UploadSplitPackage command, TransactionInfo info, String from) {
+        Path trueDest = Paths.get(
+                Bootstrap.getHomeDir().getPath(),
+                "packages",
+                command.getData().getMeta().getId() + "_" + command.getData().getMeta().getVersion() + ".p3");
+
+        P3.SplitPackageData data = command.getData();
+        P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
+        p3info.setId(data.getMeta().getId());
+        p3info.setVersion(data.getMeta().getVersion());
+
+        if (data.getEndOfFile()) {
+            log.info("Received end of file for package " + data.getMeta().getId() + " (" + data.getMeta().getVersion() + ")");
+
+            synchronized(chunkLock) {
+                if (!packageChunkLocks.containsKey(p3info)) {
+                    packageChunkLocks.put(p3info, new Semaphore(0));
+                }
+            }
+
+            try {
+                if (!packageChunkLocks.get(p3info).tryAcquire(data.getChunkCount(), 340, TimeUnit.SECONDS)) {
+                    log.error("Timed out waiting for chunk download to finish");
+                    c_sendAck("Timed out waiting for chunk upload to finish", from);
+                    return false;
+                }
+            } catch (InterruptedException e) {
+                log.error("Interrupted while waiting for chunk download to finish", e);
+                c_sendAck("Interrupted while waiting for chunk upload to finish", from);
+                return false;
+            }
+            finally {
+                packageChunkLocks.remove(p3info);
+            }
+
+            // merge all chunks
+            log.info("Merging chunks...");
+
+            Path tmpDest = Paths.get(
+                    Bootstrap.getHomeDir().getPath(),
+                    "temp",
+                    UUID.randomUUID() + ".p3");
+            try (FileChannel channel = FileChannel.open(tmpDest, StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW)) {
+                for (int i = 0; i < data.getChunkCount(); ++i) {
+                    Path oldFile = Paths.get(
+                            Bootstrap.getHomeDir().getPath(),
+                            "temp",
+                            "split-" + i + "-" + info.getId() + ".p3"
+                    );
+
+                    try (FileChannel chunkChannel = FileChannel.open(oldFile, StandardOpenOption.READ,
+                            StandardOpenOption.DELETE_ON_CLOSE)) {
+                        long currentFilePos = 0;
+                        long sz = chunkChannel.size();
+                        while (currentFilePos < sz) {
+                            long remain = sz - currentFilePos;
+                            long bytesCopied = chunkChannel.transferTo(currentFilePos, remain, channel);
+
+                            if (bytesCopied == 0) {
+                                break;
+                            }
+
+                            currentFilePos += bytesCopied;
+                        }
+                    }
+                }
+            }
+            catch(IOException e) {
+                log.error("Unable to write package chunks to " + tmpDest, e);
+                c_sendAck("Unable to write package chunks", from);
+                return false;
+            }
+
+            log.info("Merge finished.");
+
+            // checksum
+            String checksum = null;
+            try {
+                checksum = AuthUtils.createPackageChecksum(tmpDest.toString());
+            } catch (IOException e) {
+                log.error("Unable to generate checksum from downloaded package at " + tmpDest, e);
+                c_sendAck("Unable to generate checksum from package", from);
+                return false;
+            }
+
+            if (!checksum.equals(data.getChecksum())) {
+                log.error("Checksum mismatch! Expected: " + data.getChecksum() + ", got: " + checksum);
+                c_sendAck("Checksum mismatch!", from);
+                return false;
+            }
+
+            log.info("Moving package " + data.getMeta().getId() +  " at " + data.getMeta().getVersion() + " to cache");
+
+            try {
+                if (trueDest.toFile().exists())
+                    Files.delete(trueDest);
+
+                Files.move(tmpDest, trueDest);
+            }
+            catch(IOException e) {
+                log.error("Cannot move package to " + trueDest, e);
+                c_sendAck("Unable to move package to final location", from);
+                return false;
+            }
+
+            log.info("Expiring cache for package " + p3info.getId() + " (" + p3info.getVersion() + ")");
+            getPackageManager().getPackageCache().remove(p3info);
+
+            c_sendAck("Successfully received package " + p3info.getId() + " (" + p3info.getVersion() + ")", from);
+
+            return true;
+        }
+
+        Path tmpDest = Paths.get(
+                Bootstrap.getHomeDir().getPath(),
+                "temp",
+                "split-" + data.getChunkId() + "-" + info.getId() + ".p3");
+
+        log.info("Writing received package chunk #" + data.getChunkId() + " for " + command.getData().getMeta().getId() + " (" + command.getData().getMeta().getVersion() + ") to temp");
+
+        // append data
+        try (OutputStream output = Files.newOutputStream(tmpDest, StandardOpenOption.CREATE_NEW)) {
+            command.getData().getData().writeTo(output);
+        }
+        catch(IOException e) {
+            log.error("Unable to write package chunk to " + tmpDest, e);
+            c_sendAck("Unable to write package chunk", from);
+            return false;
+        }
+
+        synchronized(chunkLock) {
+            if (!packageChunkLocks.containsKey(p3info)) {
+                packageChunkLocks.put(p3info, new Semaphore(0));
+            }
+        }
+
+        packageChunkLocks.get(p3info).release();
 
         return true;
     }
