@@ -1849,7 +1849,7 @@ public class Network extends PlayPen {
                 return false;
             }
 
-            log.info("Moving package " + data.getMeta().getId() +  " at " + data.getMeta().getVersion() + " to cache");
+            log.info("Moving package " + data.getMeta().getId() +  " at " + data.getMeta().getVersion() + " to repository");
 
             try {
                 if (trueDest.toFile().exists())
