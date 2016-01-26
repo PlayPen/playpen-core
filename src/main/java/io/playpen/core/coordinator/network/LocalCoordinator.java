@@ -116,6 +116,7 @@ public class LocalCoordinator {
         server.getProperties().putAll(properties);
         server.setCoordinator(this);
         servers.put(server.getUuid(), server);
+
         return server;
     }
 

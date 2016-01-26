@@ -512,6 +512,11 @@ public class Network extends PlayPen {
         log.info("Provision requested for " + p3.getId() + " at " + p3.getVersion() + " on coordinator " + target + " with server name " + serverName);
         Map<String, String> newProps = new HashMap<>();
         newProps.putAll(packageManager.buildProperties(p3));
+        newProps.putAll(globalStrings);
+
+        if (serverName != null)
+            newProps.put("server_name", serverName);
+
         newProps.putAll(properties);
 
         return sendProvision(target, p3, serverName, newProps);
@@ -631,22 +636,6 @@ public class Network extends PlayPen {
             return null;
         }
 
-        Map<String, String> fullProps = new HashMap<>();
-
-        if (name != null)
-            fullProps.put("server_name", name);
-
-        if(properties != null) {
-            fullProps.putAll(properties);
-        }
-
-        for(Map.Entry<String, String> entry : globalStrings.entrySet()) {
-            if(fullProps.containsKey(entry.getKey()))
-                continue;
-
-            fullProps.put(entry.getKey(), entry.getValue());
-        }
-
         P3.P3Meta meta = P3.P3Meta.newBuilder()
                 .setId(p3.getId())
                 .setVersion(p3.getVersion())
@@ -658,7 +647,7 @@ public class Network extends PlayPen {
         if(name != null)
             serverBuilder.setName(name);
 
-        for(Map.Entry<String, String> entry : fullProps.entrySet()) {
+        for(Map.Entry<String, String> entry : properties.entrySet()) {
             Coordinator.Property prop = Coordinator.Property.newBuilder()
                     .setName(entry.getKey())
                     .setValue(entry.getValue())
@@ -688,8 +677,10 @@ public class Network extends PlayPen {
 
         log.info("Sending provision of " + p3.getId() + " at " + p3.getVersion() + " to " + coord.getUuid() + ", creating server " + server.getUuid());
 
-        if(!TransactionManager.get().send(info.getId(), message, target))
+        if(!TransactionManager.get().send(info.getId(), message, coord.getUuid())) {
+            log.error("Failed to send PROVISION to coordinator " + target);
             return null;
+        }
 
         ProvisionResult result = new ProvisionResult();
         result.setCoordinator(target);
