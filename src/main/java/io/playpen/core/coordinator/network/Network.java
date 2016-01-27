@@ -746,12 +746,13 @@ public class Network extends PlayPen {
             return sendPackageResponseFailure(from, info.getId());
         }
 
-        if (sendPackageResponse(from, info.getId(), p3)) {
-            return true;
-        }
-        else {
-            return sendPackageResponseFailure(from, info.getId());
-        }
+        Thread thread = new Thread(() -> {
+            if (!sendPackageResponse(from, info.getId(), p3)) {
+                sendPackageResponseFailure(from, info.getId());
+            }
+        });
+        thread.start();
+        return true;
     }
 
     protected boolean sendPackageResponseFailure(String target, String tid) {
@@ -807,7 +808,7 @@ public class Network extends PlayPen {
 
         File packageFile = new File(p3.getLocalPath());
         long fileLength = packageFile.length();
-        if (fileLength / 1024 / 1024 > packageSizeSplit) {
+        if (false) {
             log.info("Sending chunked package " + p3.getId() + " at " + p3.getVersion() + " to " + target);
             log.debug("Checksum: " + p3.getChecksum());
             try (FileInputStream in = new FileInputStream(packageFile)) {

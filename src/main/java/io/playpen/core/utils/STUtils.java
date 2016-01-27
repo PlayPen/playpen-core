@@ -15,6 +15,7 @@ public class STUtils {
         template.add("package-version", p3.getVersion());
         template.add("resources", ctx.getResources());
         template.add("asset_path", Paths.get(Bootstrap.getHomeDir().getPath(), "assets").toFile().getAbsolutePath());
+        template.add("server_path", ctx.getDestination().getAbsolutePath());
 
         for(Map.Entry<String, String> entry : ctx.getProperties().entrySet()) {
             template.add(entry.getKey(), entry.getValue());

@@ -28,6 +28,7 @@ public class Initialization {
         pm.addPackageStep(new ExecuteStep());
         pm.addPackageStep(new PipeStep());
         pm.addPackageStep(new ExpandAssetsStep());
+        pm.addPackageStep(new CopyStep());
     }
 
     private Initialization() {}
