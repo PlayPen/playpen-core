@@ -45,10 +45,15 @@ public class Bootstrap {
     public static void main(String[] args) {
         boolean didCopyResources = false;
 
-        try {
-            homeDir = new File(Bootstrap.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile();
+        String homeDirEnv = System.getenv("PLAYPEN_HOME");
+        if (homeDirEnv != null) {
+            homeDir = new File(homeDirEnv);
+        } else {
+            try {
+                homeDir = new File(Bootstrap.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile();
+            } catch (URISyntaxException e) {
+            }
         }
-        catch(URISyntaxException e) {}
 
         if(!"true".equalsIgnoreCase(System.getenv("PLAYPEN_NO_SETUP"))) {
             try {
