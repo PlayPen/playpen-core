@@ -603,6 +603,13 @@ public class Network extends PlayPen {
             }
         }
 
+        for (Server newServer : coord.getServers().values()) {
+            if (!oldServers.containsKey(newServer.getUuid())) {
+                log.info("Reconciled server startup for " + newServer.getUuid() + " on " + coord.getUuid());
+                eventManager.callEvent(l -> l.onProvisionResponse(coord, newServer, true));
+            }
+        }
+
         coord.setEnabled(command.getEnabled());
         log.info("Synchronized " + coord.getUuid() + " with " + coord.getServers().size()
                 + " servers (" + (coord.isEnabled() ? "enabled" : "not enabled") + ")");
