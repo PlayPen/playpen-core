@@ -132,7 +132,8 @@ message C_AttachConsole {
 }
 
 message C_ConsoleAttached {
-    required string consoleId = 1;
+    optional string consoleId = 1;
+    required bool ok = 2;
 }
 
 message C_ConsoleMessage {

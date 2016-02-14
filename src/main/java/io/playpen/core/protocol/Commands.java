@@ -16202,18 +16202,27 @@ public final class Commands {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string consoleId = 1;</code>
+     * <code>optional string consoleId = 1;</code>
      */
     boolean hasConsoleId();
     /**
-     * <code>required string consoleId = 1;</code>
+     * <code>optional string consoleId = 1;</code>
      */
     java.lang.String getConsoleId();
     /**
-     * <code>required string consoleId = 1;</code>
+     * <code>optional string consoleId = 1;</code>
      */
     com.google.protobuf.ByteString
         getConsoleIdBytes();
+
+    /**
+     * <code>required bool ok = 2;</code>
+     */
+    boolean hasOk();
+    /**
+     * <code>required bool ok = 2;</code>
+     */
+    boolean getOk();
   }
   /**
    * Protobuf type {@code io.playpen.core.protocol.C_ConsoleAttached}
@@ -16273,6 +16282,11 @@ public final class Commands {
               consoleId_ = bs;
               break;
             }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              ok_ = input.readBool();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -16316,13 +16330,13 @@ public final class Commands {
     public static final int CONSOLEID_FIELD_NUMBER = 1;
     private java.lang.Object consoleId_;
     /**
-     * <code>required string consoleId = 1;</code>
+     * <code>optional string consoleId = 1;</code>
      */
     public boolean hasConsoleId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required string consoleId = 1;</code>
+     * <code>optional string consoleId = 1;</code>
      */
     public java.lang.String getConsoleId() {
       java.lang.Object ref = consoleId_;
@@ -16339,7 +16353,7 @@ public final class Commands {
       }
     }
     /**
-     * <code>required string consoleId = 1;</code>
+     * <code>optional string consoleId = 1;</code>
      */
     public com.google.protobuf.ByteString
         getConsoleIdBytes() {
@@ -16355,8 +16369,24 @@ public final class Commands {
       }
     }
 
+    public static final int OK_FIELD_NUMBER = 2;
+    private boolean ok_;
+    /**
+     * <code>required bool ok = 2;</code>
+     */
+    public boolean hasOk() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required bool ok = 2;</code>
+     */
+    public boolean getOk() {
+      return ok_;
+    }
+
     private void initFields() {
       consoleId_ = "";
+      ok_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -16364,7 +16394,7 @@ public final class Commands {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasConsoleId()) {
+      if (!hasOk()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -16378,6 +16408,9 @@ public final class Commands {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(1, getConsoleIdBytes());
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBool(2, ok_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -16390,6 +16423,10 @@ public final class Commands {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(1, getConsoleIdBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, ok_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -16510,6 +16547,8 @@ public final class Commands {
         super.clear();
         consoleId_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        ok_ = false;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -16542,6 +16581,10 @@ public final class Commands {
           to_bitField0_ |= 0x00000001;
         }
         result.consoleId_ = consoleId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.ok_ = ok_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -16563,12 +16606,15 @@ public final class Commands {
           consoleId_ = other.consoleId_;
           onChanged();
         }
+        if (other.hasOk()) {
+          setOk(other.getOk());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasConsoleId()) {
+        if (!hasOk()) {
           
           return false;
         }
@@ -16596,13 +16642,13 @@ public final class Commands {
 
       private java.lang.Object consoleId_ = "";
       /**
-       * <code>required string consoleId = 1;</code>
+       * <code>optional string consoleId = 1;</code>
        */
       public boolean hasConsoleId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required string consoleId = 1;</code>
+       * <code>optional string consoleId = 1;</code>
        */
       public java.lang.String getConsoleId() {
         java.lang.Object ref = consoleId_;
@@ -16619,7 +16665,7 @@ public final class Commands {
         }
       }
       /**
-       * <code>required string consoleId = 1;</code>
+       * <code>optional string consoleId = 1;</code>
        */
       public com.google.protobuf.ByteString
           getConsoleIdBytes() {
@@ -16635,7 +16681,7 @@ public final class Commands {
         }
       }
       /**
-       * <code>required string consoleId = 1;</code>
+       * <code>optional string consoleId = 1;</code>
        */
       public Builder setConsoleId(
           java.lang.String value) {
@@ -16648,7 +16694,7 @@ public final class Commands {
         return this;
       }
       /**
-       * <code>required string consoleId = 1;</code>
+       * <code>optional string consoleId = 1;</code>
        */
       public Builder clearConsoleId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -16657,7 +16703,7 @@ public final class Commands {
         return this;
       }
       /**
-       * <code>required string consoleId = 1;</code>
+       * <code>optional string consoleId = 1;</code>
        */
       public Builder setConsoleIdBytes(
           com.google.protobuf.ByteString value) {
@@ -16666,6 +16712,38 @@ public final class Commands {
   }
   bitField0_ |= 0x00000001;
         consoleId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean ok_ ;
+      /**
+       * <code>required bool ok = 2;</code>
+       */
+      public boolean hasOk() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required bool ok = 2;</code>
+       */
+      public boolean getOk() {
+        return ok_;
+      }
+      /**
+       * <code>required bool ok = 2;</code>
+       */
+      public Builder setOk(boolean value) {
+        bitField0_ |= 0x00000002;
+        ok_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool ok = 2;</code>
+       */
+      public Builder clearOk() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        ok_ = false;
         onChanged();
         return this;
       }
@@ -29124,99 +29202,99 @@ public final class Commands {
       "endInput\022\025\n\rcoordinatorId\030\001 \002(\t\022\020\n\010serve" +
       "rId\030\002 \002(\t\022\r\n\005input\030\003 \002(\t\":\n\017C_AttachCons" +
       "ole\022\025\n\rcoordinatorId\030\001 \002(\t\022\020\n\010serverId\030\002" +
-      " \002(\t\"&\n\021C_ConsoleAttached\022\021\n\tconsoleId\030\001" +
-      " \002(\t\"4\n\020C_ConsoleMessage\022\r\n\005value\030\001 \002(\t\022" +
-      "\021\n\tconsoleId\030\002 \002(\t\"B\n\021C_ConsoleDetached\022" +
-      "\021\n\tconsoleId\030\001 \002(\t\022\032\n\013useServerId\030\002 \002(\010:" +
-      "\005false\"$\n\017C_DetachConsole\022\021\n\tconsoleId\030\001" +
-      " \001(\t\"9\n\016C_FreezeServer\022\025\n\rcoordinatorId\030" +
-      "\001 \002(\t\022\020\n\010serverId\030\002 \002(\t\"F\n\017C_UploadPacka",
-      "ge\0223\n\004data\030\001 \002(\0132%.io.playpen.core.proto" +
-      "col.PackageData\"P\n\024C_UploadSplitPackage\022" +
-      "8\n\004data\030\002 \001(\0132*.io.playpen.core.protocol" +
-      ".SplitPackageData\"\027\n\005C_Ack\022\016\n\006result\030\001 \001" +
-      "(\t\"C\n\rC_PackageList\0222\n\010packages\030\001 \003(\0132 ." +
-      "io.playpen.core.protocol.P3Meta\"\341\030\n\013Base" +
-      "Command\022?\n\004type\030\001 \002(\01621.io.playpen.core." +
-      "protocol.BaseCommand.CommandType\022,\n\004sync" +
-      "\030\002 \001(\0132\036.io.playpen.core.protocol.Sync\0226" +
-      "\n\tprovision\030\003 \001(\0132#.io.playpen.core.prot",
-      "ocol.Provision\022F\n\021provisionResponse\030\004 \001(" +
-      "\0132+.io.playpen.core.protocol.ProvisionRe" +
-      "sponse\022@\n\016packageRequest\030\005 \001(\0132(.io.play" +
-      "pen.core.protocol.PackageRequest\022B\n\017pack" +
-      "ageResponse\030\006 \001(\0132).io.playpen.core.prot" +
-      "ocol.PackageResponse\022:\n\013deprovision\030\007 \001(" +
-      "\0132%.io.playpen.core.protocol.Deprovision" +
-      "\022@\n\016serverShutdown\030\010 \001(\0132(.io.playpen.co" +
-      "re.protocol.ServerShutdown\0226\n\tsendInput\030" +
-      "\t \001(\0132#.io.playpen.core.protocol.SendInp",
-      "ut\022>\n\rattachConsole\030\n \001(\0132\'.io.playpen.c" +
-      "ore.protocol.AttachConsole\022@\n\016consoleMes" +
-      "sage\030\013 \001(\0132(.io.playpen.core.protocol.Co" +
-      "nsoleMessage\022>\n\rdetachConsole\030\014 \001(\0132\'.io" +
-      ".playpen.core.protocol.DetachConsole\022<\n\014" +
-      "freezeServer\030\027 \001(\0132&.io.playpen.core.pro" +
-      "tocol.FreezeServer\022I\n\017checksumRequest\030! " +
-      "\001(\01320.io.playpen.core.protocol.PackageCh" +
-      "ecksumRequest\022K\n\020checksumResponse\030\" \001(\0132" +
-      "1.io.playpen.core.protocol.PackageChecks",
-      "umResponse\022L\n\024splitPackageResponse\030# \001(\013" +
-      "2..io.playpen.core.protocol.SplitPackage" +
-      "Response\022V\n\031c_coordinatorListResponse\030\r " +
-      "\001(\01323.io.playpen.core.protocol.C_Coordin" +
-      "atorListResponse\022:\n\013c_provision\030\016 \001(\0132%." +
-      "io.playpen.core.protocol.C_Provision\022J\n\023" +
-      "c_provisionResponse\030\017 \001(\0132-.io.playpen.c" +
-      "ore.protocol.C_ProvisionResponse\022>\n\rc_de" +
-      "provision\030\020 \001(\0132\'.io.playpen.core.protoc" +
-      "ol.C_Deprovision\0228\n\nc_shutdown\030\021 \001(\0132$.i",
-      "o.playpen.core.protocol.C_Shutdown\0226\n\tc_" +
-      "promote\030\022 \001(\0132#.io.playpen.core.protocol" +
-      ".C_Promote\022J\n\023c_createCoordinator\030\034 \001(\0132" +
-      "-.io.playpen.core.protocol.C_CreateCoord" +
-      "inator\022L\n\024c_coordinatorCreated\030\023 \001(\0132..i" +
-      "o.playpen.core.protocol.C_CoordinatorCre" +
-      "ated\022:\n\013c_sendInput\030\024 \001(\0132%.io.playpen.c" +
-      "ore.protocol.C_SendInput\022B\n\017c_attachCons" +
-      "ole\030\025 \001(\0132).io.playpen.core.protocol.C_A" +
-      "ttachConsole\022F\n\021c_consoleAttached\030\035 \001(\0132",
-      "+.io.playpen.core.protocol.C_ConsoleAtta" +
-      "ched\022D\n\020c_consoleMessage\030\026 \001(\0132*.io.play" +
-      "pen.core.protocol.C_ConsoleMessage\022F\n\021c_" +
-      "consoleDetached\030\036 \001(\0132+.io.playpen.core." +
-      "protocol.C_ConsoleDetached\022B\n\017c_detachCo" +
-      "nsole\030\037 \001(\0132).io.playpen.core.protocol.C" +
-      "_DetachConsole\022@\n\016c_freezeServer\030\030 \001(\0132(" +
-      ".io.playpen.core.protocol.C_FreezeServer" +
-      "\022B\n\017c_uploadPackage\030\031 \001(\0132).io.playpen.c" +
-      "ore.protocol.C_UploadPackage\022.\n\005c_ack\030\033 ",
-      "\001(\0132\037.io.playpen.core.protocol.C_Ack\022>\n\r" +
-      "c_packageList\030  \001(\0132\'.io.playpen.core.pr" +
-      "otocol.C_PackageList\022L\n\024c_uploadSplitPac" +
-      "kage\030% \001(\0132..io.playpen.core.protocol.C_" +
-      "UploadSplitPackage\"\266\006\n\013CommandType\022\010\n\004NO" +
-      "OP\020\000\022\010\n\004SYNC\020\001\022\r\n\tPROVISION\020\002\022\026\n\022PROVISI" +
-      "ON_RESPONSE\020\003\022\023\n\017PACKAGE_REQUEST\020\004\022\024\n\020PA" +
-      "CKAGE_RESPONSE\020\005\022\017\n\013DEPROVISION\020\006\022\023\n\017SER" +
-      "VER_SHUTDOWN\020\007\022\014\n\010SHUTDOWN\020\010\022\016\n\nSEND_INP" +
-      "UT\020\t\022\022\n\016ATTACH_CONSOLE\020\n\022\023\n\017CONSOLE_MESS",
-      "AGE\020\013\022\022\n\016DETACH_CONSOLE\020\014\022\021\n\rFREEZE_SERV" +
-      "ER\020\032\022\034\n\030PACKAGE_CHECKSUM_REQUEST\020#\022\035\n\031PA" +
-      "CKAGE_CHECKSUM_RESPONSE\020$\022\032\n\026SPLIT_PACKA" +
-      "GE_RESPONSE\020%\022\032\n\026C_GET_COORDINATOR_LIST\020" +
-      "\r\022\037\n\033C_COORDINATOR_LIST_RESPONSE\020\016\022\017\n\013C_" +
-      "PROVISION\020\017\022\030\n\024C_PROVISION_RESPONSE\020\020\022\021\n" +
-      "\rC_DEPROVISION\020\021\022\016\n\nC_SHUTDOWN\020\022\022\r\n\tC_PR" +
-      "OMOTE\020\023\022\030\n\024C_CREATE_COORDINATOR\020\024\022\031\n\025C_C" +
-      "OORDINATOR_CREATED\020\025\022\020\n\014C_SEND_INPUT\020\026\022\024" +
-      "\n\020C_ATTACH_CONSOLE\020\027\022\026\n\022C_CONSOLE_ATTACH",
-      "ED\020\037\022\025\n\021C_CONSOLE_MESSAGE\020\030\022\026\n\022C_CONSOLE" +
-      "_DETACHED\020 \022\024\n\020C_DETACH_CONSOLE\020\031\022\023\n\017C_F" +
-      "REEZE_SERVER\020\033\022\024\n\020C_UPLOAD_PACKAGE\020\034\022\032\n\026" +
-      "C_UPLOAD_SPLIT_PACKAGE\020&\022\t\n\005C_ACK\020\036\022\032\n\026C" +
-      "_REQUEST_PACKAGE_LIST\020!\022\022\n\016C_PACKAGE_LIS" +
-      "T\020\"B\nB\010Commands"
+      " \002(\t\"2\n\021C_ConsoleAttached\022\021\n\tconsoleId\030\001" +
+      " \001(\t\022\n\n\002ok\030\002 \002(\010\"4\n\020C_ConsoleMessage\022\r\n\005" +
+      "value\030\001 \002(\t\022\021\n\tconsoleId\030\002 \002(\t\"B\n\021C_Cons" +
+      "oleDetached\022\021\n\tconsoleId\030\001 \002(\t\022\032\n\013useSer" +
+      "verId\030\002 \002(\010:\005false\"$\n\017C_DetachConsole\022\021\n" +
+      "\tconsoleId\030\001 \001(\t\"9\n\016C_FreezeServer\022\025\n\rco" +
+      "ordinatorId\030\001 \002(\t\022\020\n\010serverId\030\002 \002(\t\"F\n\017C",
+      "_UploadPackage\0223\n\004data\030\001 \002(\0132%.io.plaype" +
+      "n.core.protocol.PackageData\"P\n\024C_UploadS" +
+      "plitPackage\0228\n\004data\030\002 \001(\0132*.io.playpen.c" +
+      "ore.protocol.SplitPackageData\"\027\n\005C_Ack\022\016" +
+      "\n\006result\030\001 \001(\t\"C\n\rC_PackageList\0222\n\010packa" +
+      "ges\030\001 \003(\0132 .io.playpen.core.protocol.P3M" +
+      "eta\"\341\030\n\013BaseCommand\022?\n\004type\030\001 \002(\01621.io.p" +
+      "laypen.core.protocol.BaseCommand.Command" +
+      "Type\022,\n\004sync\030\002 \001(\0132\036.io.playpen.core.pro" +
+      "tocol.Sync\0226\n\tprovision\030\003 \001(\0132#.io.playp",
+      "en.core.protocol.Provision\022F\n\021provisionR" +
+      "esponse\030\004 \001(\0132+.io.playpen.core.protocol" +
+      ".ProvisionResponse\022@\n\016packageRequest\030\005 \001" +
+      "(\0132(.io.playpen.core.protocol.PackageReq" +
+      "uest\022B\n\017packageResponse\030\006 \001(\0132).io.playp" +
+      "en.core.protocol.PackageResponse\022:\n\013depr" +
+      "ovision\030\007 \001(\0132%.io.playpen.core.protocol" +
+      ".Deprovision\022@\n\016serverShutdown\030\010 \001(\0132(.i" +
+      "o.playpen.core.protocol.ServerShutdown\0226" +
+      "\n\tsendInput\030\t \001(\0132#.io.playpen.core.prot",
+      "ocol.SendInput\022>\n\rattachConsole\030\n \001(\0132\'." +
+      "io.playpen.core.protocol.AttachConsole\022@" +
+      "\n\016consoleMessage\030\013 \001(\0132(.io.playpen.core" +
+      ".protocol.ConsoleMessage\022>\n\rdetachConsol" +
+      "e\030\014 \001(\0132\'.io.playpen.core.protocol.Detac" +
+      "hConsole\022<\n\014freezeServer\030\027 \001(\0132&.io.play" +
+      "pen.core.protocol.FreezeServer\022I\n\017checks" +
+      "umRequest\030! \001(\01320.io.playpen.core.protoc" +
+      "ol.PackageChecksumRequest\022K\n\020checksumRes" +
+      "ponse\030\" \001(\01321.io.playpen.core.protocol.P",
+      "ackageChecksumResponse\022L\n\024splitPackageRe" +
+      "sponse\030# \001(\0132..io.playpen.core.protocol." +
+      "SplitPackageResponse\022V\n\031c_coordinatorLis" +
+      "tResponse\030\r \001(\01323.io.playpen.core.protoc" +
+      "ol.C_CoordinatorListResponse\022:\n\013c_provis" +
+      "ion\030\016 \001(\0132%.io.playpen.core.protocol.C_P" +
+      "rovision\022J\n\023c_provisionResponse\030\017 \001(\0132-." +
+      "io.playpen.core.protocol.C_ProvisionResp" +
+      "onse\022>\n\rc_deprovision\030\020 \001(\0132\'.io.playpen" +
+      ".core.protocol.C_Deprovision\0228\n\nc_shutdo",
+      "wn\030\021 \001(\0132$.io.playpen.core.protocol.C_Sh" +
+      "utdown\0226\n\tc_promote\030\022 \001(\0132#.io.playpen.c" +
+      "ore.protocol.C_Promote\022J\n\023c_createCoordi" +
+      "nator\030\034 \001(\0132-.io.playpen.core.protocol.C" +
+      "_CreateCoordinator\022L\n\024c_coordinatorCreat" +
+      "ed\030\023 \001(\0132..io.playpen.core.protocol.C_Co" +
+      "ordinatorCreated\022:\n\013c_sendInput\030\024 \001(\0132%." +
+      "io.playpen.core.protocol.C_SendInput\022B\n\017" +
+      "c_attachConsole\030\025 \001(\0132).io.playpen.core." +
+      "protocol.C_AttachConsole\022F\n\021c_consoleAtt",
+      "ached\030\035 \001(\0132+.io.playpen.core.protocol.C" +
+      "_ConsoleAttached\022D\n\020c_consoleMessage\030\026 \001" +
+      "(\0132*.io.playpen.core.protocol.C_ConsoleM" +
+      "essage\022F\n\021c_consoleDetached\030\036 \001(\0132+.io.p" +
+      "laypen.core.protocol.C_ConsoleDetached\022B" +
+      "\n\017c_detachConsole\030\037 \001(\0132).io.playpen.cor" +
+      "e.protocol.C_DetachConsole\022@\n\016c_freezeSe" +
+      "rver\030\030 \001(\0132(.io.playpen.core.protocol.C_" +
+      "FreezeServer\022B\n\017c_uploadPackage\030\031 \001(\0132)." +
+      "io.playpen.core.protocol.C_UploadPackage",
+      "\022.\n\005c_ack\030\033 \001(\0132\037.io.playpen.core.protoc" +
+      "ol.C_Ack\022>\n\rc_packageList\030  \001(\0132\'.io.pla" +
+      "ypen.core.protocol.C_PackageList\022L\n\024c_up" +
+      "loadSplitPackage\030% \001(\0132..io.playpen.core" +
+      ".protocol.C_UploadSplitPackage\"\266\006\n\013Comma" +
+      "ndType\022\010\n\004NOOP\020\000\022\010\n\004SYNC\020\001\022\r\n\tPROVISION\020" +
+      "\002\022\026\n\022PROVISION_RESPONSE\020\003\022\023\n\017PACKAGE_REQ" +
+      "UEST\020\004\022\024\n\020PACKAGE_RESPONSE\020\005\022\017\n\013DEPROVIS" +
+      "ION\020\006\022\023\n\017SERVER_SHUTDOWN\020\007\022\014\n\010SHUTDOWN\020\010" +
+      "\022\016\n\nSEND_INPUT\020\t\022\022\n\016ATTACH_CONSOLE\020\n\022\023\n\017",
+      "CONSOLE_MESSAGE\020\013\022\022\n\016DETACH_CONSOLE\020\014\022\021\n" +
+      "\rFREEZE_SERVER\020\032\022\034\n\030PACKAGE_CHECKSUM_REQ" +
+      "UEST\020#\022\035\n\031PACKAGE_CHECKSUM_RESPONSE\020$\022\032\n" +
+      "\026SPLIT_PACKAGE_RESPONSE\020%\022\032\n\026C_GET_COORD" +
+      "INATOR_LIST\020\r\022\037\n\033C_COORDINATOR_LIST_RESP" +
+      "ONSE\020\016\022\017\n\013C_PROVISION\020\017\022\030\n\024C_PROVISION_R" +
+      "ESPONSE\020\020\022\021\n\rC_DEPROVISION\020\021\022\016\n\nC_SHUTDO" +
+      "WN\020\022\022\r\n\tC_PROMOTE\020\023\022\030\n\024C_CREATE_COORDINA" +
+      "TOR\020\024\022\031\n\025C_COORDINATOR_CREATED\020\025\022\020\n\014C_SE" +
+      "ND_INPUT\020\026\022\024\n\020C_ATTACH_CONSOLE\020\027\022\026\n\022C_CO",
+      "NSOLE_ATTACHED\020\037\022\025\n\021C_CONSOLE_MESSAGE\020\030\022" +
+      "\026\n\022C_CONSOLE_DETACHED\020 \022\024\n\020C_DETACH_CONS" +
+      "OLE\020\031\022\023\n\017C_FREEZE_SERVER\020\033\022\024\n\020C_UPLOAD_P" +
+      "ACKAGE\020\034\022\032\n\026C_UPLOAD_SPLIT_PACKAGE\020&\022\t\n\005" +
+      "C_ACK\020\036\022\032\n\026C_REQUEST_PACKAGE_LIST\020!\022\022\n\016C" +
+      "_PACKAGE_LIST\020\"B\nB\010Commands"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -29387,7 +29465,7 @@ public final class Commands {
     internal_static_io_playpen_core_protocol_C_ConsoleAttached_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_io_playpen_core_protocol_C_ConsoleAttached_descriptor,
-        new java.lang.String[] { "ConsoleId", });
+        new java.lang.String[] { "ConsoleId", "Ok", });
     internal_static_io_playpen_core_protocol_C_ConsoleMessage_descriptor =
       getDescriptor().getMessageTypes().get(26);
     internal_static_io_playpen_core_protocol_C_ConsoleMessage_fieldAccessorTable = new

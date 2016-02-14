@@ -1553,6 +1553,7 @@ public class Network extends PlayPen {
         LocalCoordinator coord = getCoordinator(message.getCoordinatorId());
         if(coord == null) {
             log.error("Unable to process C_ATTACH_CONSOLE with invalid target " + message.getCoordinatorId());
+            c_sendConsoleAttachedFail(from, info);
             c_sendDetachConsole(from, message.getServerId(), true);
             return false;
         }
@@ -1560,6 +1561,7 @@ public class Network extends PlayPen {
         Server server = coord.getServer(message.getServerId());
         if(server == null) {
             log.error("Unable to process C_ATTACH_CONSOLE with invalid server " + message.getServerId() + " on " + message.getCoordinatorId());
+            c_sendConsoleAttachedFail(from, info);
             c_sendDetachConsole(from, message.getServerId(), true);
             return false;
         }
@@ -1589,6 +1591,33 @@ public class Network extends PlayPen {
         return true;
     }
 
+    protected boolean c_sendConsoleAttachedFail(String target, TransactionInfo info) {
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send C_CONSOLE_ATTACHED to invalid coordinator " + target);
+            return false;
+        }
+
+        Commands.C_ConsoleAttached attached = Commands.C_ConsoleAttached.newBuilder()
+                .setOk(false)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_CONSOLE_ATTACHED)
+                .setCConsoleAttached(attached)
+                .build();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.COMPLETE, command);
+        if (message == null) {
+            log.error("Unable to create transaction for C_CONSOLE_ATTACHED");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
+    }
+
     protected boolean c_sendConsoleAttached(String target, String consoleId, TransactionInfo info) {
         LocalCoordinator coord = getCoordinator(target);
         if(coord == null) {
@@ -1598,6 +1627,7 @@ public class Network extends PlayPen {
 
         Commands.C_ConsoleAttached attached = Commands.C_ConsoleAttached.newBuilder()
                 .setConsoleId(consoleId)
+                .setOk(true)
                 .build();
 
         Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
