@@ -27,11 +27,7 @@ public class TransactionManager {
         return transactions.containsKey(id);
     }
 
-    TransactionInfo getTransaction(String id) {
-        return transactions.get(id);
-    }
-
-    public TransactionInfo getInfo(String id) {
+    public TransactionInfo getTransaction(String id) {
         return transactions.get(id);
     }
 

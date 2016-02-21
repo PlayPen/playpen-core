@@ -763,7 +763,7 @@ public class Network extends PlayPen {
     }
 
     protected boolean sendPackageResponseFailure(String target, String tid) {
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Unknown transaction " + tid + ", unable to send package");
             return false;
@@ -794,7 +794,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Unknown transaction " + tid + ", unable to send package");
             return false;
@@ -949,7 +949,7 @@ public class Network extends PlayPen {
     }
 
     protected boolean sendPackageChecksumResponseFailure(String target, String tid) {
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Unknown transaction " + tid + ", unable to send package");
             return false;
@@ -980,7 +980,7 @@ public class Network extends PlayPen {
             return false;
         }
 
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Unknown transaction " + tid + ", unable to send package");
             return false;
@@ -1300,7 +1300,7 @@ public class Network extends PlayPen {
     }
 
     protected boolean c_sendCoordinatorListResponse(String target, String tid) {Commands.C_CoordinatorListResponse.Builder responseBuilder = Commands.C_CoordinatorListResponse.newBuilder();
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Unable to send C_COORDINATOR_LIST_RESPONSE with invalid transaction " + tid);
             return false;
@@ -1402,7 +1402,7 @@ public class Network extends PlayPen {
     }
 
     protected boolean c_sendProvisionResponseFailure(String target, String tid) {
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Cannot send C_PROVISION_RESPONSE with invalid transaction " + tid);
             return false;
@@ -1430,7 +1430,7 @@ public class Network extends PlayPen {
     }
 
     protected boolean c_sendProvisionResponse(String target, String tid, String coordinator, String server) {
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Cannot send C_PROVISION_RESPONSE with invalid transaction " + tid);
             return false;
@@ -1970,7 +1970,7 @@ public class Network extends PlayPen {
     }
 
     protected boolean c_sendPackageList(String target, String tid) {
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Unable to send C_COORDINATOR_LIST_RESPONSE with invalid transaction " + tid);
             return false;

@@ -729,7 +729,7 @@ public class Local extends PlayPen {
     }
 
     protected boolean sendProvisionResponse(String tid, boolean ok) {
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
         if(info == null) {
             log.error("Unknown transaction " + tid + ", unable to send provision response");
             return false;
@@ -1002,7 +1002,7 @@ public class Local extends PlayPen {
                 .setChecksumRequest(request)
                 .build();
 
-        TransactionInfo info = TransactionManager.get().getInfo(tid);
+        TransactionInfo info = TransactionManager.get().getTransaction(tid);
 
         Protocol.Transaction message = TransactionManager.get()
                 .build(info.getId(), Protocol.Transaction.Mode.CREATE, command);
@@ -1224,7 +1224,7 @@ public class Local extends PlayPen {
     protected void checkPackageForProvision(final String tid, final String id, final String version, final String uuid,
                                             final Map<String, String> properties, final String name) {
         Thread thread = new Thread(() -> {
-            TransactionInfo info = TransactionManager.get().getInfo(tid);
+            TransactionInfo info = TransactionManager.get().getTransaction(tid);
             if(info == null) {
                 log.error("Cannot download package for provision with an invalid transaction id " + tid);
                 return;
