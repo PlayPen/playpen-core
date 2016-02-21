@@ -1,5 +1,7 @@
 package io.playpen.core.coordinator.local;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.channel.Channel;
@@ -73,7 +75,7 @@ public class Local extends PlayPen {
     private Map<String, Integer> resources = new ConcurrentHashMap<>();
 
     @Getter
-    private Set<String> attributes = new ConcurrentSkipListSet<>();
+    private Set<String> attributes;
 
     @Getter
     private Map<String, String> localStrings = new ConcurrentHashMap<>();
@@ -149,7 +151,7 @@ public class Local extends PlayPen {
     public boolean run() {
         enabled = true;
         resources.clear();
-        attributes.clear();
+        attributes = ImmutableSet.of();
         localStrings.clear();
 
         log.info("Reading local configuration");
@@ -180,9 +182,11 @@ public class Local extends PlayPen {
             }
 
             JSONArray attr = config.getJSONArray("attributes");
+            ImmutableSet.Builder<String> attribBuilder = ImmutableSet.builder();
             for(int i = 0; i < attr.length(); ++i) {
-                attributes.add(attr.getString(i));
+                attribBuilder.add(attr.getString(i));
             }
+            attributes = attribBuilder.build();
 
             JSONObject strings = JSONUtils.safeGetObject(config, "strings");
             if (strings != null) {
@@ -558,9 +562,7 @@ public class Local extends PlayPen {
         server.setUuid(uuid);
         server.setName(name);
         server.setLocalPath(destination.toString());
-
-        server.getProperties().putAll(localStrings);
-        server.getProperties().putAll(properties);
+        server.setProperties(ImmutableMap.<String, String>builder().putAll(localStrings).putAll(properties).build());
 
         if(properties.containsKey("frozen") && "true".equalsIgnoreCase(properties.get("frozen"))) {
             server.setFreezeOnShutdown(true);

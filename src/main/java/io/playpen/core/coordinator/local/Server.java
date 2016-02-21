@@ -15,7 +15,7 @@ public class Server {
 
     private String name;
 
-    private Map<String, String> properties = new ConcurrentHashMap<>();
+    private Map<String, String> properties;
 
     private String localPath;
 
