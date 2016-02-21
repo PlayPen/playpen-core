@@ -52,7 +52,7 @@ public class PackageManager {
     }
 
     public String getPromotedVersion(String id) {
-        return promoted.getOrDefault(id, null);
+        return promoted.get(id);
     }
 
     public boolean isPromotedVersion(String id, String version) {
@@ -103,7 +103,7 @@ public class PackageManager {
     }
 
     public IPackageStep getPackageStep(String id) {
-        return packageSteps.getOrDefault(id, null);
+        return packageSteps.get(id);
     }
 
     public P3Package resolve(String id, String version) {

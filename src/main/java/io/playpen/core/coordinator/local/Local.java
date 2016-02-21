@@ -604,7 +604,7 @@ public class Local extends PlayPen {
     }
 
     public boolean detachConsole(String consoleId) {
-        ConsoleMessageListener listener = consoles.getOrDefault(consoleId, null);
+        ConsoleMessageListener listener = consoles.get(consoleId);
         if(listener == null) {
             log.error("Cannot detach unknown console " + consoleId);
             return false;
@@ -838,7 +838,7 @@ public class Local extends PlayPen {
         P3Package.P3PackageInfo p3info = new P3Package.P3PackageInfo();
         p3info.setId(response.getData().getMeta().getId());
         p3info.setVersion(response.getData().getMeta().getVersion());
-        CountDownLatch latch = downloadMap.getOrDefault(p3info, null);
+        CountDownLatch latch = downloadMap.get(p3info);
         if(latch != null) {
             latch.countDown();
         }
@@ -949,7 +949,7 @@ public class Local extends PlayPen {
                 }
 
                 log.info("Finished moving package, unlocking download latch.");
-                CountDownLatch latch = downloadMap.getOrDefault(p3info, null);
+                CountDownLatch latch = downloadMap.get(p3info);
                 if(latch != null) {
                     latch.countDown();
                 }
@@ -1017,7 +1017,7 @@ public class Local extends PlayPen {
     }
 
     protected boolean processPackageChecksumResponse(Commands.PackageChecksumResponse command, TransactionInfo info) {
-        CountDownLatch latch = checksumLatches.getOrDefault(info.getId(), null);
+        CountDownLatch latch = checksumLatches.get(info.getId());
         if (latch == null) {
             log.warn("No checksum transaction matches " + info.getId() + ", ignoring.");
             return false; // we didn't ask for this checksum, or it expired
@@ -1331,10 +1331,7 @@ public class Local extends PlayPen {
             checksumLatches.remove(info.getId());
         }
 
-        String checksum = checksumMap.getOrDefault(info.getId(), null);
-        checksumMap.remove(info.getId());
-
-        return checksum;
+        return checksumMap.remove(info.getId());
     }
 
     @Log4j2
@@ -1355,7 +1352,7 @@ public class Local extends PlayPen {
 
             CountDownLatch latch = null;
             synchronized(downloadLock) {
-                latch = Local.get().downloadMap.getOrDefault(p3info, null);
+                latch = Local.get().downloadMap.get(p3info);
 
                 if (latch == null) {
                     TransactionInfo info = TransactionManager.get().begin();

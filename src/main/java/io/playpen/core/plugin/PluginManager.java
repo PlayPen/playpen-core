@@ -181,6 +181,6 @@ public class PluginManager {
     }
 
     public IPlugin getPlugin(String id) {
-        return plugins.getOrDefault(id, null);
+        return plugins.get(id);
     }
 }

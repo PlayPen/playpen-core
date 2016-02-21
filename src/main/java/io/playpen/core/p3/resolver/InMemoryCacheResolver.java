@@ -16,7 +16,7 @@ public class InMemoryCacheResolver implements IPackageResolver {
         info.setId(id);
         info.setVersion(version);
 
-        P3Package p3 = pm.getPackageCache().getOrDefault(info, null);
+        P3Package p3 = pm.getPackageCache().get(info);
         if(p3 == null)
             return null;
 

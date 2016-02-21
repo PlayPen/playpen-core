@@ -1188,7 +1188,7 @@ public class Network extends PlayPen {
     }
 
     protected boolean processConsoleMessage(Commands.ConsoleMessage message, TransactionInfo info, String from) {
-        ConsoleInfo ci = consoles.getOrDefault(message.getConsoleId(), null);
+        ConsoleInfo ci = consoles.get(message.getConsoleId());
         if(ci == null) {
             log.error("CONSOLE_MESSAGE received with invalid console id");
             sendDetachConsole(from, message.getConsoleId());
@@ -1238,7 +1238,7 @@ public class Network extends PlayPen {
     }
 
     protected boolean processDetachConsole(Commands.DetachConsole message, TransactionInfo info, String from) {
-        ConsoleInfo ci = consoles.getOrDefault(message.getConsoleId(), null);
+        ConsoleInfo ci = consoles.get(message.getConsoleId());
         if(ci == null) {
             log.error("DETACH_CONSOLE received with invalid console id");
             return false;

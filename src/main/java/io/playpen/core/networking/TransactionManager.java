@@ -28,11 +28,11 @@ public class TransactionManager {
     }
 
     TransactionInfo getTransaction(String id) {
-        return transactions.getOrDefault(id, null);
+        return transactions.get(id);
     }
 
     public TransactionInfo getInfo(String id) {
-        return transactions.getOrDefault(id, null);
+        return transactions.get(id);
     }
 
     public Protocol.Transaction build(String id, Protocol.Transaction.Mode mode, Commands.BaseCommand command) {
