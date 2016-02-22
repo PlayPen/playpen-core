@@ -755,6 +755,11 @@ public class Client extends PlayPen {
                 continue;
             }
 
+            if (!p3File.isFile()) {
+                System.err.println("\"" + pathStr + "\" is not a file");
+                continue;
+            }
+
             PackageManager packageManager = new PackageManager();
             Initialization.packageManager(packageManager);
 
