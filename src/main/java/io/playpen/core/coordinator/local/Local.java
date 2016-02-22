@@ -1244,7 +1244,8 @@ public class Local extends PlayPen {
             Queue<P3Package> toCheck = new LinkedList<>();
             toCheck.add(p3);
             while (toCheck.peek() != null) {
-                P3Package check = toCheck.poll();
+                P3Package checkOriginal = toCheck.poll();
+                P3Package check = checkOriginal;
                 P3Package.P3PackageInfo p3Info = new P3Package.P3PackageInfo();
                 p3Info.setId(check.getId());
                 p3Info.setVersion(check.getVersion());
@@ -1257,7 +1258,7 @@ public class Local extends PlayPen {
                     check = packageManager.resolve(check.getId(), check.getVersion());
 
                 if (check == null) {
-                    log.error("Unable to resolve package " + check.getId() + " at " + check.getVersion() + ", failing provision.");
+                    log.error("Unable to resolve package " + checkOriginal.getId() + " at " + checkOriginal.getVersion() + ", failing provision.");
                     sendProvisionResponse(tid, false);
                     return;
                 }
