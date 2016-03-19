@@ -1,14 +1,14 @@
 package io.playpen.core.coordinator.network;
 
 import io.netty.channel.Channel;
+import io.playpen.core.coordinator.network.authenticator.IAuthenticator;
+import io.playpen.core.networking.TransactionInfo;
 import io.playpen.core.p3.P3Package;
+import io.playpen.core.protocol.Commands;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -32,6 +32,8 @@ public class LocalCoordinator {
     private Channel channel = null;
 
     private boolean enabled = false;
+
+    private List<IAuthenticator> authenticators = new ArrayList<>();
 
     public String getName() {
         if(name == null) {
@@ -136,5 +138,19 @@ public class LocalCoordinator {
         }
 
         return result;
+    }
+
+    public boolean authenticate(Commands.BaseCommand command, TransactionInfo info)
+    {
+        if (authenticators.isEmpty())
+            return true;
+
+        for (IAuthenticator auth : authenticators)
+        {
+            if (auth.hasAccess(command, info, this))
+                return true;
+        }
+
+        return false;
     }
 }

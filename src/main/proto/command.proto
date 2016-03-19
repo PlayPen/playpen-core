@@ -171,6 +171,11 @@ message C_PackageList {
     repeated P3Meta packages = 1;
 }
 
+message C_AccessDenied {
+    required string result = 1;
+    required string tid = 2;
+}
+
 message BaseCommand {
     enum CommandType {
         // Coordination commands
@@ -214,6 +219,7 @@ message BaseCommand {
         C_ACK = 30;
         C_REQUEST_PACKAGE_LIST = 33; // no message body
         C_PACKAGE_LIST = 34;
+        C_ACCESS_DENIED = 39;
     }
 
     required CommandType type = 1;
@@ -253,4 +259,5 @@ message BaseCommand {
     optional C_Ack c_ack = 27;
     optional C_PackageList c_packageList = 32;
     optional C_UploadSplitPackage c_uploadSplitPackage = 37;
+    optional C_AccessDenied c_accessDenied = 38;
 }
