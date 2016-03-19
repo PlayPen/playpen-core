@@ -12,6 +12,7 @@ import io.playpen.core.Bootstrap;
 import io.playpen.core.Initialization;
 import io.playpen.core.coordinator.CoordinatorMode;
 import io.playpen.core.coordinator.PlayPen;
+import io.playpen.core.coordinator.network.authenticator.IAuthenticator;
 import io.playpen.core.networking.TransactionInfo;
 import io.playpen.core.networking.TransactionManager;
 import io.playpen.core.networking.netty.AuthenticatedMessageInitializer;
@@ -78,6 +79,8 @@ public class Network extends PlayPen {
     @Getter
     private NioEventLoopGroup eventLoopGroup = null;
 
+    private Map<String, IAuthenticator> authenticators = new HashMap<>();
+
     private Network() {
         super();
 
@@ -86,6 +89,9 @@ public class Network extends PlayPen {
 
         eventManager = new EventManager<>();
         pluginManager = new PluginManager();
+
+        authenticators.clear();
+        Initialization.networkCoordinator(this);
     }
 
     public boolean run() {
@@ -140,6 +146,19 @@ public class Network extends PlayPen {
                 coord.setKey(obj.getString("key"));
                 if (obj.has("key-name"))
                     coord.setKeyName(obj.getString("key-name"));
+
+                if (obj.has("auth")) {
+                    JSONArray coordAuth = obj.getJSONArray("auth");
+                    for (int j = 0; j < coordAuth.length(); ++j) {
+                        String authName = coordAuth.getString(j);
+                        if (!authenticators.containsKey(authName)) {
+                            log.fatal("Unknown authentication type " + authName + " for " + coord.getName());
+                            return false;
+                        }
+
+                        coord.getAuthenticators().add(authenticators.get(authName));
+                    }
+                }
 
                 coordinators.put(coord.getUuid(), coord);
 
@@ -243,6 +262,10 @@ public class Network extends PlayPen {
         return eventManager;
     }
 
+    public void addAuthenticator(String name, IAuthenticator auth) {
+        authenticators.put(name, auth);
+    }
+
     @Override
     public boolean send(Protocol.Transaction message, String target) {
         LocalCoordinator coord = getCoordinator(target);
@@ -338,6 +361,18 @@ public class Network extends PlayPen {
 
     @Override
     public boolean process(Commands.BaseCommand command, TransactionInfo info, String from) {
+        LocalCoordinator coord = getCoordinator(from);
+        if (coord == null) {
+            log.error("Network coordinator received from unknown coordinator " + from + ", internal issue within process()");
+            return false;
+        }
+
+        if (!coord.authenticate(command, info)) {
+            log.error(from + " does not have access for " + command.getType() + ", sending access denied.");
+            c_sendAccessDenied("Access Denied", info.getId(), from);
+            return false;
+        }
+
         switch(command.getType()) {
             default:
                 log.error("Network coordinator cannot process command " + command.getType());
@@ -1957,6 +1992,39 @@ public class Network extends PlayPen {
                 .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
         if(message == null) {
             log.error("Unable to create transaction for C_ACK");
+            TransactionManager.get().cancel(info.getId());
+            return false;
+        }
+
+        return TransactionManager.get().send(info.getId(), message, coord.getUuid());
+    }
+
+    protected boolean c_sendAccessDenied(String result, String tid, String target) {
+        if (tid == null || tid.isEmpty())
+            tid = "single";
+
+        LocalCoordinator coord = getCoordinator(target);
+        if(coord == null) {
+            log.error("Cannot send C_ACCESS_DENIED to invalid coordinator " + target);
+            return false;
+        }
+
+        Commands.C_AccessDenied ad = Commands.C_AccessDenied.newBuilder()
+                .setResult(result)
+                .setTid(tid)
+                .build();
+
+        Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                .setType(Commands.BaseCommand.CommandType.C_ACCESS_DENIED)
+                .setCAccessDenied(ad)
+                .build();
+
+        TransactionInfo info = TransactionManager.get().begin();
+
+        Protocol.Transaction message = TransactionManager.get()
+                .build(info.getId(), Protocol.Transaction.Mode.SINGLE, command);
+        if(message == null) {
+            log.error("Unable to create transaction for C_ACCESS_DENIED");
             TransactionManager.get().cancel(info.getId());
             return false;
         }

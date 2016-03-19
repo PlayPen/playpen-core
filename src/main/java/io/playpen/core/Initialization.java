@@ -1,5 +1,7 @@
 package io.playpen.core;
 
+import io.playpen.core.coordinator.network.Network;
+import io.playpen.core.coordinator.network.authenticator.DeprovisionAuthenticator;
 import io.playpen.core.p3.PackageManager;
 import io.playpen.core.p3.resolver.InMemoryCacheResolver;
 import io.playpen.core.p3.resolver.LocalRepositoryResolver;
@@ -29,6 +31,10 @@ public class Initialization {
         pm.addPackageStep(new PipeStep());
         pm.addPackageStep(new ExpandAssetsStep());
         pm.addPackageStep(new CopyStep());
+    }
+
+    public static void networkCoordinator(Network net) {
+        net.addAuthenticator("deprovision", new DeprovisionAuthenticator());
     }
 
     private Initialization() {}

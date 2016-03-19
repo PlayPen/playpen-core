@@ -216,6 +216,9 @@ public abstract class APIClient extends PlayPen {
 
             case C_PACKAGE_LIST:
                 return processPackageList(command.getCPackageList(), info);
+
+            case C_ACCESS_DENIED:
+                return processAccessDenied(command.getCAccessDenied(), info);
         }
     }
 
@@ -227,4 +230,5 @@ public abstract class APIClient extends PlayPen {
     public abstract boolean processListResponse(Commands.C_CoordinatorListResponse message, TransactionInfo info);
     public abstract boolean processAck(Commands.C_Ack message, TransactionInfo info);
     public abstract boolean processPackageList(Commands.C_PackageList message, TransactionInfo info);
+    public abstract boolean processAccessDenied(Commands.C_AccessDenied message, TransactionInfo info);
 }
