@@ -29,6 +29,7 @@ import io.playpen.core.protocol.Protocol;
 import io.playpen.core.utils.AuthUtils;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Value;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
@@ -1612,9 +1613,7 @@ public class Network extends PlayPen {
 
         log.info("Attempting to attach console on " + server.getName() + " for " + from);
 
-        ConsoleInfo ci = new ConsoleInfo();
-        ci.setAttached(from);
-        ci.setCoordinator(coord.getUuid());
+        ConsoleInfo ci = new ConsoleInfo(coord.getUuid(), from);
         consoles.put(consoleId, ci);
         if(!sendAttachConsole(coord.getUuid(), server.getUuid(), consoleId)) {
             consoles.remove(consoleId);
@@ -1750,7 +1749,7 @@ public class Network extends PlayPen {
             Iterator<Map.Entry<String, ConsoleInfo>> itr = consoles.entrySet().iterator();
             while (itr.hasNext()) {
                 Map.Entry<String, ConsoleInfo> entry = itr.next();
-                if (from.equals(entry.getValue())) {
+                if (from.equals(entry.getValue().getAttached())) {
                     sendDetachConsole(entry.getValue().getCoordinator(), entry.getKey());
                     itr.remove();
                 }
@@ -2070,9 +2069,9 @@ public class Network extends PlayPen {
         return TransactionManager.get().send(tid, message, target);
     }
 
-    @Data
+    @Value
     private static class ConsoleInfo {
-        private String coordinator;
-        private String attached;
+        private final String coordinator;
+        private final String attached;
     }
 }
