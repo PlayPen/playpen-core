@@ -1,10 +1,10 @@
 package io.playpen.core.plugin;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class PluginSchema {
-    private String id;
-    private String version;
-    private String main;
+    private final String id;
+    private final String version;
+    private final String main;
 }

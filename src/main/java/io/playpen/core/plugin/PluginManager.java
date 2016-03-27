@@ -50,12 +50,10 @@ public class PluginManager {
             byte[] schemaBytes = ZipUtil.unpackEntry(jarFile, "plugin.json");
             String schemaString = new String(schemaBytes);
 
-            PluginSchema schema = new PluginSchema();
+            PluginSchema schema;
             try {
                 JSONObject config = new JSONObject(schemaString);
-                schema.setId(config.getString("id"));
-                schema.setVersion(config.getString("version"));
-                schema.setMain(config.getString("main"));
+                schema = new PluginSchema(config.getString("id"), config.getString("version"), config.getString("main"));
             }
             catch(JSONException e) {
                 log.warn("Unable to read plugin.json from " + jarFile.getPath(), e);
