@@ -512,12 +512,14 @@ public class Network extends PlayPen {
     /**
      * Selects a coordinator to use for provisioning. This will only return an active coordinator
      * with the lowest normalized resource usage.
+     *
+     * This will ignore all coordinators that have set restricted to true.
      */
     public LocalCoordinator selectCoordinator(P3Package p3) {
         LocalCoordinator best = null;
         double bestNRU = Double.MIN_VALUE;
         for(LocalCoordinator coord : coordinators.values()) {
-            if(!coord.isEnabled())
+            if(!coord.isEnabled() || coord.isRestricted())
                 continue;
 
             double nru = coord.getNormalizedResourceUsage();

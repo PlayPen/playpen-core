@@ -33,6 +33,12 @@ public class LocalCoordinator {
 
     private boolean enabled = false;
 
+    /**
+     * Setting this to true will prevent automatic selection of this coordinator for provisioning operations.
+     * This must be manually set and unset, but will also reset if the network coordinator is restarted.
+     */
+    private boolean restricted = false;
+
     private List<IAuthenticator> authenticators = new ArrayList<>();
 
     public String getName() {
