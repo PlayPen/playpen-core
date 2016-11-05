@@ -7,6 +7,7 @@ import io.playpen.core.p3.PackageManager;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,11 +60,9 @@ public class LocalRepositoryResolver implements IPackageResolver {
             return null;
         }
 
-        File[] packageFiles = localRepoDir.listFiles((dir, name) -> {
-            return name.endsWith(".p3");
-        });
+        File[] packageFiles = localRepoDir.listFiles((dir, name) -> name.endsWith(".p3"));
 
-        List<P3Package.P3PackageInfo> packages = new LinkedList<>();
+        List<P3Package.P3PackageInfo> packages = new ArrayList<>();
         for(File p3File : packageFiles) {
             if(!p3File.isFile())
                 continue;

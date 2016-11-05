@@ -37,10 +37,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -1351,7 +1348,7 @@ public class Client extends PlayPen {
         for(Coordinator.LocalCoordinator coord : coordList.getCoordinatorsList()) {
             if(coordPattern.matcher(coord.getUuid()).matches() ||
                     (coord.hasName() && coordPattern.matcher(coord.getName()).matches())) {
-                List<String> servers = new LinkedList<>();
+                List<String> servers = new ArrayList<>();
                 for(Coordinator.Server server : coord.getServersList()) {
                     if(serverPattern.matcher(server.getUuid()).matches() ||
                             (server.hasName() && serverPattern.matcher(server.getName()).matches())) {

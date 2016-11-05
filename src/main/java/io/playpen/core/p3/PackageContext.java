@@ -3,10 +3,7 @@ package io.playpen.core.p3;
 import lombok.Data;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 public class PackageContext {
@@ -18,7 +15,7 @@ public class PackageContext {
 
     private Map<String, Integer> resources = new HashMap<>();
 
-    private List<P3Package> dependencyChain = new LinkedList<>();
+    private List<P3Package> dependencyChain = new ArrayList<>();
 
     private Object user;
 }

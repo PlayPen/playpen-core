@@ -1241,7 +1241,7 @@ public class Local extends PlayPen {
             // is a waste of time.
 
             Set<P3Package.P3PackageInfo> checked = new HashSet<>();
-            Queue<P3Package> toCheck = new LinkedList<>();
+            Queue<P3Package> toCheck = new ArrayDeque<>();
             toCheck.add(p3);
             while (toCheck.peek() != null) {
                 P3Package checkOriginal = toCheck.poll();

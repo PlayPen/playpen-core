@@ -23,7 +23,7 @@ import java.util.zip.ZipFile;
 
 @Log4j2
 public class PackageManager {
-    private List<IPackageResolver> resolvers = new LinkedList<>();
+    private List<IPackageResolver> resolvers = new ArrayList<>();
 
     private Map<String, IPackageStep> packageSteps = new ConcurrentHashMap<>();
 
