@@ -7,6 +7,11 @@ import io.playpen.core.protocol.Commands;
 public class DeprovisionAuthenticator implements IAuthenticator {
 
     @Override
+    public String getName() {
+        return "deprovision";
+    }
+
+    @Override
     public boolean hasAccess(Commands.BaseCommand command, TransactionInfo info, LocalCoordinator from) {
         switch (command.getType())
         {

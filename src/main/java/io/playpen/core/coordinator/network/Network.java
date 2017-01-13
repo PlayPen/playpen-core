@@ -262,8 +262,8 @@ public class Network extends PlayPen {
         return eventManager;
     }
 
-    public void addAuthenticator(String name, IAuthenticator auth) {
-        authenticators.put(name, auth);
+    public void addAuthenticator(IAuthenticator auth) {
+        authenticators.put(auth.getName(), auth);
     }
 
     @Override
@@ -491,6 +491,17 @@ public class Network extends PlayPen {
 
                 if (!coord.getKeyName().isEmpty())
                     obj.put("key-name", coord.getKeyName());
+
+                if (!coord.getAuthenticators().isEmpty())
+                {
+                    JSONArray auths = new JSONArray();
+                    for (IAuthenticator auth : coord.getAuthenticators())
+                    {
+                        auths.put(auth.getName());
+                    }
+
+                    obj.put("auth", auths);
+                }
 
                 coords.put(obj);
             }

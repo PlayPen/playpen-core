@@ -34,7 +34,7 @@ public class Initialization {
     }
 
     public static void networkCoordinator(Network net) {
-        net.addAuthenticator("deprovision", new DeprovisionAuthenticator());
+        net.addAuthenticator(new DeprovisionAuthenticator());
     }
 
     private Initialization() {}
