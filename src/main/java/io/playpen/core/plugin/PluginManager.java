@@ -3,6 +3,7 @@ package io.playpen.core.plugin;
 import io.playpen.core.Bootstrap;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.zeroturnaround.zip.ZipUtil;
@@ -13,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,6 +58,14 @@ public class PluginManager {
                 schema.setId(config.getString("id"));
                 schema.setVersion(config.getString("version"));
                 schema.setMain(config.getString("main"));
+                schema.setFiles(new ArrayList<>());
+
+                if (config.has("files")) {
+                    JSONArray arr = config.getJSONArray("files");
+                    for (int i = 0; i < arr.length(); ++i) {
+                        schema.getFiles().add(arr.getString(i));
+                    }
+                }
             }
             catch(JSONException e) {
                 log.warn("Unable to read plugin.json from " + jarFile.getPath(), e);
@@ -74,27 +84,39 @@ public class PluginManager {
 
             JSONObject config = null;
 
-            if(ZipUtil.containsEntry(jarFile, "config.json")) {
-                File configFile = Paths.get(pluginDir.getPath(), "config.json").toFile();
-                byte[] configBytes = null;
-                if(!configFile.exists()) {
-                    configBytes = ZipUtil.unpackEntry(jarFile, "config.json");
+            if (ZipUtil.containsEntry(jarFile, "config.json")) {
+                schema.getFiles().add("config.json");
+            }
+
+            for (String filename : schema.getFiles()) {
+                if (!ZipUtil.containsEntry(jarFile, filename)) {
+                    log.error("Plugin file " + filename + " for " + schema.getId() + " doesn't exist in jar");
+                    return false;
+                }
+
+                File pluginFile = Paths.get(pluginDir.getPath(), filename).toFile();
+                byte[] fileBytes = null;
+                if (!pluginFile.exists()) {
+                    fileBytes = ZipUtil.unpackEntry(jarFile, filename);
                     try {
-                        Files.write(configFile.toPath(), configBytes);
+                        Files.write(pluginFile.toPath(), fileBytes);
                     }
-                    catch(IOException e) {
-                        log.error("Unable to copy " + schema.getId() + " config file", e);
+                    catch (IOException e) {
+                        log.error("Unable to copy " + schema.getId() + " file " + filename, e);
                         return false;
                     }
                 }
-                else {
-                    try {
-                        configBytes = Files.readAllBytes(configFile.toPath());
-                    }
-                    catch(IOException e) {
-                        log.error("Unable to read " + schema.getId() + " config file", e);
-                        return false;
-                    }
+            }
+
+            if(ZipUtil.containsEntry(jarFile, "config.json")) {
+                File configFile = Paths.get(pluginDir.getPath(), "config.json").toFile();
+                byte[] configBytes = null;
+                try {
+                    configBytes = Files.readAllBytes(configFile.toPath());
+                }
+                catch(IOException e) {
+                    log.error("Unable to read " + schema.getId() + " config file", e);
+                    return false;
                 }
                 try {
                     config = new JSONObject(new String(configBytes));
