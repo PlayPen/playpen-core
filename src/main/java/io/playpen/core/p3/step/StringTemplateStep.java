@@ -3,7 +3,6 @@ package io.playpen.core.p3.step;
 import io.playpen.core.p3.IPackageStep;
 import io.playpen.core.p3.P3Package;
 import io.playpen.core.p3.PackageContext;
-import io.playpen.core.utils.JSONUtils;
 import io.playpen.core.utils.STUtils;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
@@ -28,7 +27,7 @@ public class StringTemplateStep implements IPackageStep {
 
     @Override
     public boolean runStep(P3Package p3, PackageContext ctx, JSONObject config) {
-        JSONArray jsonFiles = JSONUtils.safeGetArray(config, "files");
+        JSONArray jsonFiles = config.optJSONArray("files");
         if(jsonFiles == null) {
             log.error("'files' not defined as an array");
             return false;
@@ -36,7 +35,7 @@ public class StringTemplateStep implements IPackageStep {
 
         File[] files = new File[jsonFiles.length()];
         for(int i = 0; i < jsonFiles.length(); ++i) {
-            String fileName = JSONUtils.safeGetString(jsonFiles, i);
+            String fileName = jsonFiles.optString(i);
             if(fileName == null) {
                 log.error("Unable to read files entry #" + i);
                 return false;

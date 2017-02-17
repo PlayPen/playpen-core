@@ -1,10 +1,8 @@
 package io.playpen.core.p3.step;
 
-import io.playpen.core.coordinator.local.Server;
 import io.playpen.core.p3.IPackageStep;
 import io.playpen.core.p3.P3Package;
 import io.playpen.core.p3.PackageContext;
-import io.playpen.core.utils.JSONUtils;
 import io.playpen.core.utils.STUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
@@ -23,13 +21,13 @@ public class CopyStep implements IPackageStep {
 
     @Override
     public boolean runStep(P3Package p3, PackageContext ctx, JSONObject config) {
-        String from = JSONUtils.safeGetString(config, "from");
+        String from = config.optString("from");
         if(from == null) {
             log.error("'from' is not defined as a string in config");
             return false;
         }
 
-        String to = JSONUtils.safeGetString(config, "to");
+        String to = config.optString("to");
         if (to == null) {
             log.error("'to' is not defined as a string in config");
             return false;

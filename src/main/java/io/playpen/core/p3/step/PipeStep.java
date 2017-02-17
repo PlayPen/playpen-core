@@ -4,7 +4,6 @@ import io.playpen.core.coordinator.local.Server;
 import io.playpen.core.p3.IPackageStep;
 import io.playpen.core.p3.P3Package;
 import io.playpen.core.p3.PackageContext;
-import io.playpen.core.utils.JSONUtils;
 import io.playpen.core.utils.STUtils;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
@@ -35,7 +34,7 @@ public class PipeStep implements IPackageStep {
             return true;
         }
 
-        String str = JSONUtils.safeGetString(config, "string");
+        String str = config.optString("string");
         if(str == null) {
             log.error("'string' is not defined as a string in config");
             return false;

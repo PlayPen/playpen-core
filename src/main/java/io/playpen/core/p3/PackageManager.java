@@ -2,7 +2,6 @@ package io.playpen.core.p3;
 
 import com.google.common.collect.Lists;
 import io.playpen.core.Bootstrap;
-import io.playpen.core.utils.JSONUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -18,8 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 @Log4j2
 public class PackageManager {
@@ -173,56 +170,57 @@ public class PackageManager {
 
     public P3Package readSchema(JSONObject schema) throws PackageException {
         try {
-            JSONObject meta = JSONUtils.safeGetObject(schema, "package");
+            JSONObject meta = schema.optJSONObject("package");
             if (meta == null)
                 throw new PackageException("Schema is invalid (no package metadata)");
 
             P3Package p3 = new P3Package();
             p3.setResolved(true);
-            p3.setId(JSONUtils.safeGetString(meta, "id"));
-            p3.setVersion(JSONUtils.safeGetString(meta, "version"));
+            p3.setId(meta.optString("id"));
+            p3.setVersion(meta.optString("version"));
 
-            JSONArray deps = JSONUtils.safeGetArray(meta, "depends");
+            JSONArray deps = meta.optJSONArray("depends");
             if (deps != null) {
                 for(int i = 0; i < deps.length(); ++i) {
                     JSONObject dep = deps.getJSONObject(i);
                     P3Package depP3 = new P3Package();
                     depP3.setResolved(false);
-                    depP3.setId(JSONUtils.safeGetString(dep, "id"));
-                    depP3.setVersion(JSONUtils.safeGetString(dep, "version"));
+                    depP3.setId(dep.optString("id"));
+                    depP3.setVersion(dep.optString("version"));
                     p3.getDependencies().add(depP3);
                 }
             }
 
-            JSONObject resources = JSONUtils.safeGetObject(meta, "resources");
+            JSONObject resources = meta.optJSONObject("resources");
             if (resources != null) {
                 for (String key : resources.keySet()) {
-                    p3.getResources().put(key, JSONUtils.safeGetInt(resources, key));
+                    p3.getResources().put(key, resources.optInt(key));
                 }
             }
 
-            JSONArray attributes = JSONUtils.safeGetArray(meta, "requires");
+            JSONArray attributes = meta.optJSONArray("requires");
             if (attributes != null) {
                 for (int i = 0; i < attributes.length(); ++i) {
-                    p3.getAttributes().add(JSONUtils.safeGetString(attributes, i));
+                    p3.getAttributes().add(attributes.optString(i));
                 }
             }
 
-            JSONObject strings = JSONUtils.safeGetObject(schema, "strings");
+            JSONObject strings = schema.optJSONObject("strings");
             if (strings != null) {
                 for (String key : strings.keySet()) {
-                    p3.getStrings().put(key, JSONUtils.safeGetString(strings, key));
+                    p3.getStrings().put(key, strings.optString(key));
                 }
             }
 
-            JSONArray provision = JSONUtils.safeGetArray(schema, "provision");
+            JSONArray provision = schema.optJSONArray("provision");
             if (provision != null) {
                 for (int i = 0; i < provision.length(); ++i) {
-                    JSONObject obj = JSONUtils.safeGetObject(provision, i);
+                    JSONObject obj = provision.optJSONObject(i);
                     if (obj != null) {
-                        IPackageStep step = getPackageStep(JSONUtils.safeGetString(obj, "id"));
+                        String id = obj.optString("id");
+                        IPackageStep step = getPackageStep(id);
                         if (step == null)
-                            throw new PackageException("Unknown package step \"" + JSONUtils.safeGetString(obj, "id") + "\"");
+                            throw new PackageException("Unknown package step \"" + id + "\"");
 
                         P3Package.PackageStepConfig config = new P3Package.PackageStepConfig();
                         config.setStep(step);
@@ -235,14 +233,15 @@ public class PackageManager {
                 }
             }
 
-            JSONArray execute = JSONUtils.safeGetArray(schema, "execute");
+            JSONArray execute = schema.optJSONArray("execute");
             if (execute != null) {
                 for(int i = 0; i < execute.length(); ++i) {
-                    JSONObject obj = JSONUtils.safeGetObject(execute, i);
+                    JSONObject obj = execute.optJSONObject(i);
                     if(obj != null) {
-                        IPackageStep step = getPackageStep(JSONUtils.safeGetString(obj, "id"));
-                        if(step == null)
-                            throw new PackageException("Unknown package step \"" + JSONUtils.safeGetString(obj, "id") + "\"");
+                        String id = obj.optString("id");
+                        IPackageStep step = getPackageStep(id);
+                        if (step == null)
+                            throw new PackageException("Unknown package step \"" + id + "\"");
 
                         P3Package.PackageStepConfig config = new P3Package.PackageStepConfig();
                         config.setStep(step);
@@ -252,19 +251,20 @@ public class PackageManager {
                 }
             }
 
-            JSONArray shutdown = JSONUtils.safeGetArray(schema, "shutdown");
-            if(shutdown != null) {
+            JSONArray shutdown = schema.optJSONArray("shutdown");
+            if (shutdown != null) {
                 for(int i = 0; i < shutdown.length(); ++i) {
-                    JSONObject obj = JSONUtils.safeGetObject(shutdown, i);
+                    JSONObject obj = shutdown.optJSONObject(i);
                     if(obj != null) {
-                        IPackageStep step = getPackageStep(JSONUtils.safeGetString(obj, "id"));
-                        if(step == null)
-                            throw new PackageException("Unknown package step \"" + JSONUtils.safeGetString(obj, "id") + "\"");
+                        String id = obj.optString("id");
+                        IPackageStep step = getPackageStep(id);
+                        if (step == null)
+                            throw new PackageException("Unknown package step \"" + id + "\"");
 
                         P3Package.PackageStepConfig config = new P3Package.PackageStepConfig();
                         config.setStep(step);
                         config.setConfig(obj);
-                        p3.getShutdownSteps().add(config);
+                        p3.getExecutionSteps().add(config);
                     }
                 }
             }

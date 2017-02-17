@@ -26,7 +26,6 @@ import io.playpen.core.protocol.Coordinator;
 import io.playpen.core.protocol.P3;
 import io.playpen.core.protocol.Protocol;
 import io.playpen.core.utils.AuthUtils;
-import io.playpen.core.utils.JSONUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
@@ -184,7 +183,7 @@ public class Local extends PlayPen {
                 attributes.add(attr.getString(i));
             }
 
-            JSONObject strings = JSONUtils.safeGetObject(config, "strings");
+            JSONObject strings = config.optJSONObject("strings");
             if (strings != null) {
                 for (String key : strings.keySet()) {
                     localStrings.put(key, strings.getString(key));

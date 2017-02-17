@@ -6,7 +6,6 @@ import io.playpen.core.coordinator.local.Server;
 import io.playpen.core.p3.IPackageStep;
 import io.playpen.core.p3.P3Package;
 import io.playpen.core.p3.PackageContext;
-import io.playpen.core.utils.JSONUtils;
 import io.playpen.core.utils.STUtils;
 import io.playpen.core.utils.process.FileProcessListener;
 import io.playpen.core.utils.process.ShutdownProcessListener;
@@ -40,7 +39,7 @@ public class ExecuteStep implements IPackageStep {
         try {
             command.add(config.getString("command"));
 
-            JSONArray args = JSONUtils.safeGetArray(config, "arguments");
+            JSONArray args = config.optJSONArray("arguments");
             if(args != null) {
                 for(int i = 0; i < args.length(); ++i) {
                     command.add(args.getString(i));
