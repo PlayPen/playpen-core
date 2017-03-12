@@ -7,7 +7,15 @@
     <groupId>io.playpen</groupId>
     <artifactId>PlayPen</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-playpen-playpen</id>
+            <name>playpen-playpen</name>
+            <url>https://api.bintray.com/maven/playpen/playpen/PlayPen/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <extensions>
