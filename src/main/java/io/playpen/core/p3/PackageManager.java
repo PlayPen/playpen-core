@@ -264,7 +264,7 @@ public class PackageManager {
                         P3Package.PackageStepConfig config = new P3Package.PackageStepConfig();
                         config.setStep(step);
                         config.setConfig(obj);
-                        p3.getExecutionSteps().add(config);
+                        p3.getShutdownSteps().add(config);
                     }
                 }
             }
