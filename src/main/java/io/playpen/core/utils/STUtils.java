@@ -4,8 +4,10 @@ import io.playpen.core.Bootstrap;
 import io.playpen.core.p3.P3Package;
 import io.playpen.core.p3.PackageContext;
 import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.misc.Aggregate;
 
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 
 public class STUtils {
@@ -20,6 +22,14 @@ public class STUtils {
         for(Map.Entry<String, String> entry : ctx.getProperties().entrySet()) {
             template.add(entry.getKey(), entry.getValue());
         }
+
+        Map<String, String> versions = new HashMap<>();
+        for (P3Package p3Package : ctx.getDependencyChain()) {
+            versions.put(p3Package.getId(), p3Package.getVersion());
+        }
+        versions.put(p3.getId(), p3.getVersion());
+
+        template.add("package_versions", versions);
     }
 
     private STUtils() {}
