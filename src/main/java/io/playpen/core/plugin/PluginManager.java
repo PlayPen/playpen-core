@@ -164,6 +164,7 @@ public class PluginManager {
             }
 
             instance.setSchema(schema);
+            instance.setPluginDir(pluginDir);
             instance.setConfig(config);
 
             plugins.put(schema.getId(), instance);
