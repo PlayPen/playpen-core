@@ -120,7 +120,3 @@ Feel free to send pull requests! If you want a change made in PlayPen, just reme
 
 * PlayPen is designed to be generic. Anything built to run specific services should be placed in their own plugins, not in playpen-core.
 * Changes should have little to no impact on reliability.
-
-## Support
-
-For consultation and support, please contact me [here](mailto:sam@redxdev.com).
