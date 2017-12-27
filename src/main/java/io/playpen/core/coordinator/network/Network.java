@@ -284,13 +284,22 @@ public class Network extends PlayPen {
             return false;
         }
 
+        return sendToChannel(message, coord.getChannel(), coord.getUuid(), coord.getKey());
+    }
+
+    private boolean sendToChannel(Protocol.Transaction message, Channel channel, String uuid, String key) {
+        if(!message.isInitialized()) {
+            log.error("Transaction is not initialized (protobuf)");
+            return false;
+        }
+
         ByteString messageBytes = message.toByteString();
-        byte[] encBytes = AuthUtils.encrypt(messageBytes.toByteArray(), coord.getKey());
-        String hash = AuthUtils.createHash(coord.getKey(), encBytes);
+        byte[] encBytes = AuthUtils.encrypt(messageBytes.toByteArray(), key);
+        String hash = AuthUtils.createHash(key, encBytes);
         messageBytes = ByteString.copyFrom(encBytes);
 
         Protocol.AuthenticatedMessage auth = Protocol.AuthenticatedMessage.newBuilder()
-                .setUuid(coord.getUuid())
+                .setUuid(uuid)
                 .setVersion(Bootstrap.getProtocolVersion())
                 .setHash(hash)
                 .setPayload(messageBytes)
@@ -301,23 +310,45 @@ public class Network extends PlayPen {
             return false;
         }
 
-        coord.getChannel().writeAndFlush(auth);
+        channel.writeAndFlush(auth);
         return true;
     }
 
     @Override
     public boolean receive(Protocol.AuthenticatedMessage auth, Channel from) {
         LocalCoordinator local = getCoordinator(auth.getUuid());
+        boolean sendInvalidMessage = false;
         if(local == null) {
             log.error("Unknown coordinator on receive (" + auth.getUuid() + ")");
-            return false;
+            sendInvalidMessage = true;
         }
-
-        if(!AuthUtils.validateHash(auth, local.getKey())) {
+        else if(!AuthUtils.validateHash(auth, local.getKey())) {
             log.error("Invalid hash on message from " + auth.getUuid() + ", got " + auth.getHash() + " (expected "
                     + AuthUtils.createHash(local.getKey(), auth.getPayload().toByteArray()));
             log.error("Closing connection from " + from + " due to bad hash");
+            sendInvalidMessage = true;
+        }
+
+        if (sendInvalidMessage) {
+            log.info("Sending an invalid message to close out connection");
+
+            // send an invalid no-op to the client as a way to tell it to close the connection
+            // we can't use send() functions as they require a coordinator id, but since we received an invalid
+            // message we can't assume the id is correct.
+
+            Commands.BaseCommand command = Commands.BaseCommand.newBuilder()
+                    .setType(Commands.BaseCommand.CommandType.NOOP)
+                    .build();
+
+            Protocol.Transaction message = Protocol.Transaction.newBuilder()
+                    .setId("0")
+                    .setMode(Protocol.Transaction.Mode.SINGLE)
+                    .setPayload(command)
+                    .build();
+
+            sendToChannel(message, from, auth.getUuid(), "0");
             from.close();
+
             return false;
         }
 

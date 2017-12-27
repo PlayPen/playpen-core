@@ -266,6 +266,8 @@ public class Client extends PlayPen {
     public boolean receive(Protocol.AuthenticatedMessage auth, Channel from) {
         if(!auth.getUuid().equals(uuid) || !AuthUtils.validateHash(auth, key)) {
             log.error("Invalid hash on message");
+            System.err.println("Received an invalid hash on a message from the network coordinator.");
+            System.err.println("This is likely due to us having an invalid UUID or secret key. Please check your local.json!");
             return false;
         }
 
@@ -279,6 +281,8 @@ public class Client extends PlayPen {
         }
         catch(InvalidProtocolBufferException e) {
             log.error("Unable to read transaction from message", e);
+            System.err.println("Received an unreadable message from the network coordinator.");
+            System.err.println("This is likely due to us having an invalid UUID or secret key. Please check your local.json!");
             return false;
         }
 
