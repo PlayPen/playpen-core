@@ -23,6 +23,7 @@ import io.playpen.core.protocol.Commands;
 import io.playpen.core.protocol.Coordinator;
 import io.playpen.core.protocol.P3;
 import io.playpen.core.protocol.Protocol;
+import io.playpen.core.utils.AbortableCountDownLatch;
 import io.playpen.core.utils.AuthUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -78,7 +79,7 @@ public class Client extends PlayPen {
 
     private AttachInputListenThread ailThread = null;
 
-    private CountDownLatch latch = null;
+    private AbortableCountDownLatch latch = null;
 
     private int acks = 0;
 
@@ -268,6 +269,11 @@ public class Client extends PlayPen {
             log.error("Invalid hash on message");
             System.err.println("Received an invalid hash on a message from the network coordinator.");
             System.err.println("This is likely due to us having an invalid UUID or secret key. Please check your local.json!");
+            from.close();
+
+            if (latch != null)
+                latch.abort();
+
             return false;
         }
 
@@ -283,6 +289,11 @@ public class Client extends PlayPen {
             log.error("Unable to read transaction from message", e);
             System.err.println("Received an unreadable message from the network coordinator.");
             System.err.println("This is likely due to us having an invalid UUID or secret key. Please check your local.json!");
+            from.close();
+
+            if (latch != null)
+                latch.abort();
+
             return false;
         }
 
@@ -506,7 +517,7 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(count - acks);
+        latch = new AbortableCountDownLatch(count - acks);
         try {
             latch.await();
         }
@@ -535,7 +546,7 @@ public class Client extends PlayPen {
             return;
         }
 
-        latch = new CountDownLatch(1 - acks);
+        latch = new AbortableCountDownLatch(1 - acks);
         try {
             latch.await();
         }
@@ -570,7 +581,7 @@ public class Client extends PlayPen {
             return;
         }
 
-        latch = new CountDownLatch(1 - acks);
+        latch = new AbortableCountDownLatch(1 - acks);
         try {
             latch.await();
         }
@@ -645,7 +656,7 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(count - acks);
+        latch = new AbortableCountDownLatch(count - acks);
         try {
             latch.await();
         }
@@ -728,7 +739,7 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(count - acks);
+        latch = new AbortableCountDownLatch(count - acks);
         try {
             latch.await();
         }
@@ -794,7 +805,7 @@ public class Client extends PlayPen {
         }
 
         System.out.println("Operation completed, waiting for ack...");
-        latch = new CountDownLatch(count - acks);
+        latch = new AbortableCountDownLatch(count - acks);
         try {
             latch.await();
         } catch (InterruptedException e) {
@@ -1338,13 +1349,13 @@ public class Client extends PlayPen {
             do {
                 Thread.sleep(1000);
             }
-            while(coordList == null);
+            while(coordList == null && channel.isActive());
         }
         catch(InterruptedException e) {
             return false;
         }
 
-        return true;
+        return channel.isActive();
     }
 
     protected Map<String, List<String>> getServersFromList(Pattern coordPattern, Pattern serverPattern) {
