@@ -4,6 +4,7 @@ import io.playpen.core.p3.P3Package;
 import lombok.Data;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
@@ -26,5 +27,10 @@ public class Server {
         }
 
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, coordinator == null ? "0" : coordinator.getUuid());
     }
 }
