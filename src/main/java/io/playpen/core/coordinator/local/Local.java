@@ -660,7 +660,7 @@ public class Local extends PlayPen {
             syncBuilder.addServers(serverBuilder.build());
         }
 
-        /*for (Coordinator.Server localServer : provisioningServers.values()) {
+        for (Coordinator.Server localServer : provisioningServers.values()) {
             Coordinator.Server.Builder server = Coordinator.Server.newBuilder()
                     .setUuid(localServer.getUuid())
                     .setP3(localServer.getP3())
@@ -670,7 +670,7 @@ public class Local extends PlayPen {
                 server.setName(localServer.getName());
 
             syncBuilder.addServers(server.build());
-        }*/
+        }
 
         Commands.Sync sync = syncBuilder.build();
 
