@@ -83,6 +83,12 @@ public class XProcess extends NuAbstractCharsetHandler {
 
     public void stop() {
         process.destroy(true);
+        try {
+            process.waitFor(5, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e) {
+            log.info("Interrupted while waiting for process to shutdown", e);
+        }
     }
 
     @Override
