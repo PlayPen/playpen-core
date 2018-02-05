@@ -716,12 +716,7 @@ public class Local extends PlayPen {
         provisioningServers.put(server.getUuid(), server);
 
         scheduler.schedule(() -> {
-            try {
-                Local.get().checkPackageForProvision(tid, id, version, uuid, properties, name);
-            }
-            finally {
-                provisioningServers.remove(uuid);
-            }
+            Local.get().checkPackageForProvision(tid, id, version, uuid, properties, name);
         }, 2, TimeUnit.SECONDS);
 
         return true;
@@ -1223,79 +1218,83 @@ public class Local extends PlayPen {
     protected void checkPackageForProvision(final String tid, final String id, final String version, final String uuid,
                                             final Map<String, String> properties, final String name) {
         Thread thread = new Thread(() -> {
-            TransactionInfo info = TransactionManager.get().getTransaction(tid);
-            if(info == null) {
-                log.error("Cannot download package for provision with an invalid transaction id " + tid);
-                return;
-            }
+            try {
+                TransactionInfo info = TransactionManager.get().getTransaction(tid);
+                if (info == null) {
+                    log.error("Cannot download package for provision with an invalid transaction id " + tid);
+                    return;
+                }
 
-            P3Package p3 = packageManager.resolve(id, version);
+                P3Package p3 = packageManager.resolve(id, version);
 
-            if(p3 == null) {
-                sendProvisionResponse(tid, false);
-                return;
-            }
-
-            // TODO: Clean up checksum stuff. Right now we check checksums even if the package was just downloaded, which
-            // is a waste of time.
-
-            Set<P3Package.P3PackageInfo> checked = new HashSet<>();
-            Queue<P3Package> toCheck = new ArrayDeque<>();
-            toCheck.add(p3);
-            while (toCheck.peek() != null) {
-                P3Package checkOriginal = toCheck.poll();
-                P3Package check = checkOriginal;
-                P3Package.P3PackageInfo p3Info = new P3Package.P3PackageInfo();
-                p3Info.setId(check.getId());
-                p3Info.setVersion(check.getVersion());
-                if (checked.contains(p3Info))
-                    continue;
-
-                checked.add(p3Info);
-
-                if (!check.isResolved())
-                    check = packageManager.resolve(check.getId(), check.getVersion());
-
-                if (check == null) {
-                    log.error("Unable to resolve package " + checkOriginal.getId() + " at " + checkOriginal.getVersion() + ", failing provision.");
+                if (p3 == null) {
                     sendProvisionResponse(tid, false);
                     return;
                 }
 
-                String newChecksum = requestChecksumForPackage(check.getId(), check.getVersion());
+                // TODO: Clean up checksum stuff. Right now we check checksums even if the package was just downloaded, which
+                // is a waste of time.
 
-                try {
-                    check.calculateChecksum();
-                } catch (PackageException e) {
-                    log.error("Unable to calculate local package checksum");
-                    sendProvisionResponse(tid, false);
-                    return;
-                }
+                Set<P3Package.P3PackageInfo> checked = new HashSet<>();
+                Queue<P3Package> toCheck = new ArrayDeque<>();
+                toCheck.add(p3);
+                while (toCheck.peek() != null) {
+                    P3Package checkOriginal = toCheck.poll();
+                    P3Package check = checkOriginal;
+                    P3Package.P3PackageInfo p3Info = new P3Package.P3PackageInfo();
+                    p3Info.setId(check.getId());
+                    p3Info.setVersion(check.getVersion());
+                    if (checked.contains(p3Info))
+                        continue;
 
-                if (newChecksum != null && !Objects.equals(newChecksum, check.getChecksum())) {
-                    // need a new version of the package
-                    log.info("Package " + check.getId() + " at " + check.getVersion() + " has a checksum mismatch, expiring cache and resolving again.");
-                    log.info("Expected: " + check.getChecksum() + ", got: " + newChecksum);
-                    expireCache(check.getId(), check.getVersion());
-                    check = packageManager.resolve(check.getId(), check.getVersion());
+                    checked.add(p3Info);
+
+                    if (!check.isResolved())
+                        check = packageManager.resolve(check.getId(), check.getVersion());
+
                     if (check == null) {
+                        log.error("Unable to resolve package " + checkOriginal.getId() + " at " + checkOriginal.getVersion() + ", failing provision.");
                         sendProvisionResponse(tid, false);
                         return;
                     }
+
+                    String newChecksum = requestChecksumForPackage(check.getId(), check.getVersion());
+
+                    try {
+                        check.calculateChecksum();
+                    } catch (PackageException e) {
+                        log.error("Unable to calculate local package checksum");
+                        sendProvisionResponse(tid, false);
+                        return;
+                    }
+
+                    if (newChecksum != null && !Objects.equals(newChecksum, check.getChecksum())) {
+                        // need a new version of the package
+                        log.info("Package " + check.getId() + " at " + check.getVersion() + " has a checksum mismatch, expiring cache and resolving again.");
+                        log.info("Expected: " + check.getChecksum() + ", got: " + newChecksum);
+                        expireCache(check.getId(), check.getVersion());
+                        check = packageManager.resolve(check.getId(), check.getVersion());
+                        if (check == null) {
+                            sendProvisionResponse(tid, false);
+                            return;
+                        }
+                    }
+
+                    if (newChecksum == null)
+                        log.warn("null checksum received, moving on");
+
+                    toCheck.addAll(check.getDependencies());
                 }
 
-                if (newChecksum == null)
-                    log.warn("null checksum received, moving on");
 
-                toCheck.addAll(check.getDependencies());
+                if (provision(p3, uuid, properties, name)) {
+                    sendProvisionResponse(tid, true);
+                } else {
+                    sendProvisionResponse(tid, false);
+                }
             }
-
-
-            if(provision(p3, uuid, properties, name)) {
-                sendProvisionResponse(tid, true);
-            }
-            else {
-                sendProvisionResponse(tid, false);
+            finally {
+                provisioningServers.remove(uuid);
             }
         });
         thread.start();
