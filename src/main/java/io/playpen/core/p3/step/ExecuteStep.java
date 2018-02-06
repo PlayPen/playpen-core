@@ -19,9 +19,7 @@ import org.stringtemplate.v4.ST;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Log4j2
 public class ExecuteStep implements IPackageStep {
@@ -67,17 +65,9 @@ public class ExecuteStep implements IPackageStep {
             }
         }
 
-        Map<String, String> environment = new HashMap<>();
-        if(config.has("environment")) {
-            JSONObject environmentObj = config.getJSONObject("environment");
-            for (String s : environmentObj.keySet()) {
-                environment.put(s, environmentObj.getString(s));
-            }
-        }
-
         log.info("Running command " + command.get(0));
 
-        XProcess proc = new XProcess(command, ctx.getDestination().toString(), environment, server == null);
+        XProcess proc = new XProcess(command, ctx.getDestination().toString(), server == null);
 
         if(server != null) {
             log.info("Registering process with server " + server.getUuid());

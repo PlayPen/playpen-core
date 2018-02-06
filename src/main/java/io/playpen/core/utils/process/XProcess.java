@@ -12,7 +12,6 @@ import java.nio.charset.CoderResult;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -21,22 +20,20 @@ import java.util.concurrent.TimeUnit;
 public class XProcess extends NuAbstractCharsetHandler {
     public static final int MAX_LINE_STORAGE = 25;
 
-    private final List<String> command;
-    private final String workingDir;
+    private List<String> command;
+    private String workingDir;
     private NuProcess process = null;
-    private final List<IProcessListener> listeners = new CopyOnWriteArrayList<>();
-    private final OutputBuffer outputBuffer = new OutputBuffer();
-    private final Map<String, String> environment;
+    private List<IProcessListener> listeners = new CopyOnWriteArrayList<>();
+    private OutputBuffer outputBuffer = new OutputBuffer();
     private boolean wait;
 
     @Getter
     private ConcurrentLinkedQueue<String> lastLines = new ConcurrentLinkedQueue<>();
 
-    public XProcess(List<String> command, String workingDir, Map<String, String> environment, boolean wait) {
+    public XProcess(List<String> command, String workingDir, boolean wait) {
         super(StandardCharsets.UTF_8);
         this.command = command;
         this.workingDir = workingDir;
-        this.environment = environment;
         this.wait = wait;
     }
 
@@ -63,7 +60,6 @@ public class XProcess extends NuAbstractCharsetHandler {
         NuProcessBuilder builder = new NuProcessBuilder(command);
         builder.setCwd(Paths.get(workingDir));
         builder.setProcessListener(this);
-        builder.environment().putAll(environment);
         process = builder.start();
 
         if (wait) {
