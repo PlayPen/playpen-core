@@ -6,30 +6,15 @@ import io.playpen.core.utils.process.ProcessBuffer;
 import io.playpen.core.utils.process.ProcessBuffer;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import java.nio.CharBuffer;
 import java.util.List;
 
-@RunWith(Parameterized.class)
 public class ProcessBufferTest {
-    private static final String UNIX_LINE_SEPERATOR = "\n";
-    private static final String WINDOWS_LINE_SEPERATOR = "\r\n";
+    private static final String LINE_SEPERATOR = System.lineSeparator();
 
-    @Parameterized.Parameter(0)
-    public String lineSeparator;
-
-    @Parameterized.Parameters
-    public static Iterable<Object[]> data() {
-        return ImmutableList.of(
-                new Object[] { UNIX_LINE_SEPERATOR },
-                new Object[] { WINDOWS_LINE_SEPERATOR }
-        );
-    }
-
-    private String fullBuffer(List<String> strings) {
-        return String.join(lineSeparator, strings) + lineSeparator;
+    private static String fullBuffer(List<String> strings) {
+        return String.join(LINE_SEPERATOR, strings) + LINE_SEPERATOR;
     }
 
     @Test
@@ -62,8 +47,8 @@ public class ProcessBufferTest {
     public void verifyLaterCompletedLine() {
         List<String> strings = Lists.newArrayList("Test", "Testing2", "Potato");
         TestBuffer buffer = new TestBuffer(strings);
-        buffer.append(CharBuffer.wrap(String.join(lineSeparator, strings)));
-        buffer.append(CharBuffer.wrap(lineSeparator));
+        buffer.append(CharBuffer.wrap(String.join(LINE_SEPERATOR, strings)));
+        buffer.append(CharBuffer.wrap(LINE_SEPERATOR));
         sanityCheck(buffer);
     }
 
